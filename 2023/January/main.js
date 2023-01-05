@@ -259,3 +259,200 @@ var minDeletionSizeQuater = function(strs) {
 // console.log(minDeletionSizeQuater(["zyx","wvu","tsr"])); // 3
 
 //===============================================
+// https://leetcode.com/problems/fibonacci-number/
+// The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is the sum of the two preceding ones, starting from 0 and 1. That is,
+
+// F(0) = 0, F(1) = 1
+// F(n) = F(n - 1) + F(n - 2), for n > 1.
+// Given n, calculate F(n).
+
+ 
+
+// Example 1:
+
+// Input: n = 2
+// Output: 1
+// Explanation: F(2) = F(1) + F(0) = 1 + 0 = 1.
+// Example 2:
+
+// Input: n = 3
+// Output: 2
+// Explanation: F(3) = F(2) + F(1) = 1 + 1 = 2.
+// Example 3:
+
+// Input: n = 4
+// Output: 3
+// Explanation: F(4) = F(3) + F(2) = 2 + 1 = 3.
+ 
+
+// Constraints:
+
+// 0 <= n <= 30
+
+var fib = function(n) {
+    if(n===0){
+        return 0
+    }
+    if(n===1){
+        return 1
+    }
+
+    //prevprev < prev
+    let prevprev = 0
+    let prev = 1
+    let res = 0
+    for(let i=2 ; i<=n ; i++){
+        res = prev + prevprev
+        prevprev = prev
+        prev = res
+    }
+
+    return res
+};
+
+// console.log(fib(2)); // 1
+// console.log(fib(4)); // 3
+
+
+var fibRec = function(n){
+    if(n===0){
+        return 0
+    }
+    if(n===1){
+        return 1
+    }
+    
+    return fibRec(n-2) + fibRec(n-1)
+
+}
+
+// console.log(fibRec(2)); // 1
+// console.log(fibRec(4)); // 3
+
+//Way slower and way much memory than the non recursive version
+
+//================================================
+// https://leetcode.com/problems/minimum-rounds-to-complete-all-tasks/description/
+// You are given a 0-indexed integer array tasks, where tasks[i] represents the difficulty level of a task. In each round, you can complete either 2 or 3 tasks of the same difficulty level.
+
+// Return the minimum rounds required to complete all the tasks, or -1 if it is not possible to complete all the tasks.
+
+ 
+
+// Example 1:
+
+// Input: tasks = [2,2,3,3,2,4,4,4,4,4]
+// Output: 4
+// Explanation: To complete all the tasks, a possible plan is:
+// - In the first round, you complete 3 tasks of difficulty level 2. 
+// - In the second round, you complete 2 tasks of difficulty level 3. 
+// - In the third round, you complete 3 tasks of difficulty level 4. 
+// - In the fourth round, you complete 2 tasks of difficulty level 4.  
+// It can be shown that all the tasks cannot be completed in fewer than 4 rounds, so the answer is 4.
+// Example 2:
+
+// Input: tasks = [2,3,3]
+// Output: -1
+// Explanation: There is only 1 task of difficulty level 2, but in each round, you can only complete either 2 or 3 tasks of the same difficulty level. Hence, you cannot complete all the tasks, and the answer is -1.
+ 
+
+// Constraints:
+
+// 1 <= tasks.length <= 105
+// 1 <= tasks[i] <= 109
+
+var minimumRounds = function(tasks) {
+    // For every element e of N with e > 1 and k of N
+    // e can be written either as :
+    // k*3
+    // k*3 + 2
+    // k*3 + 2 + 2
+    // Proof :
+    // It is true for 2, 3 and 4
+    // Every numbers can be written as 3*k + (2 || 3 || 4) 
+    // Which make the function return -1 only if a number appears exactly one time
+
+    //Examples : 
+    // 4 gives us 2+2 => 2 rounds
+    // 5 gives us 3+2 => 2 rounds
+    // 6 gives us 3+3 => 2 rounds
+    // 7 gives us 3+2+2 => 3 rounds
+    // 8 gives us 3+3+2 => 3 rounds
+    // for a frequency of f :
+    // f%3 = 1 => M.floor(f/3) + 1 rounds
+    // f%3 = 2 => M.floor(f/3) + 1 rounds
+    // f%3 = 0 => f/3 rounds
+
+    //-1 case
+    let res
+    tasks.forEach((el, idx, arr) => {
+        //if the last index equal the first index, the elment is unique therefore the problem has no solution
+        if(arr.indexOf(el) === arr.lastIndexOf(el)){
+            res = -1
+        }
+    })
+
+    if(res === -1){
+        return -1
+    }
+
+    //working cases
+    let frequencies = tasks.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    res = 0
+    for(let n in frequencies){
+        let f = frequencies[n]
+        let mod = f%3
+
+        if(mod === 0){
+            res += f/3
+        }else{
+            res += Math.floor(f/3) + 1
+        }
+    }
+
+    return res
+
+};
+
+//WORKS BUT TOO SLOW
+
+// console.log(minimumRounds([2,3,3])); // -1
+// console.log(minimumRounds([2,2,3,3,2,4,4,4,4,4])); // 4
+
+function minimumRoundsBis(tasks) {
+    //Same idea, but we don't need to check the //-1 case, it will appear in our for in loop
+
+    let frequencies = tasks.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    let res = 0
+    for(let n in frequencies){
+        let f = frequencies[n]
+        if(f === 1){ //-1 case
+            return -1
+        }
+
+        let mod = f%3
+
+        if(mod === 0){
+            res += f/3
+        }else{
+            res += Math.floor(f/3) + 1
+        }
+    }
+
+    return res
+}
+
+//WORKS PERFECTLY FINE :)
+
+// console.log(minimumRoundsBis([2,2,3,3,2,4,4,4,4,4])); // 4
+
+
+//=================================================
