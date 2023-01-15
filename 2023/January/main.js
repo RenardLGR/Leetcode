@@ -570,3 +570,131 @@ var addTwoNumbers = function(l1, l2) {
 };
 
 //=======================================================
+// https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+// Given a string s, find the length of the longest 
+// substring
+//  without repeating characters.
+
+ 
+
+// Example 1:
+
+// Input: s = "abcabcbb"
+// Output: 3
+// Explanation: The answer is "abc", with the length of 3.
+// Example 2:
+
+// Input: s = "bbbbb"
+// Output: 1
+// Explanation: The answer is "b", with the length of 1.
+// Example 3:
+
+// Input: s = "pwwkew"
+// Output: 3
+// Explanation: The answer is "wke", with the length of 3.
+// Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+ 
+
+// Constraints:
+
+// 0 <= s.length <= 5 * 104
+// s consists of English letters, digits, symbols and spaces.
+
+//How about the case sensitivity ?
+
+var lengthOfLongestSubstring = function(s) {
+    //We will build every non-repetitive longest substring starting from each char 
+    let maxLen = 0
+    let maxWord = ""
+
+    let tempLen = 0
+    let tempWord = ""
+    let seen = {}
+    let startIndex = 0
+
+    for(let i=0 ; i<s.length ; i++){
+        if(seen[s[i]] === undefined){ //keep building
+            seen[s[i]] = 1
+            tempLen++
+            tempWord += s[i]
+        }else{ //new substring
+            if(tempLen > maxLen){ //check if valable candidate
+                maxLen = tempLen
+                maxWord = tempWord
+            }
+            //initialize new substring
+            i = startIndex + 1 //back peddaling to startIndex + 1 (0,1,2, ...)
+            tempLen = 1
+            tempWord = s[i]
+            seen = {}
+            seen[s[i]] = 1
+            startIndex = i //back peddaling to startIndex + 1 (0,1,2, ...)
+        }
+    }
+
+    if(tempLen > maxLen){ //at the end of the loop, check if the last substring is a valable candidate
+        maxLen = tempLen
+        maxWord = tempWord
+    }
+    //console.log(maxWord);
+    return maxLen
+}
+
+// console.log(lengthOfLongestSubstring("abcabcbb")); // "abc" of length 3
+// console.log(lengthOfLongestSubstring("bbbbb")); // "b" of length 1
+// console.log(lengthOfLongestSubstring("pwwkew")); // "wke" of length 3
+// console.log(lengthOfLongestSubstring("dvdf")); // "vdf" of length 3
+// console.log(lengthOfLongestSubstring("abcdeafghijklmnop")); // "bcdeafghijklmnop" of length 16
+
+//Works but horrible in terms of efficiency
+
+
+var lengthOfLongestSubstringBis = function(s){
+    //We will build every non-repetitive longest substring starting from each char
+    //same than before but cleare syntax
+    let maxLen = 0
+    let maxWord = ""
+
+    for(let i=0 ; i<s.length ; i++){ //for each char
+        let tempLen = 1
+        let tempWord = s[i]
+        let seen = {}
+        seen[s[i]] = 1
+        let j = i
+
+        while((s[j+1] !== undefined) && seen[s[j+1]] === undefined){ //while there is a following char AND this char is not in seen
+            j++
+            seen[s[j]] = 1
+            tempLen++
+            tempWord += s[j]
+        }
+
+        if(tempLen > maxLen){ //check if valable candidate
+            maxLen = tempLen
+            maxWord = tempWord
+        }
+    }
+    //console.log(maxWord);
+    return maxLen
+}
+
+// console.log(lengthOfLongestSubstringBis("abcabcbb")); // "abc" of length 3
+// console.log(lengthOfLongestSubstringBis("bbbbb")); // "b" of length 1
+// console.log(lengthOfLongestSubstringBis("pwwkew")); // "wke" of length 3
+// console.log(lengthOfLongestSubstringBis("dvdf")); // "vdf" of length 3
+// console.log(lengthOfLongestSubstringBis("abcdeafghijklmnop")); // "bcdeafghijklmnop" of length 16
+
+//Works but horrible in terms of efficiency
+
+
+var lengthOfLongestSubstringTer = function(s){
+
+}
+
+// console.log(lengthOfLongestSubstringTer("abcabcbb")); // "abc" of length 3
+// console.log(lengthOfLongestSubstringTer("bbbbb")); // "b" of length 1
+// console.log(lengthOfLongestSubstringTer("pwwkew")); // "wke" of length 3
+// console.log(lengthOfLongestSubstringTer("dvdf")); // "vdf" of length 3
+// console.log(lengthOfLongestSubstringTer("cdd")); // "cd" of length 2
+// console.log(lengthOfLongestSubstringTer("abba")); //"ab" of length 2
+// console.log(lengthOfLongestSubstringTer("abcdeafghijklmnop")); // "bcdeafghijklmnop" of length 16
