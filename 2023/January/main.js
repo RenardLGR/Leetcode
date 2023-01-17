@@ -688,7 +688,30 @@ var lengthOfLongestSubstringBis = function(s){
 
 
 var lengthOfLongestSubstringTer = function(s){
+    //Sliding window algorithm
+    //As long as there is no duplicates in window/substring, increase it to the right, if there is, delete from the left until there is not
+    let res = 0
+    let left = 0
+    let right = 0
 
+    let seen = {}
+    
+    while(right < s.length){
+        let charToAdd = s[right] 
+        seen[charToAdd] = (seen[charToAdd] || 0) + 1
+
+        while(seen[charToAdd] > 1){
+            let charToRemove = s[left]
+            left++
+            seen[charToRemove]--
+        }
+
+        res = Math.max(res, right - left + 1)
+
+        right++
+    }
+
+    return res
 }
 
 // console.log(lengthOfLongestSubstringTer("abcabcbb")); // "abc" of length 3
@@ -698,3 +721,5 @@ var lengthOfLongestSubstringTer = function(s){
 // console.log(lengthOfLongestSubstringTer("cdd")); // "cd" of length 2
 // console.log(lengthOfLongestSubstringTer("abba")); //"ab" of length 2
 // console.log(lengthOfLongestSubstringTer("abcdeafghijklmnop")); // "bcdeafghijklmnop" of length 16
+
+//=======================================================
