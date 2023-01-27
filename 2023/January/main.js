@@ -723,3 +723,170 @@ var lengthOfLongestSubstringTer = function(s){
 // console.log(lengthOfLongestSubstringTer("abcdeafghijklmnop")); // "bcdeafghijklmnop" of length 16
 
 //=======================================================
+// https://leetcode.com/problems/longest-palindromic-substring/
+// Given a string s, return the longest 
+// palindromic
+ 
+// substring
+//  in s.
+
+ 
+
+// Example 1:
+
+// Input: s = "babad"
+// Output: "bab"
+// Explanation: "aba" is also a valid answer.
+// Example 2:
+
+// Input: s = "cbbd"
+// Output: "bb"
+ 
+
+// Constraints:
+
+// 1 <= s.length <= 1000
+// s consist of only digits and English letters.
+
+var longestPalindrome = function(s) {
+    if(s.length <= 1){ //edge case
+        return s
+    }
+
+    //for each letter, find the same letter starting from the end, check if left+1 === right-1, do that until left and right join : we have a palindrome ; O(n**3) complexity
+    let maxLength = 1 //case of no palindrome should be initialized at first element
+    let res = s[0] //case of no palindrome should be initialized at first element
+
+    for(leftIdx=0 ; leftIdx<s.length ; leftIdx++){
+        let left = s[leftIdx]
+        for(let rightIdx=s.length-1 ; rightIdx>leftIdx ; rightIdx--){ //look for the end of a palindrome
+            let right = s[rightIdx]
+            if(left === right){ //we might have a palindrome
+                let tempLength = 0
+                let expectedLength = rightIdx - leftIdx + 1 //if every item (in between left&right) is mirrorred, that should be the length of the palindrome
+                let k = 0
+                let palindrome = ''
+                while( (s[leftIdx+k] === s[rightIdx-k]) && (leftIdx+k <= rightIdx-k) ){ //check if item are mirrorred, stop when they meet
+                    tempLength += (leftIdx+k === rightIdx-k) ? 1 : 2 //add 1 when they meet, 2 otherwise
+                    palindrome = palindrome.slice(0, palindrome.length/2) + ( (leftIdx+k === rightIdx-k) ? s[leftIdx+k] : s[leftIdx+k]+s[rightIdx-k] ) + palindrome.slice(palindrome.length/2) //build palindrome
+                    k++
+                }
+                if(tempLength === expectedLength){ //if it is indeed a palindrome
+                    if(expectedLength > maxLength){ //if the palindrome is longer
+                        maxLength = expectedLength
+                        res = palindrome
+                    }
+                }
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(longestPalindrome('a')); // 'a' of length 1
+// console.log(longestPalindrome('ac')); // 'a' of length 1
+// console.log(longestPalindrome('babad')); // 'bab' of length 3
+// console.log(longestPalindrome('cbbd')); // 'bb' of length 2
+// console.log(longestPalindrome('0123abcba0')); // 'abcba' of length 5
+
+//Seems to work but too long
+
+function longestPalindromeBis(s){
+    if(s.length <= 1){ //edge case
+        return s
+    }
+
+    //Expand around a center : two cases : the center is null (baab), the center is not null (cbabc)
+    let maxLen = 0
+    let maxPalindrome = ''
+    for(let i=0 ; i<s.length ; i++){
+        //with center
+        let palindrome = s[i]
+        let length = 1
+        let k=1
+        while( (s[i-k] === s[i+k]) && s[i-k] && s[i+k]){
+            palindrome = s[i-k] + palindrome + s[i+k]
+            k++
+            length += 2
+        }
+
+        if(length > maxLen){
+            maxLen = length
+            maxPalindrome = palindrome
+        }
+
+        //with null center
+        let left = i
+        let right = i+1
+        let palindrome2 = ''
+        let length2 = 0
+        while(s[left] === s[right] && s[left] && s[right]){
+            palindrome2 = s[left] + palindrome2 + s[right]
+            length2 += 2
+            left--
+            right++
+        }
+
+        if(length2 > maxLen){
+            maxLen = length2
+            maxPalindrome = palindrome2
+        }
+    }
+
+    return maxPalindrome
+}
+
+// console.log(longestPalindromeBis('a')); // 'a' of length 1
+// console.log(longestPalindromeBis('ac')); // 'a' of length 1
+// console.log(longestPalindromeBis('babad')); // 'bab' of length 3
+// console.log(longestPalindromeBis('cbbd')); // 'bb' of length 2
+// console.log(longestPalindromeBis('0123abcba0')); // 'abcba' of length 5
+
+//Works well, let's do some dryness :
+function longestPalindromeTer(s){
+    if(s.length <= 1){ //edge case
+        return s
+    }
+
+    //Expand around a center : two cases : the center is null (baab), the center is not null (cbabc)
+    let maxLen = 0
+    let maxPalindrome = ''
+    for(let i=0 ; i<s.length ; i++){
+
+        for(let k=0 ; k<=1 ; k++){ //k = 0 is with center, k = 1 is null center 
+            let palindrome = ''
+            let length = 0
+            let left = i
+            let right = left + k
+            while(s[left] === s[right] && s[left] && s[right]){
+                if(left === right){ //initialization case for palindrome with a center
+                    palindrome = s[left]
+                    length++
+                    left--
+                    right++
+                }else{
+                    palindrome = s[left] + palindrome + s[right]
+                    length += 2
+                    left--
+                    right++
+                }
+            }
+
+            if(length > maxLen){
+                maxLen = length
+                maxPalindrome = palindrome
+            }
+        }
+    }
+
+    return maxPalindrome
+}
+
+// console.log(longestPalindromeTer('a')); // 'a' of length 1
+// console.log(longestPalindromeTer('ac')); // 'a' of length 1
+// console.log(longestPalindromeTer('babad')); // 'bab' of length 3
+// console.log(longestPalindromeTer('cbbd')); // 'bb' of length 2
+// console.log(longestPalindromeTer('0123abcba0')); // 'abcba' of length 5
+
+//===========================================================
