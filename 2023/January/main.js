@@ -890,3 +890,104 @@ function longestPalindromeTer(s){
 // console.log(longestPalindromeTer('0123abcba0')); // 'abcba' of length 5
 
 //===========================================================
+// https://leetcode.com/problems/zigzag-conversion/
+// The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+// P   A   H   N
+// A P L S I I G
+// Y   I   R
+// And then read line by line: "PAHNAPLSIIGYIR"
+
+// Write the code that will take a string and make this conversion given a number of rows:
+
+// string convert(string s, int numRows);
+ 
+
+// Example 1:
+
+// Input: s = "PAYPALISHIRING", numRows = 3
+// Output: "PAHNAPLSIIGYIR"
+// Example 2:
+
+// Input: s = "PAYPALISHIRING", numRows = 4
+// Output: "PINALSIGYAHRPI"
+// Explanation:
+// P     I    N
+// A   L S  I G
+// Y A   H R
+// P     I
+// Example 3:
+
+// Input: s = "A", numRows = 1
+// Output: "A"
+ 
+
+// Constraints:
+
+// 1 <= s.length <= 1000
+// s consists of English letters (lower-case and upper-case), ',' and '.'.
+// 1 <= numRows <= 1000
+
+var convertZigzag = function(s, numRows) {
+    if (numRows === 1){
+        return s
+    }
+    if(numRows === 2){
+        let even = ''
+        let odd = ''
+        for(let i=0 ; i<s.length ; i++){
+            if(i%2===0){
+                even += s[i]
+            }else{
+                odd += s[i]
+            }
+        }
+        return even + odd
+    }
+    //We'll define an array of array of cols with a value if there is a char at this rowIdx, 0 otherwise, idx 0 is at the bottom.
+    //numRows is stricly bigger than 2
+    let arr = [] 
+    let down = true
+    let rowIdx = numRows
+    for(let i=0 ; i<s.length ; i++){
+        if(down){
+            let tempArr = s.slice(i, i+numRows).split('')
+            while(tempArr.length < numRows){
+                tempArr.push(0)
+            }
+            arr.push(tempArr)
+            i += numRows-1
+            down = false
+            rowIdx = numRows-2
+        }else{
+            let tempArr = Array(numRows).fill(0)
+            tempArr[rowIdx] = s[i]
+            arr.push(tempArr)
+            if(rowIdx === 1){
+                down = true
+            }else{
+                rowIdx--
+            }
+        }
+    }
+
+    //console.log(arr);
+    let res = ''
+    for(let j=0 ; j<numRows ; j++){
+        arr.forEach(subarr => {
+            if(subarr[j] !== 0){
+                res += subarr[j]
+            }
+        })
+    }
+
+    return res
+};
+
+// console.log(convertZigzag("PAYPALISHIRING", 2)); // PYAIHRNAPLSIIG
+// console.log(convertZigzag("PAYPALISHIRING", 3)); // PAHNAPLSIIGYIR
+// console.log(convertZigzag("PAYPALISHIRING", 4)); // PINALSIGYAHRPI
+
+//It works although not that fast
+
+//===============================================
