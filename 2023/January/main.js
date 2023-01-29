@@ -991,3 +991,78 @@ var convertZigzag = function(s, numRows) {
 //It works although not that fast
 
 //===============================================
+// https://leetcode.com/problems/reverse-integer/
+// Given a signed 32-bit integer x, return x with its digits reversed. If reversing x causes the value to go outside the signed 32-bit integer range [-2**31, 2**31 - 1] = [-2147483648 , 2147483647], then return 0.
+
+// Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
+
+ 
+
+// Example 1:
+
+// Input: x = 123
+// Output: 321
+// Example 2:
+
+// Input: x = -123
+// Output: -321
+// Example 3:
+
+// Input: x = 120
+// Output: 21
+ 
+
+// Constraints:
+
+// -231 <= x <= 231 - 1
+
+var reverseInteger = function(x) {
+    //notes : str.split.reverse.join is inefficient
+    //parseInt will automatically remove leading zeroes, so does Number() parseInt("00021") === parseInt("21")
+    let str = x.toString()
+    let isPositive = str[0] !== "-"
+    if(isPositive){
+        let stringAns = ''
+        for(let i=str.length-1 ; i>=0 ; i--){
+            stringAns += str[i]
+        }
+        let ans =  Number(stringAns)
+        return (ans > Math.pow(2, 31)-1) ? 0 : ans
+    }else{
+        let stringAns = '-'
+        for(let i=str.length-1 ; i>=1 ; i--){
+            stringAns += str[i]
+        }
+        let ans =  Number(stringAns)
+        return (ans < -Math.pow(2, 31)) ? 0 : ans
+    }
+};
+
+
+// console.log(reverseInteger(123)); // 321
+// console.log(reverseInteger(-123)); // -321
+// console.log(reverseInteger(120)); // 21
+// console.log(reverseInteger(-1230)); // -321
+
+var reverseIntegerBis = function(x) {
+    // let num = 321
+    // we'll take the last number with temp = num%10=1
+    // we'll remove that number with num=floor(num/10)=32
+    // we'll multiply reverse*10 and add temp
+    const sign = Math.sign(x)
+    let abs = Math.abs(x)
+    let reverse = 0
+    while (abs > 0) {
+      const temp = abs % 10
+      abs = Math.floor(abs / 10)
+      reverse *= 10
+      reverse += temp
+    }
+    if (reverse > Math.pow(2,31)) return 0
+    return reverse*sign
+}
+
+// console.log(reverseIntegerBis(123)); // 321
+// console.log(reverseIntegerBis(-123)); // -321
+// console.log(reverseIntegerBis(120)); // 21
+// console.log(reverseIntegerBis(-1230)); // -321
