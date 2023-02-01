@@ -105,3 +105,161 @@ var myAtoi = function(s) {
 // console.log(myAtoi('-42')) // -42
 
 //======================================================
+// https://leetcode.com/problems/median-of-two-sorted-arrays/
+// Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+
+// The overall run time complexity should be O(log (m+n)).
+
+ 
+
+// Example 1:
+
+// Input: nums1 = [1,3], nums2 = [2]
+// Output: 2.00000
+// Explanation: merged array = [1,2,3] and median is 2.
+// Example 2:
+
+// Input: nums1 = [1,2], nums2 = [3,4]
+// Output: 2.50000
+// Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+ 
+
+// Constraints:
+
+// nums1.length == m
+// nums2.length == n
+// 0 <= m <= 1000
+// 0 <= n <= 1000
+// 1 <= m + n <= 2000
+// -106 <= nums1[i], nums2[i] <= 106
+
+var findMedianSortedArrays = function(nums1, nums2) {
+    //knowing the length of nums1 and nums2 and let Sl the sum of the lengths, we can conclude the median is at the index Math.floor(Sl/2) for an odd Sl and indices ( (Sl/2)-1 + sl/2 ) / 2 for an even Sl
+    //We will find these values by keeping having a pointer on each array increasing as we build the merged array
+
+    let sumLength = nums1.length + nums2.length
+
+    if(sumLength%2 === 0){ //even total length : mean of the median elements
+        let targetIdx1 = sumLength/2 - 1
+        let targetIdx2 = sumLength/2
+        let pointer1 = 0
+        let pointer2 = 0
+        let mergedArray = []
+        while(mergedArray.length <= (sumLength/2 + 1) ){
+            if(nums1[pointer1] !== undefined && nums2[pointer2] !== undefined){ // if they are both defined, take the smallest of the two, else just take the one that is defined
+                if(nums1[pointer1] >= nums2[pointer2]){
+                    mergedArray.push(nums2[pointer2])
+                    pointer2++
+                }else{
+                    mergedArray.push(nums1[pointer1])
+                    pointer1++
+                }
+            }else{
+                if(nums1[pointer1] !== undefined){
+                    mergedArray.push(nums1[pointer1])
+                    pointer1++
+                }else{
+                    mergedArray.push(nums2[pointer2])
+                    pointer2++
+                }
+            }
+        }
+        return (mergedArray[targetIdx1] + mergedArray[targetIdx2] ) / 2
+
+    }else{ //odd total length
+        let targetIdx = Math.floor(sumLength/2)
+        let pointer1 = 0
+        let pointer2 = 0
+        let mergedArray = []
+        while(mergedArray.length < Math.ceil(sumLength/2)){
+            if(nums1[pointer1] !== undefined && nums2[pointer2] !== undefined){ // if they are both defined, take the smallest of the two, else just take the one that is defined
+                if(nums1[pointer1] >= nums2[pointer2]){
+                    mergedArray.push(nums2[pointer2])
+                    pointer2++
+                }else{
+                    mergedArray.push(nums1[pointer1])
+                    pointer1++
+                }
+            }else{
+                if(nums1[pointer1] !== undefined){
+                    mergedArray.push(nums1[pointer1])
+                    pointer1++
+                }else{
+                    mergedArray.push(nums2[pointer2])
+                    pointer2++
+                }
+            }
+        }
+        return mergedArray[targetIdx]
+    }
+};
+
+// console.log(findMedianSortedArrays([1,3] , [2])); // 2
+// console.log(findMedianSortedArrays([1,2] , [3,4])); // 2.5
+
+//It works but there is room for improvement : we can do without storing the mergedArray
+
+var findMedianSortedArraysBis = function(nums1, nums2) {
+    let sumLength = nums1.length + nums2.length
+    if(sumLength%2 === 0){ //even total length : mean of the median elements
+        let currIdx = 0
+        let current
+        let before
+        let pointer1 = 0
+        let pointer2 = 0
+        while(currIdx <= sumLength/2){
+            before = current
+            if(nums1[pointer1] !== undefined && nums2[pointer2] !== undefined){ // if they are both defined, take the smallest of the two, else just take the one that is defined
+                if(nums1[pointer1] >= nums2[pointer2]){
+                    current = nums2[pointer2]
+                    pointer2++
+                }else{
+                    current = nums1[pointer1]
+                    pointer1++
+                }
+            }else{
+                if(nums1[pointer1] !== undefined){
+                    current = nums1[pointer1]
+                    pointer1++
+                }else{
+                    current = nums2[pointer2]
+                    pointer2++
+                }
+            }
+            currIdx++
+        }
+        return (current + before) / 2
+    }else{ //odd total length
+        let currIdx = 0
+        let pointer1 = 0
+        let pointer2 = 0
+        let current
+        while(currIdx <= Math.floor(sumLength/2)){
+            if(nums1[pointer1] !== undefined && nums2[pointer2] !== undefined){ // if they are both defined, take the smallest of the two, else just take the one that is defined
+                if(nums1[pointer1] >= nums2[pointer2]){
+                    current = nums2[pointer2]
+                    pointer2++
+                }else{
+                    current = nums1[pointer1]
+                    pointer1++
+                }
+            }else{
+                if(nums1[pointer1] !== undefined){
+                    current = nums1[pointer1]
+                    pointer1++
+                }else{
+                    current = nums2[pointer2]
+                    pointer2++
+                }
+            }
+            currIdx++
+        }
+
+        return current
+    }
+}
+
+// console.log(findMedianSortedArraysBis([1,3] , [2])); // 2
+// console.log(findMedianSortedArraysBis([1,2] , [3,4])); // 2.5
+
+//==================================================
