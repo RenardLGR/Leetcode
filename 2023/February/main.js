@@ -313,3 +313,101 @@ var isPalindrome = function(x) {
 // console.log(isPalindrome(122));
 
 //=========================================================
+// https://leetcode.com/problems/regular-expression-matching/
+// Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
+
+// '.' Matches any single character.​​​​
+// '*' Matches zero or more of the preceding element.
+// The matching should cover the entire input string (not partial).
+
+ 
+
+// Example 1:
+
+// Input: s = "aa", p = "a"
+// Output: false
+// Explanation: "a" does not match the entire string "aa".
+// Example 2:
+
+// Input: s = "aa", p = "a*"
+// Output: true
+// Explanation: '*' means zero or more of the preceding element, 'a'. Therefore, by repeating 'a' once, it becomes "aa".
+// Example 3:
+
+// Input: s = "ab", p = ".*"
+// Output: true
+// Explanation: ".*" means "zero or more (*) of any character (.)".
+ 
+
+// Constraints:
+
+// 1 <= s.length <= 20
+// 1 <= p.length <= 30
+// s contains only lowercase English letters.
+// p contains only lowercase English letters, '.', and '*'.
+// It is guaranteed for each appearance of the character '*', there will be a previous valid character to match.
+
+var isMatchTer = function(text, pattern) {
+    if (pattern.length === 0) return text.length === 0;
+    let firstMatch = (text.length !== 0 && (pattern[0] === text[0] || pattern[0] === '.'));
+
+    if (pattern.length >= 2 && pattern[1] === '*') {
+        return (isMatchTer(text, pattern.slice(2)) || 
+                (firstMatch && isMatchTer(text.slice(1), pattern)));
+    } else {
+        return firstMatch && isMatchTer(text.slice(1), pattern.slice(1));
+    }
+};
+
+// console.log(isMatchTer('zxy', 'abc')) // false
+// console.log(isMatchTer('abz', 'abc')) // false
+// console.log(isMatchTer('abc', 'abc')); // true
+// console.log(isMatchTer('abc', 'abce')); // false
+// console.log(isMatchTer('a', 'ab*')); // true
+// console.log(isMatchTer('abcdddde', 'abcd*e')); // true
+// console.log(isMatchTer('abcdef', 'abcd*f')); // false
+// console.log(isMatchTer('abcdee', 'abcde*')); // true
+// console.log(isMatchTer('aaaa', 'a.*aaa')); // true
+// console.log(isMatchTer('abcdzy', 'ab.*zy')); // true
+// console.log(isMatchTer('abcdzy', '.*zy')); // true
+
+const isMatchQuater = (string, pattern) => {
+    // early return when pattern is empty
+    if (!pattern) {
+		// returns true when string and pattern are empty
+		// returns false when string contains chars with empty pattern
+        return !string;
+    }
+    
+	// check if the current char of the string and pattern match when the string has chars
+    const hasFirstCharMatch = Boolean(string) && (pattern[0] === '.' || pattern[0] === string[0]);
+
+    // track when the next character * is next in line in the pattern
+    if (pattern[1] === '*') {
+        // if next pattern match (after *) is fine with current string, then proceed with it (s, p+2).  That's because the current pattern may be skipped.
+        // otherwise check hasFirstCharMatch. That's because if we want to proceed with the current pattern, we must be sure that the current pattern char matches the char
+		// If hasFirstCharMatch is true, then do the recursion with next char and current pattern (s+1, p).  That's because current char matches the pattern char. 
+        return (
+            isMatchQuater(string, pattern.slice(2)) || 
+            (hasFirstCharMatch && isMatchQuater(string.slice(1), pattern))
+        );
+    }
+    
+    // now we know for sure that we need to do 2 simple actions
+	// check the current pattern and string chars
+	// if so, then can proceed with next string and pattern chars (s+1, p+1)
+    return hasFirstCharMatch ? isMatchQuater(string.slice(1), pattern.slice(1)) : false;
+};
+
+// console.log(isMatchTer('zxy', 'abc')) // false
+// console.log(isMatchTer('abz', 'abc')) // false
+// console.log(isMatchTer('abc', 'abc')); // true
+// console.log(isMatchTer('abc', 'abce')); // false
+// console.log(isMatchTer('a', 'ab*')); // true
+// console.log(isMatchTer('abcdddde', 'abcd*e')); // true
+// console.log(isMatchTer('abcdef', 'abcd*f')); // false
+// console.log(isMatchTer('abcdee', 'abcde*')); // true
+// console.log(isMatchTer('aaaa', 'a.*aaa')); // true
+// console.log(isMatchTer('abcdzy', 'ab.*zy')); // true
+// console.log(isMatchTer('abcdzy', '.*zy')); // true
+//=====================================================
