@@ -411,3 +411,73 @@ const isMatchQuater = (string, pattern) => {
 // console.log(isMatchTer('abcdzy', 'ab.*zy')); // true
 // console.log(isMatchTer('abcdzy', '.*zy')); // true
 //=====================================================
+// https://leetcode.com/problems/container-with-most-water/
+// You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+
+// Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+// Return the maximum amount of water a container can store.
+
+// Notice that you may not slant the container.
+
+// Example 1:
+
+// Input: height = [1,8,6,2,5,4,8,3,7]
+// Output: 49
+// Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49. Because we can create a box between col 8 and col 7 of length 7 and max height 7.
+// Example 2:
+
+// Input: height = [1,1]
+// Output: 1
+ 
+
+// Constraints:
+
+// n == height.length
+// 2 <= n <= 105
+// 0 <= height[i] <= 104
+
+var maxArea = function(height) {
+    // naive : length between i and j multiplied by min(height[i], height[j]) : (j-i)*min(height[i], height[j])
+    let volMax = 0
+    for(let i=0 ; i<height.length ; i++){
+        for(let j=i+1 ; j<height.length ; j++){
+            let temp = (j-i) * Math.min(height[i], height[j])
+            if(temp > volMax){
+                volMax = temp
+            }
+        }
+    }
+
+    return volMax
+}
+
+// console.log(maxArea([1,8,6,2,5,4,8,3,7])); // 49
+//Too long
+
+//Improvement : keep track of the minHeight, if (height[j] < minHeight), no need to even bother trying, it won't work
+
+var maxAreaBis = function(height) {
+    // naive : length between i and j multiplied by min(height[i], height[j]) : (j-i)*min(height[i], height[j])
+    // Improvement : keep track of the minHeight, if (height[j] < minHeight), no need to even bother trying, it won't work
+    let volMax = 0
+    let minHeight = 0
+    for(let i=0 ; i<height.length ; i++){
+        if(height[i] < minHeight){
+            continue
+        }
+        for(let j=i+1 ; j<height.length ; j++){
+            let temp = (j-i) * Math.min(height[i], height[j])
+            if(temp > volMax){
+                volMax = temp
+                minHeight = Math.min(height[i], height[j])
+            }
+        }
+    }
+
+    return volMax
+}
+
+// console.log(maxAreaBis([1,8,6,2,5,4,8,3,7])); // 49
+
+//============================================
