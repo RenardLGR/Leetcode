@@ -481,3 +481,44 @@ var maxAreaBis = function(height) {
 // console.log(maxAreaBis([1,8,6,2,5,4,8,3,7])); // 49
 
 //============================================
+// https://leetcode.com/problems/middle-of-the-linked-list/description/
+// Given the head of a singly linked list, return the middle node of the linked list.
+
+// If there are two middle nodes, return the second middle node.
+
+// Example 1:
+// Input: head = [1,2,3,4,5]
+// Output: [3,4,5]
+// Explanation: The middle node of the list is node 3.
+
+// Example 2:
+// Input: head = [1,2,3,4,5,6]
+// Output: [4,5,6]
+// Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.
+ 
+
+// Constraints:
+
+// The number of nodes in the list is in the range [1, 100].
+// 1 <= Node.val <= 100
+
+//Naive : run through the whole linked list keeping track of its length ; run through again stoping at length/2
+
+// Efficient : use two pointers, one running one by one, the other running two by two, when the fats pointer reaches the end, the first one is at the middle.
+
+var middleNode = function(head) {
+    let fast = head
+    let slow = head
+
+    while(fast.next !== null){
+        fast = fast.next
+        if(fast.next !== null){
+            fast = fast.next
+        }
+        slow = slow.next
+    }
+
+    return slow
+};
+
+//========================================
