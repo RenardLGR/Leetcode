@@ -204,60 +204,57 @@ function threeSumTer(nums){
 
 //Works, easy to understand but too slow O(n^3) complexity
 
-function threeSumQuater(nums){
+function threeSumQuater(nums) {
+    //See : https://youtu.be/jXZDUdHRbhY?t=430
+    // https://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
+    
     //Sort the array
-    //Loop through every negative numbers, double loop through every positive numbers and find a sum such has neg = pos1+pos2
-    //Add the [0, 0, 0] possibility if there are more than 3 zeroes
+    //Loops through the sorted array, let left be i+1 and right be arr.length-1
+    //If the sum is smaller than the required sum, increment the first pointer.
+    //Else, If the sum is bigger, Decrease the end pointer to reduce the sum.
+    //Else, if the sum of elements at two-pointer is equal to given sum then add the triplet and increase+deacrease.
 
     let res = []
 
-    let firstZero
-    let lastZero
+    nums.sort((a, b) => a - b)
 
-    nums.sort((a,b) => a-b)
+    //Sum should be equal to 0, but our program actually work with any number
+    let target = 0
 
-    for(let i=0 ; i<nums.length ; i++){
-        if(nums[i]===0 && firstZero===undefined){
-            firstZero=i
-        }
-        if(nums[i]>0){
-            //It is impossible for a positive number summed with two other positive numbers to be equal to 0
-            //We don't need to go any further
-            break
-        }
+    for (let i = 0; i < nums.length; i++) {
+        let left = i + 1
+        let right = nums.length - 1
+        while (left < right) {
+            let sum = nums[i] + nums[left] + nums[right]
 
-        for(let j=nums.length-1 ; j>=0 ; j--){
-            if(nums[j]===0 && lastZero===undefined){
-                lastZero=j
-            }
-            if(nums[j]<0){
-                break
-            }
-            for(let k=nums.length-1 ; k>=0 ; k--){
-                if(nums[k]<0){
-                    break
+            //if triplet is good, add it if necessary, update left and right
+            if (sum === target) {
+                let triplet = [nums[i], nums[left], nums[right]].sort((a, b) => a - b).join(':')
+                if (!res.includes(triplet)) { //if the triplet is new
+                    res.push(triplet)
                 }
-                // console.log(nums[i] + nums[j] + nums[k]);
-                if(nums[i] + nums[j] + nums[k] === 0){
-                    if(i!==j && i!==k && j!==k){
-                        let triplet = [nums[i], nums[j], nums[k]].sort((a,b) => a-b).join(':')
-                        if(!res.includes(triplet)){ //if the triplet is new
-                            res.push(triplet)
-                        }
-                    }
-                }
+                left++
+                right--
             }
-        }
-    }
 
-    if(firstZero!==undefined && lastZero!==undefined){
-        if(lastZero - firstZero >= 3){
-            res.push('0:0:0')
+            //if sum is smaller than target, increase left (sum will therefore increase)
+            if(sum < target){
+                left++
+            }
+
+            //if sum is greater than target, decrease right (sum will therefore decrease)
+            if(sum > target){
+                right--
+            }
         }
     }
 
     return res.map(tri => tri.split(':').map(c => +c))
 }
 
-console.log(threeSumQuater([-1,0,1,2,-1,-4])); //[ [ -1, -1, 2 ], [ -1, 0, 1 ] ]
-console.log(threeSumQuater([3,0,-2,-1,1,2])); //[ [ -2, -1, 3 ], [ -2, 0, 2 ], [ -1, 0, 1 ] ]
+// console.log(threeSumQuater([-1,0,1,2,-1,-4])); //[ [ -1, -1, 2 ], [ -1, 0, 1 ] ]
+// console.log(threeSumQuater([3,0,-2,-1,1,2])); //[ [ -2, -1, 3 ], [ -2, 0, 2 ], [ -1, 0, 1 ] ]
+
+//Works and didn't exceed time limit
+
+//=====================================
