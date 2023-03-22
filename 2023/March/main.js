@@ -224,6 +224,7 @@ function threeSumQuater(nums) {
     for (let i = 0; i < nums.length; i++) {
         let left = i + 1
         let right = nums.length - 1
+        //While the two pointers didn't meet
         while (left < right) {
             let sum = nums[i] + nums[left] + nums[right]
 
@@ -256,5 +257,92 @@ function threeSumQuater(nums) {
 // console.log(threeSumQuater([3,0,-2,-1,1,2])); //[ [ -2, -1, 3 ], [ -2, 0, 2 ], [ -1, 0, 1 ] ]
 
 //Works and didn't exceed time limit
+
+//=====================================
+// https://leetcode.com/problems/3sum-closest/
+// Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+
+// Return the sum of the three integers.
+
+// You may assume that each input would have exactly one solution.
+
+ 
+
+// Example 1:
+
+// Input: nums = [-1,2,1,-4], target = 1
+// Output: 2
+// Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+// Example 2:
+
+// Input: nums = [0,0,0], target = 1
+// Output: 0
+// Explanation: The sum that is closest to the target is 0. (0 + 0 + 0 = 0).
+ 
+
+// Constraints:
+
+// 3 <= nums.length <= 500
+// -1000 <= nums[i] <= 1000
+// -104 <= target <= 104
+
+var threeSumClosest = function(nums, target) {
+    //See : https://youtu.be/jXZDUdHRbhY?t=430
+    // https://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
+    
+    //Just like the precedent function
+    //Sort the array
+    //Loops through the sorted array, let left be i+1 and right be arr.length-1
+    //If the sum is smaller than the required sum, increment the first pointer.
+    //If the sum is bigger, Decrease the end pointer to reduce the sum.
+    //Supposedly we take 3 unique indices
+
+    nums.sort((a,b) => a-b)
+
+    let resArr //useless but we can access the arr that gave the answer
+    let resSum
+    let howClose = Infinity //positive number only
+    let havePerfectAnswer = false //a perfect answer is when the sum is equal to the target, in which case no operation are needed anymore
+
+    for(let i=0 ; i<nums.length ; i++){
+        if(havePerfectAnswer){
+            return resSum
+        }
+        let left = i+1
+        let right = nums.length-1
+        //While the two pointers didn't meet
+        while(left<right && !havePerfectAnswer){
+            let sum = nums[i] + nums[left] + nums[right]
+            //If we have a better triplet candidate, update
+            if(Math.abs(sum-target) < howClose){
+                resArr = [nums[i], nums[left], nums[right]]
+                resSum = sum
+                howClose = Math.abs(sum-target)
+                
+            }
+
+            //if sum is equal to the target, we have a perfect answer, stop every operations
+            if(sum === target){
+                havePerfectAnswer = true
+            }
+
+            //if sum is smaller than target, increase left (sum will therefore increase)
+            if(sum < target){
+                left++
+            }
+
+            //if sum is greater than target, decrease right (sum will therefore decrease)
+            if(sum > target){
+                right--
+            }
+        }
+    }
+
+    return resSum
+};
+
+// console.log(threeSumClosest([-1,2,1,-4], 1)); //2
+// console.log(threeSumClosest([0,0,0], 1)); //0
+// console.log(threeSumClosest([0,1,2], 3)); //3
 
 //=====================================
