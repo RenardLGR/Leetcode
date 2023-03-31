@@ -346,3 +346,66 @@ var threeSumClosest = function(nums, target) {
 // console.log(threeSumClosest([0,1,2], 3)); //3
 
 //=====================================
+// https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+// Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+// A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+ 
+
+// Example 1:
+
+// Input: digits = "23"
+// Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+// Example 2:
+
+// Input: digits = ""
+// Output: []
+// Example 3:
+
+// Input: digits = "2"
+// Output: ["a","b","c"]
+ 
+
+// Constraints:
+
+// 0 <= digits.length <= 4
+// digits[i] is a digit in the range ['2', '9'].
+
+var letterCombinations = function(digits) {
+    if(digits.length === 0) return []
+    //Example [2, 3] <=> ['abc' , 'def']
+    // => a + 'def'
+    //          => a+d
+    //          => a+e
+    //          => a+f
+    // => b + 'def'
+    //          => b+d
+    //          => b+e
+    //          => b+f
+    // => c + 'def'
+    //          => c+d
+    //          => c+e
+    //          => c+f
+
+    let letters = ["_", "_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"] 
+    let res = []
+    combinator([], digits)
+    return res
+
+    function combinator(inProg, workingArr){
+        if(workingArr.length === 0){
+            res.push(inProg.join(''))
+            return
+        }
+        let curD = workingArr[0]
+        let arrLetters = letters[+curD].split('')
+
+        for(let letter of arrLetters){
+            combinator([...inProg, letter], workingArr.slice(1))
+        }
+    }
+}
+
+// console.log(letterCombinations("23"));
+
+//===============================================
