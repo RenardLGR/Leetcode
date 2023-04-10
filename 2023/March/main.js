@@ -19,7 +19,7 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 // Input: strs = ["dog","racecar","car"]
 // Output: ""
 // Explanation: There is no common prefix among the input strings.
- 
+
 
 // Constraints:
 
@@ -27,13 +27,13 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 // 0 <= strs[i].length <= 200
 // strs[i] consists of only lowercase English letters.
 
-var longestCommonPrefix = function(strs) {
+var longestCommonPrefix = function (strs) {
     let isDone = false
     let maxPrefixLength = 0
-    while(!isDone){
+    while (!isDone) {
         isDone = true
         //for each word, check if the letter at index n exists and is always present. n starts at 0 and increases if the preceding condition is met
-        if(strs.every(word => (word[maxPrefixLength] !== undefined) && (word[maxPrefixLength] === strs[0][maxPrefixLength]) )){
+        if (strs.every(word => (word[maxPrefixLength] !== undefined) && (word[maxPrefixLength] === strs[0][maxPrefixLength]))) {
             maxPrefixLength++
             isDone = false
         }
@@ -53,7 +53,7 @@ var longestCommonPrefix = function(strs) {
 
 // Notice that the solution set must not contain duplicate triplets.
 
- 
+
 
 // Example 1:
 
@@ -75,14 +75,14 @@ var longestCommonPrefix = function(strs) {
 // Input: nums = [0,0,0]
 // Output: [[0,0,0]]
 // Explanation: The only possible triplet sums up to 0.
- 
+
 
 // Constraints:
 
 // 3 <= nums.length <= 3000
 // -105 <= nums[i] <= 105
 
-var threeSum = function(nums) {
+var threeSum = function (nums) {
     //Check every combinations of 3
     //Keep those with a sum equal to zero and are not already found
 
@@ -93,21 +93,21 @@ var threeSum = function(nums) {
 
     return res.map(tri => tri.split(':').map(c => +c))
 
-    function solve(inProgress, workingArr, len){
+    function solve(inProgress, workingArr, len) {
         // Base/Exit case
-        if(len===3){
+        if (len === 3) {
             //If the sum is equal to 0
-            if(inProgress.reduce((acc, cur)=>acc+cur,0)===0){
-                let possibleTriplet = inProgress.sort((a,b) => a-b).join(':')
-                if(!res.includes(possibleTriplet)){ //if the triplet is new
+            if (inProgress.reduce((acc, cur) => acc + cur, 0) === 0) {
+                let possibleTriplet = inProgress.sort((a, b) => a - b).join(':')
+                if (!res.includes(possibleTriplet)) { //if the triplet is new
                     res.push(possibleTriplet)
                 }
             }
             return
         }
 
-        for(let i=0 ; i<workingArr.length ; i++){
-            solve([...inProgress, workingArr[i]], workingArr.slice(i+1), len+1)
+        for (let i = 0; i < workingArr.length; i++) {
+            solve([...inProgress, workingArr[i]], workingArr.slice(i + 1), len + 1)
         }
     }
 }
@@ -119,7 +119,7 @@ var threeSum = function(nums) {
 
 
 
-function threeSumBis(nums){
+function threeSumBis(nums) {
     //We will have a map storing every sums of two elements like so :
     // memo = {'first elem + second elem': 'index1,index2'}
     //Once memo initialized, we will loop one more time through nums, if memo[-nums[i]] exists,we have a correct triplet
@@ -138,25 +138,25 @@ function threeSumBis(nums){
 
     let memo = {}
 
-    for(let i=0 ; i<nums.length ; i++){
-        for(let j=0 ; j<nums.length ; j++){
-            if(i !== j){
-                memo[nums[i]+nums[j]] = (memo[nums[i]+nums[j]] || []).concat(`${i},${j}`)
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = 0; j < nums.length; j++) {
+            if (i !== j) {
+                memo[nums[i] + nums[j]] = (memo[nums[i] + nums[j]] || []).concat(`${i},${j}`)
             }
         }
     }
 
     // console.log(memo);
 
-    for(let i=0 ; i<nums.length ; i++){
-        if(memo[-nums[i]]){ //if we have a match
+    for (let i = 0; i < nums.length; i++) {
+        if (memo[-nums[i]]) { //if we have a match
 
             memo[-nums[i]].forEach(couple => {
                 let memoCouple = couple.split(',').map(e => +e)
-    
-                if(i!==memoCouple[0] && i!==memoCouple[1]){ //all indices should be unique
-                    let triplet = [nums[memoCouple[0]], nums[memoCouple[1]], nums[i]].sort((a,b) => a-b).join(':')
-                    if(!res.includes(triplet)){ //if the triplet is new
+
+                if (i !== memoCouple[0] && i !== memoCouple[1]) { //all indices should be unique
+                    let triplet = [nums[memoCouple[0]], nums[memoCouple[1]], nums[i]].sort((a, b) => a - b).join(':')
+                    if (!res.includes(triplet)) { //if the triplet is new
                         res.push(triplet)
                     }
                 }
@@ -173,20 +173,20 @@ function threeSumBis(nums){
 
 //Works but too slow and too much memory needed. This approach has a complexity of O(n^2 + n)
 
-function threeSumTer(nums){
+function threeSumTer(nums) {
     //Testing every triplets with triple for loops
     //Same approach than the first one, but no recursion
     let res = []
 
-    for(let i=0 ; i<nums.length ; i++){
-        for(let j=0 ; j<nums.length ; j++){
-            if(i !== j){
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = 0; j < nums.length; j++) {
+            if (i !== j) {
                 let sum = nums[i] + nums[j]
                 nums.forEach((e, idx) => {
-                    if(sum+e === 0){
-                        if(idx!==i && idx!==j){
-                            let triplet = [nums[i], nums[j], e].sort((a,b) => a-b).join(':')
-                            if(!res.includes(triplet)){ //if the triplet is new
+                    if (sum + e === 0) {
+                        if (idx !== i && idx !== j) {
+                            let triplet = [nums[i], nums[j], e].sort((a, b) => a - b).join(':')
+                            if (!res.includes(triplet)) { //if the triplet is new
                                 res.push(triplet)
                             }
                         }
@@ -207,7 +207,7 @@ function threeSumTer(nums){
 function threeSumQuater(nums) {
     //See : https://youtu.be/jXZDUdHRbhY?t=430
     // https://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
-    
+
     //Sort the array
     //Loops through the sorted array, let left be i+1 and right be arr.length-1
     //If the sum is smaller than the required sum, increment the first pointer.
@@ -239,12 +239,12 @@ function threeSumQuater(nums) {
             }
 
             //if sum is smaller than target, increase left (sum will therefore increase)
-            if(sum < target){
+            if (sum < target) {
                 left++
             }
 
             //if sum is greater than target, decrease right (sum will therefore decrease)
-            if(sum > target){
+            if (sum > target) {
                 right--
             }
         }
@@ -266,7 +266,7 @@ function threeSumQuater(nums) {
 
 // You may assume that each input would have exactly one solution.
 
- 
+
 
 // Example 1:
 
@@ -278,7 +278,7 @@ function threeSumQuater(nums) {
 // Input: nums = [0,0,0], target = 1
 // Output: 0
 // Explanation: The sum that is closest to the target is 0. (0 + 0 + 0 = 0).
- 
+
 
 // Constraints:
 
@@ -286,10 +286,10 @@ function threeSumQuater(nums) {
 // -1000 <= nums[i] <= 1000
 // -104 <= target <= 104
 
-var threeSumClosest = function(nums, target) {
+var threeSumClosest = function (nums, target) {
     //See : https://youtu.be/jXZDUdHRbhY?t=430
     // https://www.geeksforgeeks.org/find-a-triplet-that-sum-to-a-given-value/
-    
+
     //Just like the precedent function
     //Sort the array
     //Loops through the sorted array, let left be i+1 and right be arr.length-1
@@ -297,42 +297,42 @@ var threeSumClosest = function(nums, target) {
     //If the sum is bigger, Decrease the end pointer to reduce the sum.
     //Supposedly we take 3 unique indices
 
-    nums.sort((a,b) => a-b)
+    nums.sort((a, b) => a - b)
 
     let resArr //useless but we can access the arr that gave the answer
     let resSum
     let howClose = Infinity //positive number only
     let havePerfectAnswer = false //a perfect answer is when the sum is equal to the target, in which case no operation are needed anymore
 
-    for(let i=0 ; i<nums.length ; i++){
-        if(havePerfectAnswer){
+    for (let i = 0; i < nums.length; i++) {
+        if (havePerfectAnswer) {
             return resSum
         }
-        let left = i+1
-        let right = nums.length-1
+        let left = i + 1
+        let right = nums.length - 1
         //While the two pointers didn't meet
-        while(left<right && !havePerfectAnswer){
+        while (left < right && !havePerfectAnswer) {
             let sum = nums[i] + nums[left] + nums[right]
             //If we have a better triplet candidate, update
-            if(Math.abs(sum-target) < howClose){
+            if (Math.abs(sum - target) < howClose) {
                 resArr = [nums[i], nums[left], nums[right]]
                 resSum = sum
-                howClose = Math.abs(sum-target)
-                
+                howClose = Math.abs(sum - target)
+
             }
 
             //if sum is equal to the target, we have a perfect answer, stop every operations
-            if(sum === target){
+            if (sum === target) {
                 havePerfectAnswer = true
             }
 
             //if sum is smaller than target, increase left (sum will therefore increase)
-            if(sum < target){
+            if (sum < target) {
                 left++
             }
 
             //if sum is greater than target, decrease right (sum will therefore decrease)
-            if(sum > target){
+            if (sum > target) {
                 right--
             }
         }
@@ -350,7 +350,7 @@ var threeSumClosest = function(nums, target) {
 // Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
 
 // A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
- 
+
 
 // Example 1:
 
@@ -364,15 +364,15 @@ var threeSumClosest = function(nums, target) {
 
 // Input: digits = "2"
 // Output: ["a","b","c"]
- 
+
 
 // Constraints:
 
 // 0 <= digits.length <= 4
 // digits[i] is a digit in the range ['2', '9'].
 
-var letterCombinations = function(digits) {
-    if(digits.length === 0) return []
+var letterCombinations = function (digits) {
+    if (digits.length === 0) return []
     //Example [2, 3] <=> ['abc' , 'def']
     // => a + 'def'
     //          => a+d
@@ -387,20 +387,20 @@ var letterCombinations = function(digits) {
     //          => c+e
     //          => c+f
 
-    let letters = ["_", "_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"] 
+    let letters = ["_", "_", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"]
     let res = []
     combinator([], digits)
     return res
 
-    function combinator(inProg, workingArr){
-        if(workingArr.length === 0){
+    function combinator(inProg, workingArr) {
+        if (workingArr.length === 0) {
             res.push(inProg.join(''))
             return
         }
         let curD = workingArr[0]
         let arrLetters = letters[+curD].split('')
 
-        for(let letter of arrLetters){
+        for (let letter of arrLetters) {
             combinator([...inProg, letter], workingArr.slice(1))
         }
     }
@@ -409,3 +409,195 @@ var letterCombinations = function(digits) {
 // console.log(letterCombinations("23"));
 
 //===============================================
+// https://leetcode.com/problems/4sum/
+// Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+// 0 <= a, b, c, d < n
+// a, b, c, and d are distinct.
+// nums[a] + nums[b] + nums[c] + nums[d] == target
+// You may return the answer in any order.
+
+
+
+// Example 1:
+
+// Input: nums = [1,0,-1,0,-2,2], target = 0
+// Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+// Example 2:
+
+// Input: nums = [2,2,2,2,2], target = 8
+// Output: [[2,2,2,2]]
+
+
+// Constraints:
+
+// 1 <= nums.length <= 200
+// -109 <= nums[i] <= 109
+// -109 <= target <= 109
+
+
+var fourSum = function (nums, target) {
+    //Same implementation as threeSum except we will have a double nested for loop instead of a simple
+    //Sort
+    //Double nested for loop
+    //Fix left and right
+    nums.sort((a, b) => a - b)
+
+    let res = []
+
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            let left = j + 1
+            let right = nums.length - 1
+            while (left < right) {
+                let sum = nums[i] + nums[j] + nums[left] + nums[right]
+
+                if (sum === target) {
+                    let sanitized = [nums[i], nums[j], nums[left], nums[right]].sort((a, b) => a - b).join(':')
+                    //Check if already exists
+                    if (!res.includes(sanitized)) {
+                        res.push(sanitized)
+                    }
+                    left++
+                    right--
+                } else if (sum < target) {
+                    left++
+                } else if (sum > target) {
+                    right--
+                }
+            }
+        }
+    }
+
+    return res.map(quad => quad.split(':').map(c => +c))
+};
+
+// console.log(fourSum([1,0,-1,0,-2,2], 0)) // [ [ -2, -1, 1, 2 ], [ -2, 0, 0, 2 ], [ -1, 0, 0, 1 ] ]
+// console.log(fourSum([2,2,2,2,2], 8)) //[ [ 2, 2, 2, 2 ] ]
+
+//=====================================
+//NSum
+//Find N number such as their sum is equal to target
+//We assume there is at least one solution, undefined will be returned otherwise
+
+function nSum(nums, target, n) {
+    nums.sort((a,b) => a-b)
+    let res
+    find([], nums, target, n)
+    return res
+
+    function find(inProgress, workingArr, target, n) {
+        if(res){ //if we have found a res, don't bother continuing, otherwise the function would return the last possible res
+            return
+        }
+
+        if (n === 2) {
+            //the base case is a sum 2
+            if(twoSum(workingArr, target) !== null){
+                // console.log(inProgress, workingArr, target, n);
+                res = inProgress.concat(twoSum(workingArr, target))
+            }
+            return
+        }
+
+        //Fixing one value until n reaches 2, adding the fixed to inProgress, removing the fixed to workingArr, recursively call the growing inProgress and the shriking workingArr
+        for(let j=0 ; j<workingArr.length ; j++){
+            let curr = workingArr[j]
+            let newInProgress = inProgress.slice()
+            newInProgress.push(curr)
+            let newWorkingArr = workingArr.slice()
+            newWorkingArr.splice(j, 1)
+            // console.log(j, newInProgress, newWorkingArr, target-curr, n-1);
+            find(newInProgress, newWorkingArr, target-curr, n-1)
+        }
+    }
+
+
+
+    function twoSum(nums, target) {
+        let left = 0
+        let right = nums.length-1
+        while(left<right){
+            let sum = nums[left] + nums[right]
+
+            if (sum === target) {
+                return [nums[left], nums[right]]
+            } else if (sum < target) {
+                left++
+            } else if (sum > target) {
+                right--
+            }
+        }
+        return null
+    };
+}
+
+// console.log(nSum([1,0,-1,0,-2,2], 0, 4)) // [ -2, -1, 1, 2 ] || [ -2, 0, 0, 2 ] || [ -1, 0, 0, 1 ]
+// console.log(nSum([2,2,2,2,2], 8, 4)) //[ 2, 2, 2, 2 ]
+// console.log(nSum([2,2,2,2,2], 10, 5)) //[ 2, 2, 2, 2, 2 ]
+
+//===========================================
+//nSumAll
+//Find all N number such as their sum is equal to target
+function nSumAll(nums, target, n) {
+    nums.sort((a,b) => a-b)
+    let res = []
+    find([], nums, target, n)
+    return res.map(quad => quad.split(':').map(c => +c))
+
+    function find(inProgress, workingArr, target, n) {
+        if (n === 2) {
+            // console.log(inProgress, workingArr, target, n, twoSum(workingArr, target));
+            //the base case is a sum 2
+            if(twoSum(workingArr, target) !== null){
+                twoSum(workingArr, target).forEach(couple => {
+                    let sanitized = inProgress.concat(couple).sort((a, b) => a - b).join(':')
+                    //Check if already exists
+                    if (!res.includes(sanitized)) {
+                        res.push(sanitized)
+                    }
+                })
+            }
+            return
+        }
+
+        //Fixing one value until n reaches 2, adding the fixed to inProgress, removing the fixed to workingArr, recursively call the growing inProgress and the shriking workingArr
+        for(let j=0 ; j<workingArr.length ; j++){
+            let curr = workingArr[j]
+            let newInProgress = inProgress.slice()
+            newInProgress.push(curr)
+            let newWorkingArr = workingArr.slice()
+            newWorkingArr.splice(j, 1)
+            // console.log(j, newInProgress, newWorkingArr, target-curr, n-1);
+            find(newInProgress, newWorkingArr, target-curr, n-1)
+        }
+    }
+
+
+    //For a given inProgress, find all couple that sums to sum, return null if none satisfies
+    function twoSum(nums, target){
+        let res = []
+        let left = 0
+        let right = nums.length-1
+        while(left<right){
+            let sum = nums[left] + nums[right]
+
+            if (sum === target) {
+                res.push([nums[left], nums[right]])
+                left++
+                right--
+            } else if (sum < target) {
+                left++
+            } else if (sum > target) {
+                right--
+            }
+        }
+        return res.length === 0 ? null : res
+    };
+    //console.log(twoSum([ -3, -1, 0, 1, 2, 3 ], 2));
+}
+
+// console.log(nSumAll([1,0,-1,0,-2,2], 0, 4)) // [ [ -2, -1, 1, 2 ], [ -2, 0, 0, 2 ], [ -1, 0, 0, 1 ] ]
+// console.log(nSumAll([-3,-2,-1,0,0,1,2,3], 0, 4)) // [ [-3,-2,2,3],[-3,-1,1,3],[-3,0,0,3],[-3,0,1,2],[-2,-1,0,3],[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1] ]
+
+//===========================================
