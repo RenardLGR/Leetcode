@@ -72,3 +72,83 @@ var removeNthFromEnd = function(head, n) {
 };
 
 //=========================================
+// https://leetcode.com/problems/valid-parentheses/
+// Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+// An input string is valid if:
+
+// Open brackets must be closed by the same type of brackets.
+// Open brackets must be closed in the correct order.
+// Every close bracket has a corresponding open bracket of the same type.
+ 
+
+// Example 1:
+
+// Input: s = "()"
+// Output: true
+// Example 2:
+
+// Input: s = "()[]{}"
+// Output: true
+// Example 3:
+
+// Input: s = "(]"
+// Output: false
+ 
+
+// Constraints:
+
+// 1 <= s.length <= 104
+// s consists of parentheses only '()[]{}'.
+
+var isValidParantheses = function(s) {
+    //replace every '()', '[]' and '{}' with an empty string, repeat until done. If the string is till not empty return false
+
+    if(s === '') return false
+
+    let pattern = /\(\)|\[\]|\{\}/g
+    let isDone = false
+    while(!isDone){
+        isDone = true
+        if(pattern.test(s)){
+            s = s.replace(pattern, '')
+            isDone = false
+        }
+    }
+
+    return s === ""
+};
+
+// console.log(isValidParantheses("{[()]}")); //true
+// console.log(isValidParantheses("()(())")); //true
+// console.log(isValidParantheses("[(])")); //false
+
+function isValidParanthesesBis(s){
+    //This could be viewed as stack, last in first out with an opening parentheses adding to the stack. 
+    let mirror = {
+        ')' : '(',
+        ']' : '[',
+        '}' : '{'
+    }
+    let stack = []
+
+    for(let i=0 ; i<s.length ; i++){
+        if( '([{'.includes(s[i]) ){
+            stack.push(s[i])
+        }else{
+            if(stack[stack.length-1] === mirror[s[i]]){
+                stack.pop()
+            }else{
+                return false
+            }
+        }
+    }
+
+    return stack.length === 0
+}
+
+// console.log(isValidParanthesesBis("{[()]}")); //true
+// console.log(isValidParanthesesBis("()(())")); //true
+// console.log(isValidParanthesesBis("[(])")); //false
+
+//=========================================
