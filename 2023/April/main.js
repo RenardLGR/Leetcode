@@ -152,3 +152,100 @@ function isValidParanthesesBis(s){
 // console.log(isValidParanthesesBis("[(])")); //false
 
 //=========================================
+// https://leetcode.com/problems/merge-two-sorted-lists/
+// You are given the heads of two sorted linked lists list1 and list2.
+
+// Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.
+
+// Return the head of the merged linked list.
+
+ 
+
+// Example 1:
+// 1 -> 2 -> 3
+// 1 -> 3 -> 4
+// => 1 -> 1 -> 2 -> 3 -> 4 -> 4
+
+
+// Input: list1 = [1,2,4], list2 = [1,3,4]
+// Output: [1,1,2,3,4,4]
+// Example 2:
+
+// Input: list1 = [], list2 = []
+// Output: []
+// Example 3:
+
+// Input: list1 = [], list2 = [0]
+// Output: [0]
+ 
+
+// Constraints:
+
+// The number of nodes in both lists is in the range [0, 50].
+// -100 <= Node.val <= 100
+// Both list1 and list2 are sorted in non-decreasing order.
+
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+
+//Iterative approach
+var mergeTwoLists = function(list1, list2) {
+    //Edge cases
+    if(list1 == null && list2 == null) return null
+    if(list1 == null) return list2
+    if(list2 == null) return list1
+
+    let curr1 = list1
+    let curr2 = list2
+    let mergedHead = {val: -1, next: null} //first node ditched anyway
+    let curr = mergedHead
+
+    //While both list are defined
+    while(curr1 && curr2){
+        if(curr1.val > curr2.val){
+            curr.next = curr2
+            curr2 = curr2.next
+        }else{
+            curr.next = curr1
+            curr1 = curr1.next
+        }
+        curr = curr.next
+    }
+
+    //Append the last element(s)
+    if(curr1){
+        curr.next = curr1
+    }else{
+        curr.next = curr2
+    }
+    //curr.next = l1 || l2
+
+    return mergedHead.next
+}
+
+//Recursive approach
+var mergeTwoListsBis = function(list1, list2) {
+    //Recursive base cases
+    if(list1 == null && list2 == null) return null
+    if(list1 == null) return list2
+    if(list2 == null) return list1
+
+    let head = {val: -1, next: null}
+    if(list1.val > list2.val){
+        head.val = list2.val
+        list2 = list2.next
+    }else{
+        head.val = list1.val
+        list1 = list1.next
+    }
+
+    head.next = mergeTwoListsBis(list1, list2)
+    return head
+}
+
+//===============================================
