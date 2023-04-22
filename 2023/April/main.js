@@ -249,3 +249,46 @@ var mergeTwoListsBis = function(list1, list2) {
 }
 
 //===============================================
+// https://leetcode.com/problems/generate-parentheses/
+// Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+// Example 1:
+
+// Input: n = 3
+// Output: ["((()))","(()())","(())()","()(())","()()()"]
+// Example 2:
+
+// Input: n = 1
+// Output: ["()"]
+ 
+
+// Constraints:
+
+// 1 <= n <= 8
+
+var generateParenthesis = function(n) {
+    //We can easily write every combination of length n*2 of '(' and ')'
+    //By being more cautious with how we build our strings of parantheses, we won't need much filtering :
+    //Limit the number of left parantheses to n
+    //Add a right prantheses only if there are more left parantheses than right ones
+    let res = []
+    generateComb(0, 0, '')
+    return res
+
+    function generateComb(leftN, rightN, inProgress){
+        if(inProgress.length === n*2){ //base case
+            res.push(inProgress)
+            return
+        }
+        if(leftN < n){
+            generateComb(leftN+1, rightN, inProgress+'(')
+        }
+        if(rightN < leftN){
+            generateComb(leftN, rightN+1, inProgress+')')
+        }
+    }
+}
+
+// console.log(generateParenthesis(3));
+
+//================================================
