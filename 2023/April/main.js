@@ -292,3 +292,74 @@ var generateParenthesis = function(n) {
 // console.log(generateParenthesis(3));
 
 //================================================
+// https://leetcode.com/problems/merge-k-sorted-lists/
+// You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+// Merge all the linked-lists into one sorted linked-list and return it.
+
+ 
+
+// Example 1:
+
+// Input: lists = [[1,4,5],[1,3,4],[2,6]]
+// Output: [1,1,2,3,4,4,5,6]
+// Explanation: The linked-lists are:
+// [
+//   1->4->5,
+//   1->3->4,
+//   2->6
+// ]
+// merging them into one sorted list:
+// 1->1->2->3->4->4->5->6
+// Example 2:
+
+// Input: lists = []
+// Output: []
+// Example 3:
+
+// Input: lists = [[]]
+// Output: []
+ 
+
+// Constraints:
+
+// k == lists.length
+// 0 <= k <= 104
+// 0 <= lists[i].length <= 500
+// -104 <= lists[i][j] <= 104
+// lists[i] is sorted in ascending order.
+// The sum of lists[i].length will not exceed 104.
+
+var mergeKLists = function(lists) {
+    //Typical while is not done loop, loop through all lists, take the samllest
+    let head = {val: -1, next: null}
+    let curr = head
+    let isDone = false
+    while(!isDone){
+        isDone = true
+        let smallestNode = null
+        let smallestNodeIndex
+        for(let i=0 ; i<lists.length ; i++){
+            if(lists[i] !== null){
+                if(!smallestNode && lists[i].val!==undefined){
+                    //If smallest node is not yet defined and lists[i] exists
+                    smallestNode = lists[i]
+                    smallestNodeIndex = i
+                }else if(smallestNode && lists[i].val < smallestNode.val){
+                    //If we find a node smaller than previously found node
+                    smallestNode = lists[i]
+                    smallestNodeIndex = i
+                }
+            }
+        }
+        if(smallestNode){
+            //If we found a smallest node after our looping
+            isDone = false
+            curr.next = smallestNode
+            curr = curr.next
+            lists[smallestNodeIndex] = lists[smallestNodeIndex].next
+        }
+    }
+
+    return head.next
+}
