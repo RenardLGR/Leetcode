@@ -331,7 +331,7 @@ var generateParenthesis = function(n) {
 // The sum of lists[i].length will not exceed 104.
 
 var mergeKLists = function(lists) {
-    //Typical while is not done loop, loop through all lists, take the samllest
+    //Typical while is not done loop, loop through all lists, take the smallest
     let head = {val: -1, next: null}
     let curr = head
     let isDone = false
@@ -362,4 +362,45 @@ var mergeKLists = function(lists) {
     }
 
     return head.next
+}
+
+
+// Merging 0th list with 1st, the result with 2nd, and so on
+var mergeKListsBis = function(lists) {
+    //Merging 0th list with 1st, the result (our global list) with 2nd, and so on
+    let resHead = null //our global list
+
+    for(let i=0 ; i<lists.length ; i++){
+        let tempHead = {val: -1, next: null}
+        let tempCur = tempHead //our merge between two lists pointer
+        let curr1 = resHead //our global list pointer
+        let curr2 = lists[i] //our current list pointer
+
+        //While one of the two lists still has element
+        while(curr1 || curr2){
+            //Check if both have alements, if so append the samllest element
+            while(curr1 && curr2){
+                if(curr1.val < curr2.val){
+                    tempCur.next = curr1
+                    curr1 = curr1.next
+                    tempCur = tempCur.next
+                }else{
+                    tempCur.next = curr2
+                    curr2 = curr2.next
+                    tempCur = tempCur.next
+                }
+            }
+            //When one of the lists empties
+            if(curr1){
+                tempCur.next = curr1
+                break
+            }else{
+                tempCur.next = curr2
+                break
+            }
+        }
+
+        resHead = tempHead.next
+    }
+    return resHead
 }
