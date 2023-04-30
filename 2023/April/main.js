@@ -378,7 +378,7 @@ var mergeKListsBis = function(lists) {
 
         //While one of the two lists still has element
         while(curr1 || curr2){
-            //Check if both have alements, if so append the samllest element
+            //Check if both have alements, if so append the smallest element
             while(curr1 && curr2){
                 if(curr1.val < curr2.val){
                     tempCur.next = curr1
@@ -404,3 +404,44 @@ var mergeKListsBis = function(lists) {
     }
     return resHead
 }
+
+
+//Merge 0 with 1, 2 with 3, the result of both together, etc.
+var mergeKListsTer = function(lists) {
+    //Merge 0 with 1, 2 with 3, the result of both together, etc. Recursive or divide&conquer approach.
+    if(!lists || lists.length===0){
+        return null
+    }
+    if(lists.length === 1){
+        return lists[0]
+    }
+    let middle = Math.floor(lists.length/2)
+    let left = lists.slice(0, middle)
+    let right = lists.slice(middle)
+    let mergedLeft = mergeKListsTer(left)
+    let mergedRight = mergeKListsTer(right)
+
+    return mergeTwoLists(mergedLeft, mergedRight)
+
+    //Merge two lists, recursive approach
+    function mergeTwoLists(list1, list2) {
+        //Recursive base cases
+        if(list1 == null && list2 == null) return null
+        if(list1 == null) return list2
+        if(list2 == null) return list1
+    
+        let head = {val: -1, next: null}
+        if(list1.val > list2.val){
+            head.val = list2.val
+            list2 = list2.next
+        }else{
+            head.val = list1.val
+            list1 = list1.next
+        }
+    
+        head.next = mergeTwoLists(list1, list2)
+        return head
+    }
+}
+
+//===================================================
