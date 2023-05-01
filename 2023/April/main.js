@@ -445,3 +445,62 @@ var mergeKListsTer = function(lists) {
 }
 
 //===================================================
+// https://leetcode.com/problems/swap-nodes-in-pairs/
+// Given a linked list, swap every two adjacent nodes and return its head. You must solve the problem without modifying the values in the list's nodes (i.e., only nodes themselves may be changed.)
+
+// Example 1:
+// Input: head = [1,2,3,4]
+// Output: [2,1,4,3]
+
+// Example 2:
+// Input: head = []
+// Output: []
+
+// Example 3:
+// Input: head = [1]
+// Output: [1]
+
+// Constraints:
+// The number of nodes in the list is in the range [0, 100].
+// 0 <= Node.val <= 100
+
+var swapPairs = function(head) {
+    if(!head){ //null input edge case
+        return null
+    }
+
+    if(!head.next){ //one node-long list node edge case
+        return head
+    }
+
+    let returnHead = {value:null, next:null}
+    let curr = returnHead
+    let slow = head
+    let fast = head
+
+    //Fast is one step ahead
+    fast = fast.next
+
+    while(fast){
+        curr.next = fast
+        curr = curr.next
+
+        // curr.next = slow
+        // curr = curr.next
+
+        //Move one step
+        fast = fast.next
+        slow = slow.next
+        //Move second step if possible, otherwise while() ends
+        if(fast){
+            fast = fast.next
+            slow = slow.next
+        }
+    }
+
+    return returnHead.next
+};
+
+let nodeListHead = {val:1, next:{val:2, next:{val:3, next:{val:4, next:null}}}}
+
+console.log(swapPairs(nodeListHead));
