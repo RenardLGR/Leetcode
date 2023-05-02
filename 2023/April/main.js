@@ -465,42 +465,36 @@ var mergeKListsTer = function(lists) {
 // 0 <= Node.val <= 100
 
 var swapPairs = function(head) {
-    if(!head){ //null input edge case
-        return null
+    if(!head || !head.next) {
+        return head;
     }
-
-    if(!head.next){ //one node-long list node edge case
-        return head
-    }
-
-    let returnHead = {value:null, next:null}
-    let curr = returnHead
-    let slow = head
-    let fast = head
-
-    //Fast is one step ahead
-    fast = fast.next
-
-    while(fast){
-        curr.next = fast
-        curr = curr.next
-
-        // curr.next = slow
-        // curr = curr.next
-
-        //Move one step
-        fast = fast.next
-        slow = slow.next
-        //Move second step if possible, otherwise while() ends
-        if(fast){
-            fast = fast.next
-            slow = slow.next
+    let curr = head,
+        prev = null,
+        pair = null;
+    
+	// swapping pairs in the list
+	// if number of nodes are odd, then the last odd node won't be considered in the loop
+    while(curr && curr.next) {
+        pair = curr.next;
+        curr.next = pair.next;
+		
+		// if prev is not null, that means a pair is already swapped, so we need to set the next pointer value for that
+		// else this is the first pair and we set the new head value
+        if(prev) {
+            prev.next = pair;
+        } else {
+            head = pair;
         }
+		
+        pair.next = curr;
+        prev = curr;
+        curr = curr.next;
     }
+    return head;
+}
 
-    return returnHead.next
-};
+let nodeListHead1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:null}}}}
+let nodeListHead2 = {val:1, next:null}
 
-let nodeListHead = {val:1, next:{val:2, next:{val:3, next:{val:4, next:null}}}}
-
-console.log(swapPairs(nodeListHead));
+// console.log(swapPairs(nodeListHead1));
+// console.log(swapPairs(nodeListHead2));
