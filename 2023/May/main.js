@@ -70,7 +70,7 @@ var reverseKGroup = function(head, k) {
             pointer = pointer.next
         }
         if(isGroupReversed){
-            //Build the revse sub group
+            //Build the reverse sub group
             for(let i=0 ; i<k ; i++){
                 temp = curr.next
                 curr.next = subGroup
@@ -99,3 +99,57 @@ nodeListHead1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next
 // console.log(reverseKGroup(nodeListHead1, 2)) // [2, 1, 4, 3, 5]
 // console.log(reverseKGroup(nodeListHead1, 3)) // [3, 2, 1, 4, 5]
 
+//Similar idea, faster, we build two lists, append the reversed or non reversed as necessary
+
+function reverseKGroupBis(head, k){
+    // We build a reversed subGroup and a non reversed subGroup, if it is long enough we append it the reversed one. If not, append the remaining nodes
+    let curr = head
+    let temp = curr
+    let subGroup = null
+    let res = new ListNode(null)
+    let resHead = res
+
+    while(curr){
+        let subGroupLen = 0
+        //Non reversed subGroup
+        let inCaseSubGroupTooSmall = new ListNode(null)
+        let inCaseSubGroupTooSmallHead = inCaseSubGroupTooSmall
+        //Build the reverse sub group, as long as there are nodes
+        for(let i=0 ; i<k && temp ; i++){
+            //Build the non reversed
+            let tempNode = new ListNode(curr.val)
+            inCaseSubGroupTooSmall.next = tempNode
+            inCaseSubGroupTooSmall = inCaseSubGroupTooSmall.next
+            //Build the reversed
+            temp = curr.next
+            curr.next = subGroup
+            subGroup = curr
+            curr = temp
+            subGroupLen++
+        }
+
+        //If the subgroup has enough nodes
+        if(subGroupLen === k){
+            //append it
+            res.next = subGroup
+            subGroup = null
+            //move forward so the next append is at the right position
+            while(res.next){
+                res = res.next
+            }
+        }else{
+            //append the remaining nodes
+            res.next = inCaseSubGroupTooSmallHead.next
+            break
+        }
+    }
+
+    return resHead.next
+}
+
+nodeListHead1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}}
+// console.log(reverseKGroupBis(nodeListHead1, 5)) // [5, 4, 3, 2, 1]
+// console.log(reverseKGroupBis(nodeListHead1, 2)) // [2, 1, 4, 3, 5]
+// console.log(reverseKGroupBis(nodeListHead1, 3)) // [3, 2, 1, 4, 5]
+
+//=================================================
