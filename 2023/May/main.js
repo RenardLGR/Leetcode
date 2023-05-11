@@ -99,7 +99,7 @@ nodeListHead1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next
 // console.log(reverseKGroup(nodeListHead1, 2)) // [2, 1, 4, 3, 5]
 // console.log(reverseKGroup(nodeListHead1, 3)) // [3, 2, 1, 4, 5]
 
-//Similar idea, faster, we build two lists, append the reversed or non reversed as necessary
+//Similar idea, faster, we build two lists, append the reversed or non reversed as necessary. Issue is we are creating nodes with the contructor
 
 function reverseKGroupBis(head, k){
     // We build a reversed subGroup and a non reversed subGroup, if it is long enough we append it the reversed one. If not, append the remaining nodes
@@ -153,3 +153,93 @@ nodeListHead1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next
 // console.log(reverseKGroupBis(nodeListHead1, 3)) // [3, 2, 1, 4, 5]
 
 //=================================================
+// https://leetcode.com/problems/remove-duplicates-from-sorted-array/
+// Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. The relative order of the elements should be kept the same. Then return the number of unique elements in nums.
+
+// Consider the number of unique elements of nums to be k, to get accepted, you need to do the following things:
+
+// Change the array nums such that the first k elements of nums contain the unique elements in the order they were present in nums initially. The remaining elements of nums are not important as well as the size of nums.
+// Return k.
+// Custom Judge:
+
+// The judge will test your solution with the following code:
+
+// int[] nums = [...]; // Input array
+// int[] expectedNums = [...]; // The expected answer with correct length
+
+// int k = removeDuplicates(nums); // Calls your implementation
+
+// assert k == expectedNums.length;
+// for (int i = 0; i < k; i++) {
+//     assert nums[i] == expectedNums[i];
+// }
+// If all assertions pass, then your solution will be accepted.
+
+
+// Example 1:
+// Input: nums = [1,1,2]
+// Output: 2, nums = [1,2,_]
+// Explanation: Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively.
+// It does not matter what you leave beyond the returned k (hence they are underscores).
+
+// Example 2:
+// Input: nums = [0,0,1,1,1,2,2,3,3,4]
+// Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+// Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively.
+// It does not matter what you leave beyond the returned k (hence they are underscores).
+ 
+
+// Constraints:
+
+// 1 <= nums.length <= 3 * 104
+// -100 <= nums[i] <= 100
+// nums is sorted in non-decreasing order.
+
+var removeDuplicates = function(nums) {
+    //Three pointers :
+    //one is i and run through the array one by one
+    //one is start and points to a start of a sequence of numbers (so the first number that is equal to its successor)
+    //one is toReplace and points to a replacable number, so the first number that has the same value as his predecessor, it will from there increase by one each time we have a new duplicate
+    //And one boolean :
+    //one check sets the first replacable value if not found yet
+    //When a new number is found, replace it, set new start
+    //And we keep track of how many unique numbers we have with res
+    if(nums.length === 0){
+        return 0
+    }
+
+    let start = 0
+    let toReplace = -Infinity
+    let isFirstSpotInit = false
+    let res = 1 //how many unique numbers
+
+    for(let i=1 ; i<nums.length ; i++){
+        if(nums[i] === nums[start]){
+            //duplicate number
+            if(!isFirstSpotInit){
+                //initialize the first spot that can be replaced
+                isFirstSpotInit = true
+                toReplace = i
+            }
+        }else{
+            //if different numbers, sets a new start, make a replace
+            nums[toReplace] = nums[i]
+            toReplace++
+            res++
+            start = i
+        }
+    }
+
+    //console.log(nums);
+    return res
+}
+
+// console.log(removeDuplicates([1,1,2])); // 2, nums = [ 1, 2, 2 ]
+// console.log(removeDuplicates([1,1,1,1,1,1,2])); // 2, nums = [ 1, 2, 1 1, 1, 1, 2 ]
+// console.log(removeDuplicates([0,0,1,1,1,2,2,3,3,4])); // 5, nums = [0, 1, 2, 3, 4, 2, 2, 3, 3, 4]
+// console.log(removeDuplicates([0, 1, 2, 3, 4, 5])); // 6, nums = [ 0, 1, 2, 3, 4, 5, '-Infinity': 5 ]
+// console.log(removeDuplicates([1])); // 1, nums = [ 1 ]
+// console.log(removeDuplicates([1, 1])); // 1, nums = [ 1, 1 ]
+// console.log(removeDuplicates([1, 1, 1, 1, 1])); // 1, nums = [ 1, 1, 1, 1, 1 ]
+
+
