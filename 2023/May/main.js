@@ -235,11 +235,22 @@ var removeDuplicates = function(nums) {
 }
 
 // console.log(removeDuplicates([1,1,2])); // 2, nums = [ 1, 2, 2 ]
-// console.log(removeDuplicates([1,1,1,1,1,1,2])); // 2, nums = [ 1, 2, 1 1, 1, 1, 2 ]
+// console.log(removeDuplicates([1,1,1,1,1,1,2])); // 2, nums = [ 1, 2, 1, 1, 1, 1, 2 ]
 // console.log(removeDuplicates([0,0,1,1,1,2,2,3,3,4])); // 5, nums = [0, 1, 2, 3, 4, 2, 2, 3, 3, 4]
 // console.log(removeDuplicates([0, 1, 2, 3, 4, 5])); // 6, nums = [ 0, 1, 2, 3, 4, 5, '-Infinity': 5 ]
 // console.log(removeDuplicates([1])); // 1, nums = [ 1 ]
 // console.log(removeDuplicates([1, 1])); // 1, nums = [ 1, 1 ]
 // console.log(removeDuplicates([1, 1, 1, 1, 1])); // 1, nums = [ 1, 1, 1, 1, 1 ]
 
+function removeDuplicatesBis(nums){
+    let set = new Set(nums)
+    Array.from(set).forEach((el, idx)=>nums[idx]=el)
+    // console.log(nums)
+    return set.size
+}
 
+// console.log(removeDuplicatesBis([1,1,2]));
+// console.log(removeDuplicatesBis([0,0,1,1,1,2,2,3,3,4])); // 5, nums = [ 0, 1, 2, 3, 4 ]
+// console.log(removeDuplicatesBis([1, 1, 1, 1, 1])); // 1 nums = [1]
+
+//=========================================
