@@ -311,6 +311,7 @@ var removeElement = function(nums, val) {
             nums[toReplace] = nums[i]
             toReplace++
         }
+        //else toReplace is not increased, the next replace will hence take the spot of an unwated value
     }
 
     // console.log(nums)
@@ -319,4 +320,42 @@ var removeElement = function(nums, val) {
 
 // console.log(removeElement([3,2,2,3], 3)) // 2, nums = [2,2,_,_]
 // console.log(removeElement([0,1,2,2,3,0,4,2], 2)) // 5, nums = [0, 1, 3, 0, 4, _, _, _]
-console.log(removeElement([0,1,2,3,4,5], 6)) // 6, nums = [0,1,2,3,4,5]
+// console.log(removeElement([0,1,2,3,4,5], 6)) // 6, nums = [0,1,2,3,4,5]
+
+function removeElementBis(nums, val){
+    if(nums.length === 0){
+        return 0
+    }
+    //Two pointers:
+    //One left, at the start of the array
+    //One right, at the end of the array
+    //If nums[left] is equal to val, replace it with the first num[right] that is not equal to val and decrease right
+    //Do these switches until left and right meet, increase res as necessary
+
+    let left = 0
+    let right = nums.length-1
+    let res = 0
+    while(left<=right){
+        if(nums[left] !== val){
+            left++
+            res++
+        }else{
+            if(nums[right] !== val){
+                nums[left] = nums[right]
+                left++
+                right--
+                res++
+            }else{
+                right--
+            }
+        }
+    }
+
+    // console.log(nums);
+    return res
+}
+
+// console.log(removeElementBis([1,1,1,1,1,1], 1)); // 0 nums = [_,_,...]
+// console.log(removeElementBis([3,2,2,3], 3)); // 2, nums = [2,2,_,_]
+// console.log(removeElementBis([0,1,2,2,3,0,4,2], 2)); // 5, nums = [0, 1, 4, 0, 3, _, _, _]
+// console.log(removeElementBis([0,1,2,3,4,5], 6)); // 6, nums = [0,1,2,3,4,5]
