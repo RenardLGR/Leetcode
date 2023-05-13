@@ -359,3 +359,11 @@ function removeElementBis(nums, val){
 // console.log(removeElementBis([3,2,2,3], 3)); // 2, nums = [2,2,_,_]
 // console.log(removeElementBis([0,1,2,2,3,0,4,2], 2)); // 5, nums = [0, 1, 4, 0, 3, _, _, _]
 // console.log(removeElementBis([0,1,2,3,4,5], 6)); // 6, nums = [0,1,2,3,4,5]
+
+function removeElementTer(nums, val){
+    let filtered = nums.filter(el => el !== val)
+    filtered.forEach((el, idx) => nums[idx] = el)
+    return filtered.length
+}
+
+//=============================================
