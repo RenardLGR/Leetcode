@@ -474,7 +474,7 @@ var divide = function(dividend, divisor) {
 }
 
 // console.log(divide(10, 3)) // 3
-// console.log(divide(12, 3)) // 3
+// console.log(divide(12, 3)) // 4
 // console.log(divide(7, -3)) // -2
 // console.log(divide(1, 2)) // 0
 // console.log(divide(0, 2)) // 0
@@ -515,7 +515,73 @@ function divideBis(dividend, divisor){
 }
 
 // console.log(divideBis(10, 3)) // 3
-// console.log(divideBis(12, 3)) // 3
+// console.log(divideBis(12, 3)) // 4
 // console.log(divideBis(7, -3)) // -2
 // console.log(divideBis(1, 2)) // 0
 // console.log(divideBis(0, 2)) // 0
+
+//Works good, we can reiterate the doubling idea :
+
+function divideTer(dividend, divisor){
+    if(dividend === 0){
+        return 0
+    }
+    //Let's take for example 64/2, instead of increasing 0 by step of 2,2,2,2,..., we can increase 0 by step of 2,2,4,8,16,32,... ; we can then repeat this process
+    const retIsNegative = Math.sign(divisor) !== Math.sign(dividend)
+    dividend = Math.abs(dividend)
+    divisor = Math.abs(divisor)
+    let res = 0
+    let temp = 0 //you can view this value as the modulus
+
+    if(divisor > dividend){
+        return 0
+    }
+
+    while(temp+divisor <= dividend){
+        let multiple = 1
+        let value = divisor //local doubling value
+        while(value+value <= dividend-temp){
+            multiple += multiple
+            value += value
+        }
+        res += multiple
+        temp += value
+    }
+
+    if (res > ((2**31) - 1)) { //edge case
+        return retIsNegative ? -(2**31) : 2**31 - 1
+    }
+
+    return retIsNegative ? -res : res
+}
+
+// console.log(divideTer(10, 3)) // 3
+// console.log(divideTer(12, 3)) // 4
+// console.log(divideTer(7, -3)) // -2
+// console.log(divideTer(1, 2)) // 0
+// console.log(divideTer(0, 2)) // 0
+
+//Cleaner :
+
+function divideQuater(dividend, divisor){
+    const retIsNegative = Math.sign(divisor) !== Math.sign(dividend);
+    dividend = Math.abs(dividend)
+    divisor = Math.abs(divisor)
+    
+    let res = 0
+    while (divisor <= dividend) {
+        let value = divisor
+        let multiple = 1
+        while (value + value <= dividend) {
+            value += value
+            multiple += multiple
+        }
+        dividend = dividend - value
+        res += multiple
+    }
+    
+    if (res > ((2**31) - 1)) {
+        return retIsNegative ? -(2**31) : 2**31 - 1
+    }
+    return retIsNegative ? -res : res
+}
