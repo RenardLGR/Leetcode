@@ -666,3 +666,40 @@ var findSubstring = function(s, words) {
 // console.log(findSubstring("barfoofoobarthefoobarman", ["bar","foo","the"])); // [6,9,12]
 
 //Probably works but memory issue when too many words are given (the number of combinations is words.length! with ! being factorial)
+
+var findSubstringBis = function(s, words) {
+    //for each letters in s, check if the following letters of length words[0].length belongs to word, if so check if the following letters of length words[0].length belongs to word but is not one we've already seen
+
+    let l = words.join('').length
+    let singleWordL = words[0].length
+
+    let res = []
+
+    for(let i=0 ; i<=s.length-l ; i++){
+        let subString = s.slice(i, i+singleWordL)
+        if(words.includes(subString)){
+            let remaining = words.slice()
+            //check if all subsequent words make up a combination
+            for(let j=i ; j<j+l ; j=j+singleWordL){
+                subString = s.slice(j, j+singleWordL)
+                if(remaining.includes(subString)){
+                    remaining.splice(remaining.indexOf(subString), 1)
+                }else{
+                    break
+                }
+            }
+            //if indeed we had a combination
+            if(remaining.length === 0){
+                res.push(i)
+            }
+        }
+    }
+
+    return res
+};
+
+// console.log(findSubstringBis("barfoothefoobarman", ["foo","bar"])); // [0,9]
+// console.log(findSubstringBis("wordgoodgoodgoodbestword", ["word","good","best","word"])); // []
+// console.log(findSubstringBis("barfoofoobarthefoobarman", ["bar","foo","the"])); // [6,9,12]
+
+//It works with a decent time complexity
