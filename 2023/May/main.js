@@ -702,4 +702,45 @@ var findSubstringBis = function(s, words) {
 // console.log(findSubstringBis("wordgoodgoodgoodbestword", ["word","good","best","word"])); // []
 // console.log(findSubstringBis("barfoofoobarthefoobarman", ["bar","foo","the"])); // [6,9,12]
 
-//It works with a decent time complexity
+//It works with a decent time complexity, let's try with an object now:
+
+var findSubstringTer = function(s, words) {
+    //for each letters in s, check if the following letters of length words[0].length belongs to word, if so check if the following letters of length words[0].length belongs to word but is not one we've already seen
+
+    let l = words.join('').length
+    let singleWordL = words[0].length
+
+    let res = []
+
+    for(let i=0 ; i<=s.length-l ; i++){
+        let subString = s.slice(i, i+singleWordL)
+        if(words.includes(subString)){
+            //create frequencies
+            let remaining = words.reduce((acc, curr) => {
+                acc[curr] = (acc[curr] || 0) + 1
+                return acc
+            }, {})
+            //check if all subsequent words make up a combination
+            for(let j=i ; j<j+l ; j=j+singleWordL){
+                subString = s.slice(j, j+singleWordL)
+                if(remaining.hasOwnProperty(subString) && remaining[subString]>0){
+                    remaining[subString]--
+                }else{
+                    break
+                }
+            }
+            //if indeed we had a combination, i.e. every frequencies are back to zero
+            if(Object.values(remaining).every(el => el===0)){
+                res.push(i)
+            }
+        }
+    }
+
+    return res
+};
+
+// console.log(findSubstringTer("barfoothefoobarman", ["foo","bar"])); // [0,9]
+// console.log(findSubstringTer("wordgoodgoodgoodbestword", ["word","good","best","word"])); // []
+// console.log(findSubstringTer("barfoofoobarthefoobarman", ["bar","foo","the"])); // [6,9,12]
+
+//works with an even better time complexity
