@@ -153,8 +153,111 @@ var longestValidParentheses = function(s) {
     return res
 }
 
-console.log(longestValidParentheses("(()")); // 2
-console.log(longestValidParentheses(")()())")); // 4
+// console.log(longestValidParentheses("(()")); // 2
+// console.log(longestValidParentheses(")()())")); // 4
 
-//Works, somehow slow
+//Works, somehow slow, let's make it cleaner :
 
+function longestValidParenthesesBis(s){
+    //a valid result will start with an opening parentheses, let's start our search from that
+    //A valid set of parentheses will have the same number of opening and closing ones
+    //In other words, if '(' is +1 and ')' -1, we have a set once it goes back to zero, which can increase in size if we have other valid sets, but if it goes below 0, it won't be able to increase size
+    let res = 0
+
+    for(let i=0 ; i<s.length-res ; i++){
+        if(s[i] === '('){
+            let val = 1
+            for(let j=i+1 ; j<s.length ; j++){
+                steps++
+                val += (s[j] === '(') ? 1 : -1
+                if(val === 0){
+                    let len = j-i + 1
+                    res = (len > res) ? len : res
+                }
+                if(val < 0){
+                    i=j
+                    break
+                }
+            }
+        }
+    }
+
+    return res
+}
+
+// console.log(longestValidParenthesesBis("(()")); // 2
+// console.log(longestValidParenthesesBis(")()())")); // 4
+
+function longestValidParenthesesTer(s){
+    //a valid result will start with an opening parentheses, let's start our search from that
+    //A valid set of parentheses will have the same number of opening and closing ones
+    //In other words, if '(' is +1 and ')' -1, we have a set once it goes back to zero, which can increase in size if we have other valid sets, but if it goes below 0, it won't be able to increase size
+    let res = 0
+    let start = null
+    let left = 0
+    let right = 0
+
+    for(let i=0 ; i<s.length ; i++){
+        if(s[i] === '(' && start===null){
+            start = i
+        }
+        if(start !== null){
+            if(s[i] === '(') left++
+            if(s[i] === ')') right++
+
+            if(left - right < 0 && right>0){
+                
+            }
+            if(left - right === 0){
+                let len = i-start + 1
+                res = (len > res) ? len : res
+            }
+            if(left - right < 0){
+                start = null
+            }
+        }
+    }
+
+    console.log('length:', s.length, 'steps:', steps);
+    return res
+}
+
+console.log(longestValidParenthesesTer("(()")); // 2
+console.log(longestValidParenthesesTer(")()())")); // 4
+
+var longestValidParenthesesQuater = function(s) {
+    let steps = 0
+    let longest = 0
+    let stack=[-1]
+    
+    for(let i=0;i<s.length;i++){
+        steps++
+      let char = s[i]
+      
+      if(char === '('){
+        stack.push(i)
+        continue
+      }
+      
+      stack.pop()
+      if(!stack.length) stack.push(i)
+      else longest = Math.max((i - stack[stack.length-1]),longest)
+    }
+  
+    console.log('length:', s.length, 'steps:', steps);
+    return longest
+};
+
+// let parentheses = ''
+// for(let i=0 ; i<30000 ; i++){
+//     parentheses += Math.random() < 0.5 ? '(' : ')'
+// }
+// let start1 = Date.now()
+// console.log(longestValidParenthesesTer(parentheses));
+// let timeTaken1 = Date.now() - start1;
+// console.log("Total time taken : " + timeTaken1 + " milliseconds");
+
+// let start2 = Date.now()
+// console.log(longestValidParenthesesQuater(parentheses));
+// let timeTaken2 = Date.now() - start2;
+// console.log("Total time taken : " + timeTaken2 + " milliseconds");
