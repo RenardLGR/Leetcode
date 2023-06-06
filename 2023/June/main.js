@@ -39,7 +39,7 @@ var nextPermutation = function(nums) {
     //otherwise switch the last item where a[n-1] < a[n] with the smallest item that is strictly higher than a[n-1] and sort the remaining numbers increasingly
     //Example : [8, 9, 5, 7, 6, 4, 2]
     //the last item where a[n-1] < a[n] is a[n-1] = 5, we take the smallest item that is strictly higher than a[n-1] and after it, so 6 and sort the remaining numbers increasingly. So 5 is switched with 6 :
-    // [8, 9, 6, 7, 5, 4, 2] and now we need to sort the ramaining numbers after 6 :
+    // [8, 9, 6, 7, 5, 4, 2] and now we need to sort the remaining numbers after 6 :
     // [8, 9, 6, 2, 4, 5, 7]
 
     let lastSwitchIdx = null
@@ -94,3 +94,67 @@ var nextPermutation = function(nums) {
 // console.log(nextPermutation([9, 8, 5, 7, 6, 4, 3, 2, 1])); // [9, 8, 6, 1, 2, 3, 4, 5, 7]
 
 //Excellent time complexity, the replacement is also indeed made in place
+
+//============================================
+// https://leetcode.com/problems/longest-valid-parentheses/
+// Given a string containing just the characters '(' and ')', return the length of the longest valid (well-formed) parentheses 
+// substring
+
+// Example 1:
+// Input: s = "(()"
+// Output: 2
+// Explanation: The longest valid parentheses substring is "()".
+
+// Example 2:
+// Input: s = ")()())"
+// Output: 4
+// Explanation: The longest valid parentheses substring is "()()".
+
+// Example 3:
+// Input: s = ""
+// Output: 0
+ 
+
+// Constraints:
+
+// 0 <= s.length <= 3 * 104
+// s[i] is '(', or ')'.
+
+
+var longestValidParentheses = function(s) {
+    //a valid result will start with an opening parentheses, let's start our search from that
+    //A valid set of parentheses will have the same number of opening and closing ones
+    //In other words, if '(' is +1 and ')' -1, we have a set once it goes back to zero, which can increase in size if we have other valid sets, but if it goes below 0, it won't be able to increase size
+    let res = 0
+
+    for(let i=0 ; i<s.length ; i++){
+        if(s[i] === '('){
+            let val = 1
+            for(let j=i+1 ; j<s.length ; j++){
+                if(s[j] === '('){
+                    val++
+                }else if(s[j] === ')'){
+                    val--
+                }
+                if(val === 0){
+                    let len = j-i + 1
+                    if(len > res){
+                        res = len
+                    }
+                }
+                if(val < 0){
+                    i=j
+                    break
+                }
+            }
+        }
+    }
+
+    return res
+}
+
+console.log(longestValidParentheses("(()")); // 2
+console.log(longestValidParentheses(")()())")); // 4
+
+//Works, somehow slow
+
