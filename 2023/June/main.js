@@ -314,4 +314,53 @@ function searchRotatedSorted(nums, target){
 // console.log(searchRotatedSorted([1, 3], 2)); //-1
 // console.log(searchRotatedSorted([4,5,6,7,8,0,1,2], 3)) // -1
 
+//A bit cleaner :
+
+function searchRotatedSortedBis(nums, target){
+    //We'll cut nums in half, naturally, one half will be sorted and the other not
+    //At some point both are sorted when we cut right at the start of the pivot
+    //We'll find where of the two halves the target is and keep cutting the remaining half
+    let left = 0
+    let right = nums.length-1
+    while(right - left >= 0){
+        let middle = Math.floor((right + left)/2)
+        if(nums[middle] === target){
+            return middle
+        }
+
+        //left half is sorted
+        if(nums[left] <= nums[middle]){
+            //target is in the left half
+            if(nums[left] <= target && target <= nums[middle]){
+                right = middle - 1
+
+            //target is in the right half
+            }else{
+                left = middle + 1
+            }
+
+        //right half is sorted
+        }else{
+            //target is in the right half
+            if(nums[middle] <= target && target <= nums[right]){
+                left = middle + 1
+
+            //target is in the left side
+            }else{
+                right = middle - 1
+            }
+        }
+    }
+
+    return -1
+}
+
+// console.log(searchRotatedSortedBis([4,5,6,7,0,1,2], 0)); //4
+// console.log(searchRotatedSortedBis([4,5,6,7,0,1,2], 7)); //3
+// console.log(searchRotatedSortedBis([4,5,6,7,0,1,2], 3)); //-1
+// console.log(searchRotatedSortedBis([1], 0)); //-1
+// console.log(searchRotatedSortedBis([1], 1)); //0
+// console.log(searchRotatedSortedBis([1, 3], 2)); //-1
+// console.log(searchRotatedSortedBis([4,5,6,7,8,0,1,2], 3)) // -1
+
 //===========================================
