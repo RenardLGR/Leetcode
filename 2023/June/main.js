@@ -364,3 +364,119 @@ function searchRotatedSortedBis(nums, target){
 // console.log(searchRotatedSortedBis([4,5,6,7,8,0,1,2], 3)) // -1
 
 //===========================================
+// https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+// Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
+
+// If target is not found in the array, return [-1, -1].
+
+// You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+// Example 1:
+// Input: nums = [5,7,7,8,8,10], target = 8
+// Output: [3,4]
+
+// Example 2:
+// Input: nums = [5,7,7,8,8,10], target = 6
+// Output: [-1,-1]
+
+// Example 3:
+// Input: nums = [], target = 0
+// Output: [-1,-1]
+
+// Constraints:
+
+// 0 <= nums.length <= 105
+// -109 <= nums[i] <= 109
+// nums is a non-decreasing array.
+// -109 <= target <= 109
+
+var searchRange = function(nums, target) {
+    //Best I can do is n/2
+    let min = 0
+    let max = nums.length - 1
+    while(max >= min){
+        if(nums[min] === target && nums[max] === target){
+            return [min, max]
+        }
+        if(nums[min] !== target) min++
+        if(nums[max] !== target) max--
+    }
+    return [-1, -1]
+}
+
+// console.log(searchRange([5,7,7,8,8,10], 8)); // [3,4]
+
+var searchRangeBis = function(nums, target) {
+    //First search for a value === target,
+    //Then try find the start of it and the end of it 
+    let left = 0
+    let right = nums.length-1
+    let inRange = null
+    //search if target is in nums
+    while(right >= left){
+        let middle = Math.floor((left+right)/2)
+        if(nums[middle] === target){
+            inRange = middle
+            break
+        }
+        if (nums[middle] < target) {
+            left = middle + 1
+        } else {
+            right = middle - 1
+        }
+    }
+
+    console.log(inRange);
+
+    //target is in nums, search for its start and end
+    if(inRange){
+        let start = null
+        let end = null
+        //find start
+        left = 0
+        right = inRange
+        while(right >= left){
+            let middle = Math.floor((left+right)/2)
+            //The start will be the element where nums[start - 1] < target && nums[start] === target
+            if(nums[middle - 1] < target && nums[middle] === target){
+                start = middle
+                break
+            }
+            if (nums[middle] < target) {
+                left = middle + 1
+            } else {
+                right = middle - 1
+            }
+        }
+        //if the start has not been found, it means the whole array is made of target
+        start = 0
+
+        //find end
+        left = inRange
+        right = nums.length
+        while(right >= left){
+            let middle = Math.floor((left+right)/2)
+            //The end will be the element where nums[end + 1] > target && nums[end] === target
+            if(nums[middle + 1] > target && nums[middle] === target){
+                end = middle
+                break
+            }
+            if (nums[middle] > target) {
+                right = middle - 1
+            } else {
+                left = middle + 1
+            }
+        }
+        //if the end has not been found, it means the whole array is made of target
+        end = nums.length
+        return [start, end]
+
+    //target is not in nums
+    }else{
+        return [-1,-1]
+    }
+}
+
+console.log(searchRangeBis([5,7,7,8,8,10], 8)); // [3,4]
