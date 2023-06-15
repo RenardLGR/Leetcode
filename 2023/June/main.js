@@ -408,11 +408,12 @@ var searchRange = function(nums, target) {
 
 // console.log(searchRange([5,7,7,8,8,10], 8)); // [3,4]
 
+
 var searchRangeBis = function(nums, target) {
     //First search for a value === target,
     //Then try find the start of it and the end of it 
     let left = 0
-    let right = nums.length-1
+    let right = nums.length - 1
     let inRange = null
     //search if target is in nums
     while(right >= left){
@@ -428,10 +429,8 @@ var searchRangeBis = function(nums, target) {
         }
     }
 
-    console.log(inRange);
-
     //target is in nums, search for its start and end
-    if(inRange){
+    if(inRange !== null){
         let start = null
         let end = null
         //find start
@@ -451,7 +450,9 @@ var searchRangeBis = function(nums, target) {
             }
         }
         //if the start has not been found, it means the whole array is made of target
-        start = 0
+        if(start === null){
+            start = 0
+        }
 
         //find end
         left = inRange
@@ -470,7 +471,9 @@ var searchRangeBis = function(nums, target) {
             }
         }
         //if the end has not been found, it means the whole array is made of target
-        end = nums.length
+        if(end === null){
+            end = nums.length - 1
+        }
         return [start, end]
 
     //target is not in nums
@@ -479,4 +482,7 @@ var searchRangeBis = function(nums, target) {
     }
 }
 
-console.log(searchRangeBis([5,7,7,8,8,10], 8)); // [3,4]
+// console.log(searchRangeBis([5,7,7,8,8,10], 8)); // [3,4]
+// console.log(searchRangeBis([1], 1)); // [0,0]
+
+//It works, now let's try all in one step :
