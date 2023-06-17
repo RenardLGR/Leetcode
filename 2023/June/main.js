@@ -486,3 +486,55 @@ var searchRangeBis = function(nums, target) {
 // console.log(searchRangeBis([1], 1)); // [0,0]
 
 //It works, now let's try all in one step :
+
+var searchRangeTer = function(nums, target) {
+    //Take 4 values, binary search until I find the start and the end
+    let start = null // our result
+    let end = null // our result
+    //our start range that we will binary search
+    let startLeft = 0
+    let startRight = nums.length - 1
+    //our end range that we will binary search
+    let endLeft = 0
+    let endRight = nums.length - 1
+
+    while(startRight>=startLeft || endRight>=endLeft){
+        let startMiddle = Math.floor((startLeft + startRight) / 2)
+        let endMiddle = Math.floor((endLeft + endRight) / 2)
+
+        //Binary search the start
+        //The start will be the element where nums[start - 1] < target && nums[start] === target OR nums[0] === target
+        if((nums[startMiddle - 1] < target && nums[startMiddle] === target) || (nums[startMiddle] === target && startMiddle === 0)){
+            start = startMiddle
+        }
+        if (nums[startMiddle] < target) {
+            startLeft = startMiddle + 1
+        } else {
+            startRight = startMiddle - 1
+        }
+
+        //Binary search the end
+        //The end will be the element where nums[end + 1] > target && nums[end] === target OR nums[nums.length-1] === target
+        if((nums[endMiddle + 1] > target && nums[endMiddle] === target) || (endMiddle === nums.length-1 && nums[endMiddle] === target)){
+            end = endMiddle
+        }
+        if (nums[endMiddle] > target) {
+            endRight = endMiddle - 1
+        } else {
+            endLeft = endMiddle + 1
+        }
+
+        //return if we have our result
+        if(start !== null && end !== null){
+            return [start, end]
+        }
+    }
+
+    return [-1, -1]
+}
+
+// console.log(searchRangeTer([5,7,7,8,8,10], 8)); // [3,4]
+// console.log(searchRangeTer([1], 1)); // [0,0]
+// console.log(searchRangeTer([5,5,5,5], 5)); // [0,3]
+
+//It works.
