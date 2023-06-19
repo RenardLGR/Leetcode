@@ -538,3 +538,75 @@ var searchRangeTer = function(nums, target) {
 // console.log(searchRangeTer([5,5,5,5], 5)); // [0,3]
 
 //It works.
+
+//===============================================
+// https://leetcode.com/problems/search-insert-position/
+// Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+// You must write an algorithm with O(log n) runtime complexity.
+
+// Example 1:
+// Input: nums = [1,3,5,6], target = 5
+// Output: 2
+
+// Example 2:
+// Input: nums = [1,3,5,6], target = 2
+// Output: 1
+
+// Example 3:
+// Input: nums = [1,3,5,6], target = 7
+// Output: 4
+ 
+
+// Constraints:
+
+// 1 <= nums.length <= 104
+// -104 <= nums[i] <= 104
+// nums contains distinct values sorted in ascending order.
+// -104 <= target <= 104
+
+//That is just binary search
+
+var searchInsert = function(nums, target) {
+    //We have 4 possibilities : 
+    // - the target is before all nums, return 0
+    // - the target is after all nums, return nums.length
+    // - nums contains target, return binarySearch
+    // - the target is in between two elements of nums, return middle + 1 after the binary search ends
+    let left = 0
+    let right = nums.length - 1
+
+    if(nums[left] > target){
+        return 0
+    }
+    if(nums[right] < target){
+        return nums.length
+    }
+
+    //binary search
+    while(left <= right){
+        let middle = Math.floor((left+right)/2)
+        if(nums[middle] === target){
+            //case nums contains target
+            return middle
+        }
+
+        if(nums[middle] > target){
+            right = middle - 1
+        }else{
+            left = middle + 1
+        }
+    }
+
+    //case target would be in between two elements of nums
+    return Math.floor((left+right)/2) + 1
+}
+
+// console.log(searchInsert([1,3,5,6], 5)) // 2
+// console.log(searchInsert([1,3,5,6], 2)) // 1
+// console.log(searchInsert([1,3,5,6], 7)) // 4
+// console.log(searchInsert([6], 2)) // 0
+// console.log(searchInsert([6], 7)) // 1
+// console.log(searchInsert([6, 7, 8], 2)) // 0
+
+//Works like a charm
