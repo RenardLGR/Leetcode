@@ -745,3 +745,58 @@ var isValidSudoku = function(board) {
 
 //Can we do O(n²) ?
 
+var isValidSudokuBis = function(board) {
+    //check one by one, rows, cols and 3x3 squares
+
+    //check rows
+    for(let i=0 ; i<9 ; i++){
+        let seen = {} //keep track of numbers seen in the row
+        for(let j=0 ; j<9 ; j++){
+            let char = board[i][j]
+            if(char !== '.'){
+                if(seen[char]){
+                    return false
+                }else{
+                    seen[char] = true
+                }
+            }
+        }
+    }
+
+    //check cols
+    for(let i=0 ; i<9 ; i++){
+        let seen = {} //keep track of numbers seen in the col
+        for(let j=0 ; j<9 ; j++){
+            let char = board[j][i]
+            if(char !== '.'){
+                if(seen[char]){
+                    return false
+                }else{
+                    seen[char] = true
+                }
+            }
+        }
+    }
+
+    //check 3x3 squares
+    for(let line=0 ; line<9 ; line=line+3){
+        for(let square=0 ; square<3 ;square++){
+            let seen = {} //keep track of numbers seen in the square
+            for(let j=line ; j<line+3 ; j++){
+                for(let k=square*3 ; k<square*3+3 ; k++){
+                    let char = board[j][k]
+                    if(char !== '.'){
+                        if(seen[char]){
+                            return false
+                        }else{
+                            seen[char] = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true
+}
+
