@@ -746,53 +746,24 @@ var isValidSudoku = function(board) {
 //Can we do O(n²) ?
 
 var isValidSudokuBis = function(board) {
-    //check one by one, rows, cols and 3x3 squares
+    //for each i create a unique seenRow, seenCol and seenSquare
 
-    //check rows
     for(let i=0 ; i<9 ; i++){
-        let seen = {} //keep track of numbers seen in the row
+        let seenRow = {} //keep track of numbers seen in the row
+        let seenCol = {} //keep track of numbers seen in the col
+        let seenSquare = {} //keep track of numbers seen in the square, square are from top to bottom, left to right
         for(let j=0 ; j<9 ; j++){
-            let char = board[i][j]
-            if(char !== '.'){
-                if(seen[char]){
-                    return false
-                }else{
-                    seen[char] = true
-                }
-            }
-        }
-    }
+            let charRow = board[i][j]
+            let charCol = board[j][i]
+            let charSquare = board[Math.floor(i/3)*3 + Math.floor(j/3)][Math.floor(i%3)*3 + (j%3)]
+            //console.log(Math.floor(i/3)*3 + Math.floor(j/3) , Math.floor(i%3)*3 + (j%3));
 
-    //check cols
-    for(let i=0 ; i<9 ; i++){
-        let seen = {} //keep track of numbers seen in the col
-        for(let j=0 ; j<9 ; j++){
-            let char = board[j][i]
-            if(char !== '.'){
-                if(seen[char]){
-                    return false
-                }else{
-                    seen[char] = true
-                }
-            }
-        }
-    }
-
-    //check 3x3 squares
-    for(let line=0 ; line<9 ; line=line+3){
-        for(let square=0 ; square<3 ;square++){
-            let seen = {} //keep track of numbers seen in the square
-            for(let j=line ; j<line+3 ; j++){
-                for(let k=square*3 ; k<square*3+3 ; k++){
-                    let char = board[j][k]
-                    if(char !== '.'){
-                        if(seen[char]){
-                            return false
-                        }else{
-                            seen[char] = true
-                        }
-                    }
-                }
+            if((seenRow[charRow] && charRow!=='.') || (seenCol[charCol] && charCol!=='.') || (seenSquare[charSquare] && charSquare!=='.')){
+                return false
+            }else{
+                seenRow[charRow] = true
+                seenCol[charCol] = true
+                seenSquare[charSquare] = true
             }
         }
     }
@@ -800,3 +771,36 @@ var isValidSudokuBis = function(board) {
     return true
 }
 
+// console.log(isValidSudokuBis([["5","3",".",".","7",".",".",".","."]
+// ,["6",".",".","1","9","5",".",".","."]
+// ,[".","9","8",".",".",".",".","6","."]
+// ,["8",".",".",".","6",".",".",".","3"]
+// ,["4",".",".","8",".","3",".",".","1"]
+// ,["7",".",".",".","2",".",".",".","6"]
+// ,[".","6",".",".",".",".","2","8","."]
+// ,[".",".",".","4","1","9",".",".","5"]
+// ,[".",".",".",".","8",".",".","7","9"]])) // true
+
+// console.log(isValidSudokuBis([["8","3",".",".","7",".",".",".","."]
+// ,["6",".",".","1","9","5",".",".","."]
+// ,[".","9","8",".",".",".",".","6","."]
+// ,["8",".",".",".","6",".",".",".","3"]
+// ,["4",".",".","8",".","3",".",".","1"]
+// ,["7",".",".",".","2",".",".",".","6"]
+// ,[".","6",".",".",".",".","2","8","."]
+// ,[".",".",".","4","1","9",".",".","5"]
+// ,[".",".",".",".","8",".",".","7","9"]])) // false
+
+// console.log(isValidSudokuBis([["9","3",".",".","7",".",".",".","."]
+// ,["6",".",".","1","9","5",".",".","."]
+// ,[".","9","8",".",".",".",".","6","."]
+// ,["8",".",".",".","6",".",".",".","3"]
+// ,["4",".",".","8",".","3",".",".","1"]
+// ,["7",".",".",".","2",".",".",".","6"]
+// ,[".","6",".",".",".",".","2","8","."]
+// ,[".",".",".","4","1","9",".",".","5"]
+// ,[".",".",".",".","8",".",".","7","9"]])) // false
+
+//Passed :)
+
+//=================================================
