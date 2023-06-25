@@ -804,3 +804,273 @@ var isValidSudokuBis = function(board) {
 //Passed :)
 
 //=================================================
+// https://leetcode.com/problems/sudoku-solver/
+// Write a program to solve a Sudoku puzzle by filling the empty cells.
+
+// A sudoku solution must satisfy all of the following rules:
+
+// Each of the digits 1-9 must occur exactly once in each row.
+// Each of the digits 1-9 must occur exactly once in each column.
+// Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.
+// The '.' character indicates empty cells.
+
+// Do not return anything, modify board in-place instead.
+
+
+// Example 1:
+
+// Input: board = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]
+// Output: [["5","3","4","6","7","8","9","1","2"],["6","7","2","1","9","5","3","4","8"],["1","9","8","3","4","2","5","6","7"],["8","5","9","7","6","1","4","2","3"],["4","2","6","8","5","3","7","9","1"],["7","1","3","9","2","4","8","5","6"],["9","6","1","5","3","7","2","8","4"],["2","8","7","4","1","9","6","3","5"],["3","4","5","2","8","6","1","7","9"]]
+// Explanation: The input board is shown above and the only valid solution is shown below:
+
+// Constraints:
+
+// board.length == 9
+// board[i].length == 9
+// board[i][j] is a digit or '.'.
+// It is guaranteed that the input board has only one solution.
+
+//from my own code https://github.com/RenardLGR/sudoku-solver-react/blob/main/src/components/Game.js
+
+function solveSudoku(puzzle) {
+    //put 0s instead of '.', put Numbers instead of Strings
+    for(let line=0 ; line<9 ; line++){
+        for(let col=0 ; col<9 ; col++){
+            puzzle[line][col] = puzzle[line][col] === '.' ? 0 : Number(puzzle[line][col])
+        }
+    }
+
+    //puzzle is an array of lines which is an array of cells
+    let puzzlePossibilities = buildPuzzlePossibilities(puzzle)
+    //puzzlePossibilities is the same array, with a list of possibilities instead of zeroes (other number unchanged)
+
+    let isDone = false
+    let it = 1000
+
+    while(!isDone && it>0){
+        isDone = true
+        it--
+        for(let line=0 ; line<9 ; line++){ //goes line by line
+            for(let index=0 ; index<9 ; index++){ //goes index by index so cols by cols
+                if(puzzle[line][index]===0){//if it is a zero, try to find the number //if a zero is found, the algo is not done
+                    findNumberByElimination(line, index)
+                    isDone = false
+                }
+            }
+        }
+        findNumberInsideUnit()
+    }
+
+    //revert it back to Strings instead of Numbers
+    for(let line=0 ; line<9 ; line++){
+        for(let col=0 ; col<9 ; col++){
+            puzzle[line][col] = '' + puzzle[line][col]
+        }
+    }
+
+
+    //HELPERS
+
+    //puzzlePossibilities builder
+    //From a puzzle containing zeroes for unknown numbers, returns a puzzle with every zeroes replaced by an array of possibilities
+    function buildPuzzlePossibilities(puzzle){
+        let res = []
+        for(let l=0 ; l<9 ; l++){ //create shallow cpy of puzzle
+            res.push(puzzle[l].slice())
+        }
+
+        for(let line=0 ; line<9 ; line++){ //goes line by line
+            for(let index=0 ; index<9 ; index++){ //goes index by index so cols by cols
+                if(res[line][index]===0){//if it is a zero, find the array of possibilities
+                    let temp = [] //array of possibilities I will populate
+                    let arrLine = generateLine(line, puzzle)
+                    let arrCol = generateCol(index, puzzle)
+                    let arrSquare = generateSquare(line, index, puzzle)
+                    for(let k=1 ; k<=9 ; k++){ //k is a number between 1 and 9 that will be added to the possibilities
+                        if(!arrLine.includes(k) && !arrCol.includes(k) && !arrSquare.includes(k)){
+                            temp.push(k)
+                        }
+                    }
+                    res[line][index] = temp.slice() //changing zero with array of possibilities
+                }
+            }
+        }
+        return res
+    }
+
+
+    //Algo 1 defined in explanation (elimination) - mutate puzzle
+    function findNumberByElimination(coordLine, coordIndex){
+        let arrOfPossibilities = puzzlePossibilities[coordLine][coordIndex].slice()
+        if(arrOfPossibilities.length === 1){
+            puzzle[coordLine][coordIndex] = arrOfPossibilities[0]
+            puzzlePossibilities = buildPuzzlePossibilities(puzzle)
+        }
+    }
+
+    //Algo 2 defined in explanation (indirect elimination) - mutate puzzle
+    function findNumberInsideUnit(){
+        checkEveryLines()
+        checkEveryCols()
+        checkEverySquares()
+
+        //Given an array of possibilities of a unit like : 
+        //arrPossibilities = [2, 3, [5, 6], [5, 6, 7, 8], 1, [5, 6, 7, 8], [5, 9], [6, 7, 8], [5, 6]]
+        //The 9 in only appearing in one element, meaning the 9 is here.
+        //We will determine the frequencies of elements inside an array of possibilities
+        //If one of these frequencies is 1, we will find the array containing it, with its index, we will modify cpy (our working puzzle)
+        function checkEveryLines(){
+            for(let k=0 ; k<9 ; k++){ //from 0th line to 8th line
+                let linePossibilities = generateLine(k, puzzlePossibilities)
+                //linePossibilities = [2, 3, [5, 6], [5, 6, 7, 8], 1, [5, 6, 7, 8], [5, 9], [6, 7, 8], [5, 6]]
+                let frequencies = linePossibilities.reduce((acc, cur) => {
+                    if(Array.isArray(cur)){
+                        cur.forEach(n => acc[n] = (acc[n] || 0) + 1)
+                    }
+                    return acc
+                }, {})
+                for(let number in frequencies){
+                    if(frequencies[number] === 1){
+                        linePossibilities.forEach((p, idx) => {
+                            if(Array.isArray(p)){
+                                if(p.includes(+number)){
+                                    puzzle[k][idx] = Number(number) //k is the line while idx should be the col
+                                    puzzlePossibilities = buildPuzzlePossibilities(puzzle) //refresh the possibilities puzzle
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+
+        function checkEveryCols(){
+            for(let k=0 ; k<9 ; k++){
+                let colPossibilities = generateCol(k, puzzlePossibilities)
+                //colPossibilities = [2, 3, [5, 6], [5, 6, 7, 8], 1, [5, 6, 7, 8], [5, 9], [6, 7, 8], [5, 6]]
+                let frequencies = colPossibilities.reduce((acc, cur) => {
+                    if(Array.isArray(cur)){
+                        cur.forEach(n => acc[n] = (acc[n] || 0) + 1)
+                    }
+                    return acc
+                }, {})
+                for(let number in frequencies){
+                    if(frequencies[number] === 1){
+                        colPossibilities.forEach((p, idx) => {
+                            if(Array.isArray(p)){
+                                if(p.includes(+number)){
+                                    puzzle[idx][k] = Number(number)
+                                    puzzlePossibilities = buildPuzzlePossibilities(puzzle)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+
+        function checkEverySquares() {
+            for (let lines = 0; lines < 9; lines = lines + 3) {
+                for (let cols = 0; cols < 9; cols = cols + 3) {
+                    let squarePossibilities = generateSquare(lines, cols, puzzlePossibilities) //we take the square according to its top left element
+                    //squarePossibilities = [2, 3, [5, 6], [5, 6, 7, 8], 1, [5, 6, 7, 8], [5, 9], [6, 7, 8], [5, 6]]
+                    let frequencies = squarePossibilities.reduce((acc, cur) => {
+                        if (Array.isArray(cur)) {
+                            cur.forEach(n => acc[n] = (acc[n] || 0) + 1)
+                        }
+                        return acc
+                    }, {})
+                    for (let number in frequencies) {
+                        if (frequencies[number] === 1) {
+                            squarePossibilities.forEach((p, idx) => {
+                                if (Array.isArray(p)) {
+                                    if (p.includes(+number)) {
+                                        puzzle[lines + Math.floor(idx / 3)][cols + idx % 3] = Number(number) //indicies navigation trickeries
+                                        puzzlePossibilities = buildPuzzlePossibilities(puzzle)
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    //given a line (col) and a puzzle, returns the whole line
+    function generateLine(coordIndex, puzzle){
+        return Array.isArray(puzzle[coordIndex]) ? puzzle[coordIndex].slice() : puzzle[coordIndex]
+    }
+
+    //given an index (col) and a puzzle, returns the whole column
+    function generateCol(coordIndex, puzzle){
+        let res = []
+        for(let i=0 ; i<9 ; i++){
+            res.push(Array.isArray(puzzle[i][coordIndex]) ? puzzle[i][coordIndex].slice() : puzzle[i][coordIndex])
+        }
+        return res
+    }
+
+    //given a line, an index (col) and a puzzle, returns the whole square ; read left to right, top to bottom
+    function generateSquare(coordLine, coordCol, puzzle){
+        let res = []
+        for(let i=Math.floor(coordLine/3)*3 ; i<Math.floor(coordLine/3)*3+3 ; i++){
+            for(let j=Math.floor(coordCol/3)*3 ; j<Math.floor(coordCol/3)*3+3 ; j++){
+                res.push(Array.isArray(puzzle[i][j]) ? puzzle[i][j].slice() : puzzle[i][j])
+            }
+        }
+        return res
+    }
+
+}
+// Explanation :
+
+//Algo 1 : Finding the number by elimination
+//                        We know it can't be 8, 9 from the col
+// var puzzle = [                   |
+//             [0,0,0,| 0,0,0,| 0,0,0],
+//             [0,0,0,| 0,0,0,| 0,0,0],
+//             [0,0,0,| 0,0,0,| 0,0,0],
+//            _________________________
+//             [0,0,0,| 0,0,0,| 1,2,0], -- We know it can't be 1, 2, 3 from the square
+//             [0,0,0,| 0,0,0,| 0,3,0],
+//             [0,0,0,| 4,5,6,| 0,0,X], -- We know it can't be 4, 5, 6 from the line : It must be a 7
+//            _________________________
+//             [0,6,0,| 0,0,0,| 0,0,0],
+//             [0,0,0,| 0,0,0,| 0,0,8],
+//             [0,0,0,| 0,0,0,| 0,0,9]];
+
+//So if there is one and only one number between 1 and 9 that is in neither of those lists (line, col, square), I can add it here
+
+//Algo 2 : Finding inside a unit (line, col, square) the only place where a number can be (indirect elimination)
+//                  We know the 4 can't be on this col
+// var puzzle = [               |
+//             [0,0,0,| 0,0,4,| 0,7,0], --We know the 4 can't be on this line
+//             [0,4,0,| 0,0,0,| 0,0,0], --We know the 4 can't be on this line
+//             [0,0,0,| 0,0,0,| 0,X,8], --Inside this square the 4 can only be placed here
+//            _________________________
+//             [0,0,0,| 0,0,0,| 1,2,0],
+//             [0,0,0,| 0,0,0,| 4,3,0],
+//             [0,0,0,| 4,5,6,| 0,0,X], 
+//            _________________________
+//             [0,6,0,| 0,0,0,| 0,0,0],
+//             [0,0,0,| 0,0,0,| 0,0,8],
+//             [0,0,0,| 0,0,0,| 0,0,9]];
+
+//Given a unit (line, col, square) map the list of cells with a list of numbers possible ; if one of these lists has a single element, I can add it here
+//This function will run through every lines searching for a case like that, then every cols, then every squares
+
+let sudokuBoard = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]
+
+// solveSudoku(sudokuBoard)
+
+// console.log(sudokuBoard);
+
+//The board given are too complex for this simple algo
+
+let hardSudokuBoard = [[".",".","9","7","4","8",".",".","."],["7",".",".",".",".",".",".",".","."],[".","2",".","1",".","9",".",".","."],[".",".","7",".",".",".","2","4","."],[".","6","4",".","1",".","5","9","."],[".","9","8",".",".",".","3",".","."],[".",".",".","8",".","3",".","2","."],[".",".",".",".",".",".",".",".","6"],[".",".",".","2","7","5","9",".","."]]
+
+solveSudoku(hardSudokuBoard)
+
+console.log(hardSudokuBoard);
