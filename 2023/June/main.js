@@ -1065,12 +1065,71 @@ let sudokuBoard = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5
 
 // solveSudoku(sudokuBoard)
 
-// console.log(sudokuBoard);
+// console.log(sudokuBoard); //works
 
 //The board given are too complex for this simple algo
 
 let hardSudokuBoard = [[".",".","9","7","4","8",".",".","."],["7",".",".",".",".",".",".",".","."],[".","2",".","1",".","9",".",".","."],[".",".","7",".",".",".","2","4","."],[".","6","4",".","1",".","5","9","."],[".","9","8",".",".",".","3",".","."],[".",".",".","8",".","3",".","2","."],[".",".",".",".",".",".",".",".","6"],[".",".",".","2","7","5","9",".","."]]
 
-solveSudoku(hardSudokuBoard)
+// solveSudoku(hardSudokuBoard)
 
-console.log(hardSudokuBoard);
+// console.log(hardSudokuBoard); //doesn't find each cells
+
+function solveSudokuBis(board){
+    tryCell()
+
+    function tryCell(){
+        for(let row=0 ; row<9 ; row++){
+            for(let col=0 ; col<9 ; col++){
+                if(board[row][col] === '.'){
+                    //try a number
+                    for(let num=1 ; num<=9 ; num++){
+                        if(isNumValid(row, col, num, board)){
+                            //try a valid number
+                            board[row][col] = '' + num
+                            //call recursively tryCell again, if it returns true, the board is completed, end every recursion
+                            if(tryCell()){
+                                return true
+                            }else{
+                                //backtrack
+                                board[row][col] = '.'
+                            }
+                        }
+                    }
+                    //if no nums were valid : will backtrack
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+
+    //helper func
+    function isNumValid(row, col, num, board){
+        num = '' + num
+        for(let i=0 ; i<9 ; i++){
+        
+            if(board[row][i] === num) return false
+            
+            if(board[i][col] === num) return false
+            
+            const currentMatrixRow = Math.floor(row/3)        
+            const currentMatrixCol = Math.floor(col/3)
+    
+            const currentRow =  3 * currentMatrixRow + Math.floor(i/3)        
+            const currentCol = 3 * currentMatrixCol + i%3 
+     
+            
+            if(board[currentRow][currentCol] === num ) return false
+            
+        }
+        return true
+    }
+}
+
+// solveSudokuBis(sudokuBoard)
+// solveSudokuBis(hardSudokuBoard)
+
+// console.log(sudokuBoard); //works
+// console.log(hardSudokuBoard); //works
