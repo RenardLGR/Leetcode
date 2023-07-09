@@ -154,3 +154,30 @@ var combinationSumBis = function(candidates, target) {
 // console.log(combinationSumBis([2,3,6,7], 7)); // [ [ 2, 2, 3 ], [ 7 ] ]
 // console.log(combinationSumBis([2,3,5], 8)); // [ [ 2, 2, 2, 2 ], [ 2, 3, 3 ], [ 3, 5 ] ]
 // console.log(combinationSumBis([2] , 1)); // []
+
+function combinationSumTer(candidates, target){
+    let res = []
+    solve([], 0, 0)
+    return res
+
+    function solve(inProgress, start, sum){
+        if(sum === target){
+            res.push(inProgress.slice())
+            return
+        }
+
+        for(let i=start ; i<candidates.length ; i++){
+            let newSum = sum + candidates[i]
+            if(newSum <= target){
+                solve([...inProgress, candidates[i]], i, newSum)
+            }
+        }
+    }
+}
+
+// console.log(combinationSumTer([2,3,6,7], 7)); // [ [ 2, 2, 3 ], [ 7 ] ]
+// console.log(combinationSumTer([2,3,5], 8)); // [ [ 2, 2, 2, 2 ], [ 2, 3, 3 ], [ 3, 5 ] ]
+// console.log(combinationSumTer([2] , 1)); // []
+
+
+//==================================================
