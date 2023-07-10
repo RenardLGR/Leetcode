@@ -181,3 +181,122 @@ function combinationSumTer(candidates, target){
 
 
 //==================================================
+// https://leetcode.com/problems/combination-sum-ii/
+// Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sum to target.
+
+// Each number in candidates may only be used once in the combination.
+
+// Note: The solution set must not contain duplicate combinations.
+
+// Example 1:
+// Input: candidates = [10,1,2,7,6,1,5], target = 8
+// Output: 
+// [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+
+// Example 2:
+// Input: candidates = [2,5,2,1,2], target = 5
+// Output: 
+// [[1,2,2], [5]]
+
+// Constraints:
+// 1 <= candidates.length <= 100
+// 1 <= candidates[i] <= 50
+// 1 <= target <= 30
+
+var combinationSum2 = function(candidates, target) {
+    let res = []
+    solve([], candidates, 0)
+
+    //remove duplicates
+    let set = new Set(res.map(subarr => subarr.join(',')))
+    return Array.from(set).map(el => el.split(',').map(dig => +dig))
+
+    function solve(inProgress, remaining, sum){
+        if(sum === target){
+            res.push(inProgress.slice().sort())
+            return
+        }
+
+        if(sum > target){
+            return
+        }
+
+        for(let i=0 ; i<remaining.length ; i++){
+            solve([...inProgress, remaining[i]], remaining.slice(i+1), sum+remaining[i])
+        }
+    }
+};
+
+// console.log(combinationSum2([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+
+//Can we do better for the duplicates ?
+
+function combinationSum2Bis(candidates, target){
+    let res = {}
+    solve([], candidates, 0)
+
+    return Object.keys(res).map(s => s.split(',').map(d => +d))
+
+    function solve(inProgress, remaining, sum){
+        if(sum === target){
+            let stringified = inProgress.slice().sort().join(',')
+            res[stringified] = true
+            return
+        }
+
+        if(sum > target){
+            return
+        }
+
+        for(let i=0 ; i<remaining.length ; i++){
+            solve([...inProgress, remaining[i]], remaining.slice(i+1), sum+remaining[i])
+        }
+    }
+}
+
+// console.log(combinationSum2Bis([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Bis([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Bis([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // too long
+
+function combinationSum2Ter(candidates, target){
+    //This version is specifically targeted against the very long and very repeating candidates, I have lost track of the complexity tbh
+    let freq = candidates.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+    let set = Object.keys(freq).map(d => +d)
+    // console.log("set:", set);
+    let res = {}
+    solve([], 0, 0)
+
+    return Object.keys(res).map(s => s.split(',').map(d => +d))
+
+    function solve(inProgress, start, sum){
+        if(sum === target){
+            console.log(inProgress);
+            let stringified = inProgress.slice().sort().join(',')
+            res[stringified] = true
+            return
+        }
+
+        if(sum > target){
+            return
+        }
+
+        //try each element of the set
+        for(let i=start ; i<set.length ; i++){
+            //try with various duplications
+            for(let j=0 ; j<=freq[set[i]] ; j++){
+                let newInP = inProgress.concat(Array(j).fill(set[i]))
+                let newSum = sum + set[i]*j
+                solve(newInP, start+1, newSum)
+            }
+        }
+    }
+}
+
+console.log(combinationSum2Ter([1,2], 4)); // []
+// console.log(combinationSum2Ter([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Ter([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Ter([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
