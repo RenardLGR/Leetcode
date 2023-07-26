@@ -265,9 +265,9 @@ function combinationSum2Ter(candidates, target){
         acc[cur] = (acc[cur] || 0) + 1
         return acc
     }, {})
-    // console.log("freq",freq);
+    console.log("freq",freq);
     let set = Object.keys(freq).map(d => +d)
-    // console.log("set:", set);
+    console.log("set:", set);
     let res = {}
     solve([], 0, 0)
 
@@ -289,11 +289,12 @@ function combinationSum2Ter(candidates, target){
         //try each element of the set
         for(let i=start ; i<set.length ; i++){
             //try with various duplications
-            for(let j=0 ; j<=freq[set[i]] ; j++){
+            for(let j=1 ; j<=freq[''+set[i]] ; j++){
                 // console.log(Array(j).fill(set[i]));
                 // console.log("j", j);
                 let newInP = inProgress.concat(Array(j).fill(set[i]))
                 let newSum = sum + set[i]*j
+                console.log("inProgress is", newInP, "trying with repeating", set[i], j,"times, remaining is", set.slice(i+1), "sum is now", newSum)
                 // console.log("i:", i, "j:", j);
                 solve(newInP, i+1, newSum)
             }
@@ -301,8 +302,8 @@ function combinationSum2Ter(candidates, target){
     }
 }
 
-console.log(combinationSum2Ter([1,2], 4)); // []
-console.log(combinationSum2Ter([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
-console.log(combinationSum2Ter([2,5,2,1,2], 5)); // [[1,2,2], [5]]
-console.log(combinationSum2Ter([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
-console.log(combinationSum2Ter([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //too long
+// console.log(combinationSum2Ter([1,2], 4)); // []
+// console.log(combinationSum2Ter([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Ter([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Ter([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
+// console.log(combinationSum2Ter([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
