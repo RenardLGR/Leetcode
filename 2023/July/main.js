@@ -307,3 +307,43 @@ function combinationSum2Ter(candidates, target){
 // console.log(combinationSum2Ter([2,5,2,1,2], 5)); // [[1,2,2], [5]]
 // console.log(combinationSum2Ter([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
 // console.log(combinationSum2Ter([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
+
+
+function combinationSum2Quater(candidates, target){
+    let res = []
+    let sorted = candidates.sort((a,b) => a-b)
+    solve([], 0, sorted)
+
+    return res
+
+    function solve(inProgress, sum, remaining){
+        if(sum === target){
+            res.push(inProgress.slice())
+            return
+        }
+
+        if(sum > target){
+            return
+        }
+
+        for(let i=0 ; i<remaining.length ; i++){
+            let newInP  = inProgress.concat(remaining[i])
+            let newSum = sum + remaining[i]
+            let newRemaining =  remaining.slice(i+1)
+
+            solve(newInP, newSum, newRemaining)
+            // Skip duplicates to avoid duplicate combinations
+            while(remaining[i+1] === remaining[i]){
+                i++
+            }
+        }
+    }
+}
+
+// console.log(combinationSum2Quater([1,2], 4)); // []
+// console.log(combinationSum2Quater([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Quater([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Quater([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
+// console.log(combinationSum2Quater([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
+
+//==============================================
