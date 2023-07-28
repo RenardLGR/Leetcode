@@ -346,4 +346,67 @@ function combinationSum2Quater(candidates, target){
 // console.log(combinationSum2Quater([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
 // console.log(combinationSum2Quater([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
 
+
+// Cleanest :
+function combinationSum2Quinquies(candidates, target){
+    let res = []
+    let sorted = candidates.sort((a,b) => a-b)
+
+    solve([], 0, 0)
+
+    return res
+
+    function solve(inProgress, start, sum){
+        if(sum > target) return
+        if(sum === target){
+            res.push(inProgress)
+            return
+        }
+
+        for(let i=start ; i<sorted.length ; i++){
+            // no duplicates
+            if(i !== start && sorted[i] === sorted[i-1]) continue
+            solve([...inProgress, sorted[i]], i+1, sum+sorted[i])
+        }
+    }
+}
+
+// console.log(combinationSum2Quinquies([1,2], 4)); // []
+// console.log(combinationSum2Quinquies([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Quinquies([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Quinquies([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
+// console.log(combinationSum2Quinquies([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
+
+//Backtracking : (actually fastest, we don't create a new array at each recursive call)
+function combinationSum2Sexies(candidates, target){
+    let res = []
+    let sorted = candidates.sort((a,b) => a-b)
+
+    solve([], 0, 0)
+
+    return res
+
+    function solve(inProgress, start, sum){
+        if(sum > target) return
+        if(sum === target){
+            res.push(inProgress.slice())
+            return
+        }
+
+        for(let i=start ; i<sorted.length ; i++){
+            // no duplicates
+            if(i !== start && sorted[i] === sorted[i-1]) continue
+            inProgress.push(sorted[i])
+            solve(inProgress, i+1, sum+sorted[i])
+            inProgress.pop()
+        }
+    }
+}
+
+// console.log(combinationSum2Sexies([1,2], 4)); // []
+// console.log(combinationSum2Sexies([10,1,2,7,6,1,5], 8)); // [ [1,1,6], [1,2,5], [1,7], [2,6] ]
+// console.log(combinationSum2Sexies([2,5,2,1,2], 5)); // [[1,2,2], [5]]
+// console.log(combinationSum2Sexies([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], 30)) // [1,1,... x30]
+// console.log(combinationSum2Sexies([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
+
 //==============================================
