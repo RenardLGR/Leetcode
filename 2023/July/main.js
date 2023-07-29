@@ -410,3 +410,54 @@ function combinationSum2Sexies(candidates, target){
 // console.log(combinationSum2Sexies([14,6,25,9,30,20,33,34,28,30,16,12,31,9,9,12,34,16,25,32,8,7,30,12,33,20,21,29,24,17,27,34,11,17,30,6,32,21,27,17,16,8,24,12,12,28,11,33,10,32,22,13,34,18,12], 27)); //works
 
 //==============================================
+// https://leetcode.com/problems/first-missing-positive/
+// Given an unsorted integer array nums, return the smallest missing positive integer.
+
+// You must implement an algorithm that runs in O(n) time and uses O(1) auxiliary space.
+
+
+// Example 1:
+// Input: nums = [1,2,0]
+// Output: 3
+// Explanation: The numbers in the range [1,2] are all in the array.
+
+// Example 2:
+// Input: nums = [3,4,-1,1]
+// Output: 2
+// Explanation: 1 is in the array but 2 is missing.
+
+// Example 3:
+// Input: nums = [7,8,9,11,12]
+// Output: 1
+// Explanation: The smallest positive integer 1 is missing.
+ 
+
+// Constraints:
+
+// 1 <= nums.length <= 105
+// -231 <= nums[i] <= 231 - 1
+
+
+// Can't think of a way in O(1) space complexity
+var firstMissingPositive = function(nums) {
+    let isPresent = [0] //initialize at 0 so we return 1 if we can't add any element to isPresent
+
+    for(let i=0 ; i<nums.length ; i++){
+        if(nums[i] > 0){
+            isPresent[nums[i]] = true
+        }
+    }
+    //isPresent will have for last element the maximum of nums and a length of maximum of nums - 1
+
+    for(let i=0 ; i<isPresent.length ; i++){
+        if(i !== 0 && isPresent[i] === undefined) return i
+    }
+    //if every element of isPresent is defined, we want the last element + 1 ; i.e. isPresent.length
+    return isPresent.length
+}
+
+// console.log(firstMissingPositive([1,2,0])); // 3
+// console.log(firstMissingPositive([3,4,-1,1])); // 2
+// console.log(firstMissingPositive([7,8,9,11,12])); // 1
+// console.log(firstMissingPositive([0])); // 1
+// console.log(firstMissingPositive([-1,-5,-2,-4])); // 1
