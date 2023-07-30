@@ -438,7 +438,7 @@ function combinationSum2Sexies(candidates, target){
 // -231 <= nums[i] <= 231 - 1
 
 
-// Can't think of a way in O(1) space complexity
+// Can't think of a way in O(1) space complexity nor O(n) time complexity (this is O(2n) so not that bad)
 var firstMissingPositive = function(nums) {
     let isPresent = [0] //initialize at 0 so we return 1 if we can't add any element to isPresent
 
@@ -461,3 +461,64 @@ var firstMissingPositive = function(nums) {
 // console.log(firstMissingPositive([7,8,9,11,12])); // 1
 // console.log(firstMissingPositive([0])); // 1
 // console.log(firstMissingPositive([-1,-5,-2,-4])); // 1
+
+//Do we actually need to loop through isPresent to find the first non present element ?
+//We will loop through isPresent as we go
+//This function initialize firstMissing at 1, each time, it will check if isPresent[firstMissing] exists, if so it will try with the next one
+function firstMissingPositiveBis(nums){
+    let isPresent = [0] //initialize at 0 so we return 1 if we can't add any element to isPresent
+    let firstMissing = 1 //initialized at 1, if later I find a 1, try with 2, and 3, and so on
+
+    for(let i=0 ; i<nums.length ; i++){
+        if(nums[i] > 0){
+            isPresent[nums[i]] = true
+
+            while(isPresent[firstMissing]){
+                firstMissing++
+            }
+        }
+    }
+
+    return firstMissing
+}
+
+// console.log(firstMissingPositiveBis([1,2,0])); // 3
+// console.log(firstMissingPositiveBis([3,4,-1,1])); // 2
+// console.log(firstMissingPositiveBis([7,8,9,11,12])); // 1
+// console.log(firstMissingPositiveBis([0])); // 1
+// console.log(firstMissingPositiveBis([-1,-5,-2,-4])); // 1
+
+//Indeed slightly faster
+
+function firstMissingPositiveTer(nums){
+    let firstMissing = 1
+    for(let i=0 ; i<nums.length ; i++){
+        //Put every number at its index, ignore negative numbers
+        if(nums[i] > 0){
+            if(i === nums[i]){ //if the number is already at its index, do nothing
+                while(nums[firstMissing] === firstMissing){
+                    firstMissing++
+                }
+            }else{
+                let temp = nums[nums[i]]
+                let otherTemp
+                do{
+                    nums[nums[i]] = nums[i] //put the value at its index
+                    nums[i] = undefined
+                    otherTemp = nums[temp]
+                }
+                while(temp !== undefined && temp !== nums[i])
+            }
+
+        }
+    }
+
+    return firstMissing
+}
+
+console.log(firstMissingPositiveTer([1,2,0])); // 3
+console.log(firstMissingPositiveTer([3,4,-1,1])); // 2
+console.log(firstMissingPositiveTer([3,1,4,2])); // 5
+console.log(firstMissingPositiveTer([7,8,9,11,12])); // 1
+console.log(firstMissingPositiveTer([0])); // 1
+console.log(firstMissingPositiveTer([-1,-5,-2,-4])); // 1
