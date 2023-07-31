@@ -491,34 +491,81 @@ function firstMissingPositiveBis(nums){
 //Indeed slightly faster
 
 function firstMissingPositiveTer(nums){
+    nums.push(0) // I want at least a 0 in every arrays, so fistMissing can normally start (push is O(1) complexity)
     let firstMissing = 1
-    for(let i=0 ; i<nums.length ; i++){
+    let maxLength = nums.length //nums will have a length corresponding to its biggest element, we actually want to loop only through the element given
+    for(let i=0 ; i<maxLength ; i++){
+        //check if we can increase firstMissing and do it if possible
+        while(nums[firstMissing] === firstMissing){
+            firstMissing++
+        }
+
         //Put every number at its index, ignore negative numbers
-        if(nums[i] > 0){
-            if(i === nums[i]){ //if the number is already at its index, do nothing
-                while(nums[firstMissing] === firstMissing){
-                    firstMissing++
-                }
-            }else{
-                let temp = nums[nums[i]]
-                let otherTemp
-                do{
-                    nums[nums[i]] = nums[i] //put the value at its index
-                    nums[i] = undefined
-                    otherTemp = nums[temp]
-                }
-                while(temp !== undefined && temp !== nums[i])
+        if(nums[i] >= 0){
+            let temp = nums[i] //this number will go at its index
+            do{
+                //switching
+                let tempVal = nums[temp] //save the element we are about to replace with its index
+                nums[temp] = temp //replace the element with its index
+                temp = tempVal //repeat, now we want to place the element we saved and place it at its index, unless the element we saved is undefined (numbered saved was greater than nums.length-1), negative, or already at its place (prevent infinite looping and takes care of duplicates)
+
             }
+            while(temp !== undefined && temp !== nums[temp] && temp >= 0)
 
         }
     }
-
+    // console.log(nums);
     return firstMissing
 }
 
-console.log(firstMissingPositiveTer([1,2,0])); // 3
-console.log(firstMissingPositiveTer([3,4,-1,1])); // 2
-console.log(firstMissingPositiveTer([3,1,4,2])); // 5
-console.log(firstMissingPositiveTer([7,8,9,11,12])); // 1
-console.log(firstMissingPositiveTer([0])); // 1
-console.log(firstMissingPositiveTer([-1,-5,-2,-4])); // 1
+// console.log(firstMissingPositiveTer([1,2,0])); // 3
+// console.log(firstMissingPositiveTer([3,4,-1,1])); // 2
+// console.log(firstMissingPositiveTer([3,1,4,2])); // 5
+// console.log(firstMissingPositiveTer([7,8,9,11,12])); // 1
+// console.log(firstMissingPositiveTer([0])); // 1
+// console.log(firstMissingPositiveTer([-1,-5,-2,-4])); // 1
+// console.log(firstMissingPositiveTer([1])); // 2
+// console.log(firstMissingPositiveTer([5])); // 1
+// console.log(firstMissingPositiveTer([0,2,2,1,1])); // 3
+// console.log(firstMissingPositiveTer([2147483647])); // 1
+
+function firstMissingPositiveQuater(nums){
+    nums.push(0) // I want at least a 0 in every arrays, so fistMissing can normally start (push is O(1) complexity)
+    let firstMissing = 1
+    let maxLength = nums.length //nums will have a length corresponding to its biggest element, we actually want to loop only through the element given
+    for(let i=0 ; i<maxLength ; i++){
+        //check if we can increase firstMissing and do it if possible
+        while(nums[firstMissing] === firstMissing){
+            firstMissing++
+        }
+
+        //Put every number at its index, ignore negative numbers, ignore huge numbers too
+        if(nums[i] >= 0 && nums[i] <= maxLength){
+            let temp = nums[i] //this number will go at its index
+            do{
+                //switching
+                let tempVal = nums[temp] //save the element we are about to replace with its index
+                nums[temp] = temp //replace the element with its index
+                temp = tempVal //repeat, now we want to place the element we saved and place it at its index, unless the element we saved is undefined (numbered saved was greater than nums.length-1), negative, already at its place (prevent infinite looping and takes care of duplicates), or too big to make a difference
+
+            }
+            while(temp !== undefined && temp !== nums[temp] && temp >= 0 && temp <= maxLength)
+
+        }
+    }
+    console.log(nums);
+    return firstMissing
+}
+
+// console.log(firstMissingPositiveQuater([1,2,0])); // 3
+// console.log(firstMissingPositiveQuater([3,4,-1,1])); // 2
+// console.log(firstMissingPositiveQuater([3,1,4,2])); // 5
+// console.log(firstMissingPositiveQuater([7,8,9,11,12])); // 1
+// console.log(firstMissingPositiveQuater([0])); // 1
+// console.log(firstMissingPositiveQuater([-1,-5,-2,-4])); // 1
+// console.log(firstMissingPositiveQuater([1])); // 2
+// console.log(firstMissingPositiveQuater([5])); // 1
+// console.log(firstMissingPositiveQuater([0,2,2,1,1])); // 3
+// console.log(firstMissingPositiveQuater([2147483647])); // 1
+// console.log(firstMissingPositiveQuater([2147483647, 5, -1000, 25255])); // 1
+
