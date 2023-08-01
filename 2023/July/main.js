@@ -568,4 +568,42 @@ function firstMissingPositiveQuater(nums){
 // console.log(firstMissingPositiveQuater([0,2,2,1,1])); // 3
 // console.log(firstMissingPositiveQuater([2147483647])); // 1
 // console.log(firstMissingPositiveQuater([2147483647, 5, -1000, 25255])); // 1
+// console.log(firstMissingPositiveQuater([1, 1, 1, 2, 2, 2])); // 3
 
+// From answer : Cleanest version in 0(3n) time, O(1) space (isn't [1, 2, 3, 4, 5, ..., 0] a worst case scenario?)
+// Also unlike my answers, this code bugs if there are duplicates...
+function firstMissingPositiveQuinquies(nums){
+    //Go through and place each number at the index of its value (minus one since 0 isn't positive). All the negative and out-of-bounds elements should now be in the missing gap or on the right side of the array.
+    let i = 0
+    while (i < nums.length){
+        if(nums[i]>0 && nums[i]<nums.length && nums[i]!==i+1 && nums[nums[i]-1]!==nums[i]){
+            //last check rejects if the elements has already a an element at its right index (handle dupes)
+            //make the switch, don't increase i as the current element probably needs a switch too
+            [nums[nums[i]-1] , nums[i]] = [nums[i] , nums[nums[i]-1]]
+        }else{
+            i++
+        }
+    }
+
+    // console.log(nums);
+
+    //Walk through and take the first index (plus one) which does not match its associated value.
+    for(let i=0 ; i<nums.length ; i++){
+        if(nums[i] !== i+1){
+            return i+1
+        }
+    }
+    return nums.length + 1
+}
+
+// console.log(firstMissingPositiveQuinquies([1,2,0])); // 3
+// console.log(firstMissingPositiveQuinquies([3,4,-1,1])); // 2
+// console.log(firstMissingPositiveQuinquies([3,1,4,2])); // 5
+// console.log(firstMissingPositiveQuinquies([7,8,9,11,12])); // 1
+// console.log(firstMissingPositiveQuinquies([0])); // 1
+// console.log(firstMissingPositiveQuinquies([-1,-5,-2,-4])); // 1
+// console.log(firstMissingPositiveQuinquies([1])); // 2
+// console.log(firstMissingPositiveQuinquies([5])); // 1
+// console.log(firstMissingPositiveQuinquies([0,2,2,1,1])); // 3
+// console.log(firstMissingPositiveQuinquies([2147483647])); // 1
+// console.log(firstMissingPositiveQuinquies([2147483647, 5, -1000, 25255])); // 1
