@@ -2,7 +2,7 @@ const hi = 'HELLO'
 const alphaL = 'abcdefghijklmnopqrstuvwxyz'
 const alphaU = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-// ____________________________________________________
+// =======================================
 // https://leetcode.com/problems/trapping-rain-water/
 // Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
 
@@ -107,5 +107,119 @@ function trapTer(height){
     return res
 }
 
-console.log(trapTer([0,1,0,2,1,0,1,3,2,1,2,1])) // 6
-console.log(trapTer([0, 2, 0, 4, 0, 4, 0])) // 6
+// console.log(trapTer([0,1,0,2,1,0,1,3,2,1,2,1])) // 6
+// console.log(trapTer([0, 2, 0, 4, 0, 4, 0])) // 6
+
+//================================================
+// https://leetcode.com/problems/multiply-strings/
+// Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+// Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+
+// Example 1:
+// Input: num1 = "2", num2 = "3"
+// Output: "6"
+
+// Example 2:
+// Input: num1 = "123", num2 = "456"
+// Output: "56088"
+ 
+
+// Constraints:
+
+// 1 <= num1.length, num2.length <= 200
+// num1 and num2 consist of digits only.
+// Both num1 and num2 do not contain any leading zero, except the number 0 itself.
+
+// From https://www.codewars.com/kata/55911ef14065454c75000062/train/javascript
+
+function addition(a,b){
+    let carry = false
+    let res = ''
+    let maxLength = Math.max(a.length, b.length)
+
+    a = "0".repeat(maxLength) + a
+    b = "0".repeat(maxLength) + b
+    a = a.slice(a.length - maxLength, a.length)
+    b = b.slice(b.length - maxLength, b.length)
+
+    for(let i=maxLength-1 ; i>=0 ; i--){
+        let temp = +a[i] + +b[i]
+        if(carry) temp++
+        carry = (temp >= 10)
+        res = temp%10 + res
+    }
+
+    if(carry) res = 1 + res
+
+    return res
+}
+
+// console.log(addition("35825", "3")); // 35828
+// console.log(addition("35825", "70000")); // 105825
+
+//We will follow the standard model :
+
+//     123
+// x    12
+// _______
+//     246
+// +  123.
+// _______
+//    1476
+
+function multiply(a,b){
+    if(a==='0' || b==='0') return '0'
+
+    let sumOperands = []
+    for(let i=b.length-1 ; i>=0 ; i--){
+        let zeroes = '0'.repeat(b.length-1 - i) //these are the "dots"
+        let carry = 0
+        let sumOperand = ''
+        for(let j=a.length-1 ; j>=0 ; j--){
+            let temp = (+b[i] * +a[j]) + carry
+            sumOperand = temp%10 + sumOperand
+            carry = Math.floor(temp/10)
+        }
+        sumOperand = carry + sumOperand + zeroes
+        sumOperands.push('' + sumOperand)
+    }
+
+    let res = sumOperands.reduce((acc, curr) => addition(acc, curr))
+
+    while(res[0] === "0" && res.length>1) res = res.slice(1)
+    return res
+}
+
+// NOTE : we don't handle negative nor decimal inputs here
+
+// We can consider 123 x 12 to be (100+20+3) x (10+2)
+// In other words, we multiply each digits of one with each digits of the other, we rearrange to keep track of the zeroes and don't forget the carry
+// Let's have an array containing our result and work with its indices
+
+function multiplyBis(a, b){
+    if(a==='0' || b==='0') return '0'
+    
+    let res = Array(a.length + b.length).fill(0)
+
+    for(let idxA=a.length-1 ; idxA>=0 ; idxA--){
+        for(let idxB=b.length-1 ; idxB>=0 ; idxB--){
+            let resIdx = idxA + idxB + 1
+            let sum = res[resIdx] + Number(a[idxA]) * Number(b[idxB])
+            let carry = Math.floor(sum/10)
+            let remainder = sum % 10
+
+            res[resIdx] = remainder
+            res[resIdx-1] += carry
+            if(res[resIdx-1] > 10){
+                res[resIdx-1] -= 10
+                res[resIdx-2]++
+            }
+        }
+    }
+    if (res[0] === 0) res.shift()
+    return res.join('')
+}
+
+// console.log(multiplyBis('123', '12')); // "1476"
