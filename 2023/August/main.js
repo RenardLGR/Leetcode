@@ -305,3 +305,59 @@ const isMatch = function (string, pattern) {
 // console.log(isMatch("cb", "?a")) // false
 // console.log(isMatch("cb", "?b")) // true
 
+//===============================================
+// https://leetcode.com/problems/jump-game-ii/
+// You are given a 0-indexed array of integers nums of length n. You are initially positioned at nums[0].
+
+// Each element nums[i] represents the maximum length of a forward jump from index i. In other words, if you are at nums[i], you can jump to any nums[i + j] where:
+
+// 0 <= j <= nums[i] and
+// i + j < n
+// Return the minimum number of jumps to reach nums[n - 1]. The test cases are generated such that you can reach nums[n - 1].
+
+// Example 1:
+// Input: nums = [2,3,1,1,4]
+// Output: 2
+// Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+
+// Example 2:
+// Input: nums = [2,3,0,1,4]
+// Output: 2
+ 
+
+// Constraints:
+// 1 <= nums.length <= 104
+// 0 <= nums[i] <= 1000
+// It's guaranteed that you can reach nums[n - 1].
+
+var jump = function(nums) {
+    let res = 0
+    let position = 0
+    while(position < nums.length-1){
+        //If I can reach the end from where I am, reach the end
+        if(position + nums[position] >= nums.length-1){
+            res++
+            break
+        }
+        let maxJumpDestination = 0
+        let jumpTarget = 0
+        //From every cell within reach, jump to the one that will take us the farthest
+        for(let i=position+1 ; i<=position+nums[position] ; i++){
+            let j = nums[i]
+            if(i + j > maxJumpDestination){
+                maxJumpDestination = i + j
+                jumpTarget = i
+            }
+        }
+        position = jumpTarget
+        res++
+    }
+    return res
+}
+
+// console.log(jump([2,3,1,1,4])) // 2
+// console.log(jump([2,3,0,1,4])) // 2
+// console.log(jump([5, 5])) // 1
+// console.log(jump([1,1,1])) // 2
+console.log(jump([3,2,1])) // 1
+console.log(jump([2,3,1])) // 1
