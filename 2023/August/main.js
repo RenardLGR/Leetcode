@@ -359,5 +359,24 @@ var jump = function(nums) {
 // console.log(jump([2,3,0,1,4])) // 2
 // console.log(jump([5, 5])) // 1
 // console.log(jump([1,1,1])) // 2
-console.log(jump([3,2,1])) // 1
-console.log(jump([2,3,1])) // 1
+// console.log(jump([3,2,1])) // 1
+// console.log(jump([2,3,1])) // 1
+
+function jumpBis(nums){
+    let res = 0
+    let oldMax = 0
+    let newMax = 0
+    // We keep track of the furthest index reachable, once reached, a jump needs to be made and a new range needs to be found
+    // oldMax is the previous jump's maximum reach, if we are at the old max, that means no matter how we move, the next move will cost an extra jump, thus we increment res, at the same time, we update the oldMax to the current newMax we've been setting along. This max, indicates the maximum reach we will have by having an extra jump
+    for(let i=0 ; i<nums.length-1 ; i++){
+        newMax = Math.max(newMax, i + nums[i])
+
+        if(i === oldMax){
+            res++
+            oldMax = newMax
+        }
+    }
+    return res
+}
+
+//======================================================
