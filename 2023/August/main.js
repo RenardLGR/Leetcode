@@ -379,4 +379,53 @@ function jumpBis(nums){
     return res
 }
 
-//======================================================
+//==================================================
+// https://leetcode.com/problems/permutations/
+// Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+
+// Example 1:
+// Input: nums = [1,2,3]
+// Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+
+// Example 2:
+// Input: nums = [0,1]
+// Output: [[0,1],[1,0]]
+
+// Example 3:
+// Input: nums = [1]
+// Output: [[1]]
+
+// Constraints:
+
+// 1 <= nums.length <= 6
+// -10 <= nums[i] <= 10
+// All the integers of nums are unique.
+
+//Side note : An array of length n has n! permutations, because I have n choices for the first char, (n-1) for the following one, etc.
+
+var permute = function(nums) {
+    let res = []
+    solve([], nums)
+    return res
+
+    function solve(inP, remaining){
+        if(remaining.length === 0){
+            res.push(inP)
+            return
+        }
+        for(let i=0 ; i<remaining.length ; i++){
+            let cur = remaining[i]
+            let newRemaining = remaining.slice(0, i).concat(remaining.slice(i+1))
+            solve([...inP, cur], newRemaining)
+        }
+    }
+}
+
+// console.log(permute([1])) // [[1]]
+// console.log(permute([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+// console.log(permute([0,1])) // [[0,1],[1,0]]
+
+
+
+//===========================================
