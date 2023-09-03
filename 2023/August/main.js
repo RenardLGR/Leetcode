@@ -426,6 +426,28 @@ var permute = function(nums) {
 // console.log(permute([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
 // console.log(permute([0,1])) // [[0,1],[1,0]]
 
+//With swapping
+function permuteBis(nums){
+    let res = []
+    generate(0, nums)
+    return res
 
+    function generate(start, arr){
+        if(start === arr.length-1){
+            res.push(arr.slice())
+        }
+        for(let i=start ; i<arr.length ; i++){
+            //Swapping (also semicolons matter here)
+            [arr[start], arr[i]] = [arr[i], arr[start]];
+            generate(start+1, arr);
+            //Swapping back
+            [arr[start], arr[i]] = [arr[i], arr[start]];
+        }
+    }
+}
+
+// console.log(permuteBis([1])) // [[1]]
+// console.log(permuteBis([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+// console.log(permuteBis([0,1])) // [[0,1],[1,0]]
 
 //===========================================
