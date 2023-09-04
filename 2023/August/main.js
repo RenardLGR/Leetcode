@@ -451,3 +451,84 @@ function permuteBis(nums){
 // console.log(permuteBis([0,1])) // [[0,1],[1,0]]
 
 //===========================================
+// https://leetcode.com/problems/permutations-ii/
+// Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.
+
+
+// Example 1:
+// Input: nums = [1,1,2]
+// Output:
+// [[1,1,2],
+//  [1,2,1],
+//  [2,1,1]]
+
+// Example 2:
+// Input: nums = [1,2,3]
+// Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+
+// Constraints:
+
+// 1 <= nums.length <= 8
+// -10 <= nums[i] <= 10
+
+//Just filtering out those already seen...
+function permuteUnique(nums){
+    let res = []
+    solve([], nums)
+    return res.map(joined => joined.split(':').map(e=>+e))
+
+    function solve(inP, remaining){
+        if(remaining.length === 0){
+            //add only new ones
+            let joined = inP.join(':')
+            if(!res.includes(joined)){
+                res.push(joined)
+            }
+            return
+        }
+        for(let i=0 ; i<remaining.length ; i++){
+            let cur = remaining[i]
+            let newRemaining = remaining.slice(0, i).concat(remaining.slice(i+1))
+            solve([...inP, cur], newRemaining)
+        }
+    }
+}
+
+// console.log(permuteUnique([1])) // [[1]]
+// console.log(permuteUnique([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+// console.log(permuteUnique([0,1])) // [[0,1],[1,0]]
+// console.log(permuteUnique([1,1,2])) // [ [ 1, 1, 2 ], [ 1, 2, 1 ], [ 2, 1, 1 ] ]
+// console.log(permuteUnique([2,2,1,1])) // [[1,1,2,2],[1,2,1,2],[1,2,2,1],[2,1,1,2],[2,1,2,1],[2,2,1,1]]
+// console.log(permuteUnique([1,1,1,4,7])) // Long...
+// console.log(permuteUnique([-1,2,-1,2,1,-1,2,1])) // Long...
+
+//horrible complexity as expected
+
+//With swapping, but don't allow a swap with the same number, unless it is with itself. Add also the filtering from above
+function permuteUniqueBis(nums) {
+    let res = []
+    generate(0, nums)
+    return res.map(joined => joined.split(':').map(e=>+e))
+
+    function generate(start, arr){
+        if(start === arr.length-1){
+            //add only new ones
+            let joined = arr.join(':')
+            if(!res.includes(joined)){
+                res.push(joined)
+            }
+            return
+        }
+        for(let i=start ; i<arr.length ; i++){
+            if(arr[start] !== arr[i] || start===i){
+                //Swapping (also semicolons matter here)
+                [arr[start], arr[i]] = [arr[i], arr[start]];
+                generate(start+1, arr);
+                //Swapping back
+                [arr[start], arr[i]] = [arr[i], arr[start]];
+            }
+        }
+    }
+}
+
+//We are making progress in terms of complexity...
