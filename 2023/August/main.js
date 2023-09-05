@@ -499,8 +499,8 @@ function permuteUnique(nums){
 // console.log(permuteUnique([0,1])) // [[0,1],[1,0]]
 // console.log(permuteUnique([1,1,2])) // [ [ 1, 1, 2 ], [ 1, 2, 1 ], [ 2, 1, 1 ] ]
 // console.log(permuteUnique([2,2,1,1])) // [[1,1,2,2],[1,2,1,2],[1,2,2,1],[2,1,1,2],[2,1,2,1],[2,2,1,1]]
-// console.log(permuteUnique([1,1,1,4,7])) // Long...
-// console.log(permuteUnique([-1,2,-1,2,1,-1,2,1])) // Long...
+// console.log(permuteUnique([1,1,1,4,7])) // Long... 20 items
+// console.log(permuteUnique([-1,2,-1,2,1,-1,2,1])) // Long... 560 items
 
 //horrible complexity as expected
 
@@ -532,3 +532,41 @@ function permuteUniqueBis(nums) {
 }
 
 //We are making progress in terms of complexity...
+
+// From : https://www.youtube.com/watch?v=nYFd7VHKyWQ&
+function permuteUniqueTer(nums){
+    let res = []
+    let freq = nums.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+    }, {})
+
+    solve([])
+    return res
+
+    function solve(inP){
+        if(inP.length === nums.length){
+            res.push(inP.slice())
+        }
+        for(let el in freq){
+            if(freq[el] > 0){
+                inP.push(Number(el))
+                freq[el]--
+                solve(inP)
+                inP.pop()
+                freq[el]++
+            }
+        }
+    }
+}
+
+// console.log(permuteUniqueTer([1])) // [[1]]
+// console.log(permuteUniqueTer([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+// console.log(permuteUniqueTer([0,1])) // [[0,1],[1,0]]
+// console.log(permuteUniqueTer([1,1,2])) // [ [ 1, 1, 2 ], [ 1, 2, 1 ], [ 2, 1, 1 ] ]
+// console.log(permuteUniqueTer([2,2,1,1])) // [[1,1,2,2],[1,2,1,2],[1,2,2,1],[2,1,1,2],[2,1,2,1],[2,2,1,1]]
+// console.log(permuteUniqueTer([1,1,1,4,7])) // Long... 20 items
+// console.log(permuteUniqueTer([-1,2,-1,2,1,-1,2,1])) // Long... 560 items
+
+//Works good :D
+
