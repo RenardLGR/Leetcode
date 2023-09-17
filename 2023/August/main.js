@@ -585,7 +585,7 @@ function permuteUniqueQuater(nums){
             res.push(inP.slice())
         }
 
-        let noDuplicates = []
+        let noDuplicates = [] //for a loop, store unique elements only
         for(let i=0 ; i<nums.length ; i++){
             if(noDuplicates.includes(nums[i])) continue //inside a loop on the same level, iterates on unique elements only
             if(used[i]) continue //Globally, don't reuse elements already in inP
@@ -610,3 +610,31 @@ function permuteUniqueQuater(nums){
 // console.log(permuteUniqueQuater([-1,2,-1,2,1,-1,2,1])) // Long... 560 items
 
 //Works, very efficient time complexity, even better than before
+
+//Same than before, but now using an Object instead of an Array to keep track of unique elements
+function permuteUniqueQuinquies(nums){
+    let res = []
+    let used = Array(nums.length).fill(false)
+    solve([])
+    return res
+    
+    function solve(inP){
+        if(inP.length === nums.length){
+            res.push(inP.slice())
+        }
+
+        let noDuplicates = {} //for a loop, store unique elements only
+        for(let i=0 ; i<nums.length ; i++){
+            if(noDuplicates.hasOwnProperty(nums[i])) continue //inside a loop on the same level, iterates on unique elements only
+            if(used[i]) continue //Globally, don't reuse elements already in inP
+
+            noDuplicates[nums[i]] = true
+            used[i] = true
+            inP.push(nums[i])
+            solve(inP)
+            //backtrack, keep the noDuplicates as is
+            used[i] = false
+            inP.pop()
+        }
+    }
+}
