@@ -553,6 +553,7 @@ function permuteUniqueTer(nums){
                 inP.push(Number(el))
                 freq[el]--
                 solve(inP)
+                //backtrack
                 inP.pop()
                 freq[el]++
             }
@@ -570,3 +571,42 @@ function permuteUniqueTer(nums){
 
 //Works good :D
 
+
+//Same idea than before, instead of looping through each uniques elements (when we were looping in freq), we will keep track of the elements I have already seen with the Array noDuplicates
+function permuteUniqueQuater(nums){
+    let res = []
+    let used = Array(nums.length).fill(false)
+    solve([])
+    console.log(res.length);
+    return res
+    
+    function solve(inP){
+        if(inP.length === nums.length){
+            res.push(inP.slice())
+        }
+
+        let noDuplicates = []
+        for(let i=0 ; i<nums.length ; i++){
+            if(noDuplicates.includes(nums[i])) continue //inside a loop on the same level, iterates on unique elements only
+            if(used[i]) continue //Globally, don't reuse elements already in inP
+
+            noDuplicates.push(nums[i])
+            used[i] = true
+            inP.push(nums[i])
+            solve(inP)
+            //backtrack, keep the noDuplicates as is
+            used[i] = false
+            inP.pop()
+        }
+    }
+}
+
+// console.log(permuteUniqueQuater([1])) // [[1]]
+// console.log(permuteUniqueQuater([1,2,3])) // [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+// console.log(permuteUniqueQuater([0,1])) // [[0,1],[1,0]]
+// console.log(permuteUniqueQuater([1,1,2])) // [ [ 1, 1, 2 ], [ 1, 2, 1 ], [ 2, 1, 1 ] ]
+// console.log(permuteUniqueQuater([2,2,1,1])) // [[1,1,2,2],[1,2,1,2],[1,2,2,1],[2,1,1,2],[2,1,2,1],[2,2,1,1]]
+// console.log(permuteUniqueQuater([1,1,1,4,7])) // Long... 20 items
+// console.log(permuteUniqueQuater([-1,2,-1,2,1,-1,2,1])) // Long... 560 items
+
+//Works, very efficient time complexity, even better than before
