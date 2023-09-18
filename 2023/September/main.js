@@ -76,7 +76,6 @@ function rotateCounterclockwise(matrix){
     for(let row=0 ; row<Math.floor(matrix.length/2) ; row++){
         [matrix[row] , matrix[matrix.length-1-row]] = [matrix[matrix.length-1-row] , matrix[row]]
     }
-    console.log(JSON.stringify(matrix));
 
     //swap following the top-right to bottom-left diagonal symmetry
     for(let row=0 ; row<matrix.length ; row++){
@@ -90,3 +89,23 @@ function rotateCounterclockwise(matrix){
 
 // console.log(rotateCounterclockwise([[1,2,3],[4,5,6],[7,8,9]])) // [[3,6,9],[2,5,8],[1,4,7]]
 // console.log(rotateCounterclockwise([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[11,10,7,16],[9,8,6,12],[1,4,3,14],[5,2,13,15]]
+
+//Same idea than before. We can save a bit of time by using a mirroring on the bottom, then swap following the top-left to bottom-right diagonal symmetry which happen to be very easy as it is a swap between matrix[col][row] with matrix[row][col]
+function rotateClockwiseBis(matrix){
+    //mirror it on the bottom
+    for(let row=0 ; row<Math.floor(matrix.length/2) ; row++){
+        [matrix[row] , matrix[matrix.length-1-row]] = [matrix[matrix.length-1-row] , matrix[row]]
+    }
+
+        //swap following the top-left to bottom-right diagonal symmetry
+        for(let row=0 ; row<matrix.length ; row++){
+            for(let col=0 ; col<row ; col++){
+                [matrix[row][col] , matrix[col][row]] = [matrix[col][row] , matrix[row][col]]
+            }
+        }
+    
+        return matrix
+}
+
+// console.log(rotateClockwiseBis([[1,2,3],[4,5,6],[7,8,9]])) // [[7,4,1],[8,5,2],[9,6,3]]
+// console.log(rotateClockwiseBis([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
