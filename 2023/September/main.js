@@ -90,22 +90,51 @@ function rotateCounterclockwise(matrix){
 // console.log(rotateCounterclockwise([[1,2,3],[4,5,6],[7,8,9]])) // [[3,6,9],[2,5,8],[1,4,7]]
 // console.log(rotateCounterclockwise([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[11,10,7,16],[9,8,6,12],[1,4,3,14],[5,2,13,15]]
 
-//Same idea than before. We can save a bit of time by using a mirroring on the bottom, then swap following the top-left to bottom-right diagonal symmetry which happen to be very easy as it is a swap between matrix[col][row] with matrix[row][col]
+//Same idea than before. We can save a bit of time by using a mirroring on the bottom, then swap following the top-left to bottom-right diagonal symmetry which happen to be very easy as it is a swap between matrix[col][row] with matrix[row][col]. The swapping following this diagonal is called the transposed matrix
 function rotateClockwiseBis(matrix){
     //mirror it on the bottom
     for(let row=0 ; row<Math.floor(matrix.length/2) ; row++){
         [matrix[row] , matrix[matrix.length-1-row]] = [matrix[matrix.length-1-row] , matrix[row]]
     }
 
-        //swap following the top-left to bottom-right diagonal symmetry
-        for(let row=0 ; row<matrix.length ; row++){
-            for(let col=0 ; col<row ; col++){
-                [matrix[row][col] , matrix[col][row]] = [matrix[col][row] , matrix[row][col]]
-            }
+    //swap following the top-left to bottom-right diagonal symmetry
+    for(let row=0 ; row<matrix.length ; row++){
+        for(let col=0 ; col<row ; col++){
+            [matrix[row][col] , matrix[col][row]] = [matrix[col][row] , matrix[row][col]]
         }
-    
-        return matrix
+    }
+
+    return matrix
 }
 
 // console.log(rotateClockwiseBis([[1,2,3],[4,5,6],[7,8,9]])) // [[7,4,1],[8,5,2],[9,6,3]]
 // console.log(rotateClockwiseBis([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+
+// From : https://www.geeksforgeeks.org/inplace-rotate-square-matrix-by-90-degrees/
+// and : https://leetcode.com/problems/rotate-image/solutions/1175496/js-python-java-c-easy-4-way-swap-solution-w-explanation/
+// We will consider matrices as having layers of outer elements. For example, the first layer is formed by its 1st row, last column, last row, and 1st column. The second cycle is formed by the 2nd row, second-last column, second-last row, and 2nd column (minus one element on each side). We will rotate elements inside a layer, then going to the next layer and repeat the process. For a matrix of size NxN, there are Math.floor(N/2) layers.
+
+function rotateClockwiseTer(matrix){
+    //Loop through layers
+    for(let lay=0 ; lay<Math.floor(matrix.length/2) ; lay++){
+        //Take the first element of the first row, replace the first element of the last col, which will replace the first element of the last row, which will finally fill the first element of the first row.
+        //Repeat this process for the second element of the first row.
+        for(let i=0 ; i<matrix.length-1-lay*2 ; i++){
+            //start at top left is matrix[lay][lay+i]
+            //start at top right is matrix[lay+i][matrix.length-1-lay]
+            //start at bottom right is matrix[matrix.length-1-lay][matrix.length-1-lay-i]
+            //start at bottom left is matrix[matrix.length-1-lay-i][lay]
+            let temp = matrix[lay][lay+i]
+            matrix[lay][lay+i] = matrix[matrix.length-1-lay-i][lay]
+            matrix[matrix.length-1-lay-i][lay] = matrix[matrix.length-1-lay][matrix.length-1-lay-i]
+            matrix[matrix.length-1-lay][matrix.length-1-lay-i] = matrix[lay+i][matrix.length-1-lay]
+            matrix[lay+i][matrix.length-1-lay] = temp
+
+        }
+    }
+
+    return matrix
+}
+
+console.log(rotateClockwiseTer([[1,2,3],[4,5,6],[7,8,9]])) // [[7,4,1],[8,5,2],[9,6,3]]
+console.log(rotateClockwiseTer([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
