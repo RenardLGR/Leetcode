@@ -117,7 +117,7 @@ function rotateClockwiseBis(matrix){
 function rotateClockwiseTer(matrix){
     //Loop through layers
     for(let lay=0 ; lay<Math.floor(matrix.length/2) ; lay++){
-        //Take the first element of the first row, replace the first element of the last col, which will replace the first element of the last row, which will finally fill the first element of the first row.
+        //Take the first element of the first row, replace the first element of the last col, which will replace the last element of the last row, which will replace the last element of the first col, which will finally fill the first element of the first row.
         //Repeat this process for the second element of the first row.
         for(let i=0 ; i<matrix.length-1-lay*2 ; i++){
             //start at top left is matrix[lay][lay+i]
@@ -136,5 +136,32 @@ function rotateClockwiseTer(matrix){
     return matrix
 }
 
-console.log(rotateClockwiseTer([[1,2,3],[4,5,6],[7,8,9]])) // [[7,4,1],[8,5,2],[9,6,3]]
-console.log(rotateClockwiseTer([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+// console.log(rotateClockwiseTer([[1,2,3],[4,5,6],[7,8,9]])) // [[7,4,1],[8,5,2],[9,6,3]]
+// console.log(rotateClockwiseTer([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+
+//Same principle but for counterclockwise rotation :
+
+function rotateCounterclockwiseBis(matrix){
+        //Loop through layers
+        for(let lay=0 ; lay<Math.floor(matrix.length/2) ; lay++){
+            //Take the first element of the first col, replace the first element of the last row, which will replace the last element of the last col, which will replace the last element of the first row, which will finally fill the first element of the first row.
+            //Repeat this process for the second element of the first col.
+            for(let i=0 ; i<matrix.length-1-lay*2 ; i++){
+                //start at top left is matrix[lay+i][lay]
+                //start at bottom left is matrix[matrix.length-1-lay][lay+i]
+                //start at bottom right is matrix[matrix.length-1-lay-i][matrix.length-1-lay]
+                //start at top right is matrix[lay][matrix.length-1-lay-i]
+                let temp = matrix[lay+i][lay]
+                matrix[lay+i][lay] = matrix[lay][matrix.length-1-lay-i]
+                matrix[lay][matrix.length-1-lay-i] = matrix[matrix.length-1-lay-i][matrix.length-1-lay]
+                matrix[matrix.length-1-lay-i][matrix.length-1-lay] = matrix[matrix.length-1-lay][lay+i]
+                matrix[matrix.length-1-lay][lay+i] = temp
+            }
+        }
+    
+        return matrix
+}
+
+// console.log(rotateCounterclockwiseBis([[1,2,3],[4,5,6],[7,8,9]])) // [[3,6,9],[2,5,8],[1,4,7]]
+// console.log(rotateCounterclockwiseBis([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[11,10,7,16],[9,8,6,12],[1,4,3,14],[5,2,13,15]]
+// console.log(rotateCounterclockwiseBis([[1, 2, 3, 4],[ 5, 6, 7, 8 ],[9, 10, 11, 12 ],[13, 14, 15, 16]])) // [[ 4, 8, 12, 16 ],[ 3, 7, 11, 15 ],[ 2, 6, 10, 14 ],[ 1, 5, 9, 13 ]]
