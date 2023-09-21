@@ -165,3 +165,98 @@ function rotateCounterclockwiseBis(matrix){
 // console.log(rotateCounterclockwiseBis([[1,2,3],[4,5,6],[7,8,9]])) // [[3,6,9],[2,5,8],[1,4,7]]
 // console.log(rotateCounterclockwiseBis([[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]])) // [[11,10,7,16],[9,8,6,12],[1,4,3,14],[5,2,13,15]]
 // console.log(rotateCounterclockwiseBis([[1, 2, 3, 4],[ 5, 6, 7, 8 ],[9, 10, 11, 12 ],[13, 14, 15, 16]])) // [[ 4, 8, 12, 16 ],[ 3, 7, 11, 15 ],[ 2, 6, 10, 14 ],[ 1, 5, 9, 13 ]]
+
+//============================================
+// https://leetcode.com/problems/group-anagrams/
+// Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+// An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+// Example 1:
+// Input: strs = ["eat","tea","tan","ate","nat","bat"]
+// Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+// Example 2:
+// Input: strs = [""]
+// Output: [[""]]
+
+// Example 3:
+// Input: strs = ["a"]
+// Output: [["a"]]
+ 
+// Constraints:
+
+// 1 <= strs.length <= 104
+// 0 <= strs[i].length <= 100
+// strs[i] consists of lowercase English letters.
+
+
+//Naive thinking : Get the freq of each string, consider it as its "signature" then group together those sharing the same freq
+var groupAnagrams = function(strs) {
+    let freqs = strs.map(s => {
+        let freq = s.split('').reduce((acc, cur) => {
+            acc[cur] = (acc[cur] || 0) + 1
+            return acc
+        }, {})
+        //alphabetically sorting the keys
+        return Object.keys(freq).sort().reduce((acc, cur) => {
+            acc[cur] = freq[cur]
+            return acc
+        }, {})
+    })
+
+    //Getting the indices of each strings sharing the same "signature". The signature will be a stringify JSON Object and will serve as keys
+    let groupedFreqs = {}
+    freqs.forEach((freq, idx) => {
+        let key = JSON.stringify(freq)
+        if(!groupedFreqs.hasOwnProperty(key)) groupedFreqs[key] = []
+        groupedFreqs[key].push(idx)
+    })
+
+    //Finally, from the saved indices, return the expected result
+    let res = []
+    for(let arrayOfIndices in groupedFreqs){
+        res.push(groupedFreqs[arrayOfIndices].map(i => strs[i]))
+    }
+
+    return res
+};
+
+// console.log(groupAnagrams(["eat","tea","tan","ate","nat","bat"])) // [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+//What an horrible code... but working
+
+//Small improve of the naive thinking : Instead of keeping track of the indices, keep track of the strings instead
+function groupAnagramsBis(strs){
+    let freqs = strs.map(s => {
+        let freq = s.split('').reduce((acc, cur) => {
+            acc[cur] = (acc[cur] || 0) + 1
+            return acc
+        }, {})
+        //alphabetically sorting the keys
+        return Object.keys(freq).sort().reduce((acc, cur) => {
+            acc[cur] = freq[cur]
+            return acc
+        }, {})
+    })
+
+    //Getting the indices of each strings sharing the same "signature". The signature will be a stringify JSON Object and will serve as keys
+    let groupedFreqs = {}
+    freqs.forEach((freq, idx) => {
+        let key = JSON.stringify(freq)
+        if(!groupedFreqs.hasOwnProperty(key)) groupedFreqs[key] = []
+        groupedFreqs[key].push(strs[idx])
+    })
+
+    //Finally, from the saved indices, return the expected result
+    let res = []
+    for(let arrayOfIndices in groupedFreqs){
+        res.push(groupedFreqs[arrayOfIndices])
+    }
+
+    return res
+}
+
+// console.log(groupAnagramsBis(["eat","tea","tan","ate","nat","bat"])) // [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+//Just keep an Object with the alphabetically sorted string as key...
