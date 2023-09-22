@@ -246,12 +246,13 @@ function groupAnagramsBis(strs){
         let key = JSON.stringify(freq)
         if(!groupedFreqs.hasOwnProperty(key)) groupedFreqs[key] = []
         groupedFreqs[key].push(strs[idx])
+        // groupedFreqs[key] = groupedFreqs[key] ? groupedFreqs[key].concat(strs[idx]) : [].concat(strs[idx])
     })
 
-    //Finally, from the saved indices, return the expected result
+    //Finally, from the saved strings, return the expected result
     let res = []
-    for(let arrayOfIndices in groupedFreqs){
-        res.push(groupedFreqs[arrayOfIndices])
+    for(let arrayOfStrings in groupedFreqs){
+        res.push(groupedFreqs[arrayOfStrings])
     }
 
     return res
@@ -260,3 +261,53 @@ function groupAnagramsBis(strs){
 // console.log(groupAnagramsBis(["eat","tea","tan","ate","nat","bat"])) // [["bat"],["nat","tan"],["ate","eat","tea"]]
 
 //Just keep an Object with the alphabetically sorted string as key...
+function groupAnagramsTer(strs){
+    let groupedAnagrams = strs.reduce((acc, cur) => {
+        let sorted = cur.split('').sort()
+        acc[sorted] = (acc[sorted] || []).concat(cur)
+        console.log(acc);
+        return acc
+    }, {})
+
+    let res = []
+    for(let signature in groupedAnagrams){
+        res.push(groupedAnagrams[signature])
+    }
+    return res
+    //return Object.values(groupedAnagrams)
+}
+
+// console.log(groupAnagramsTer(["eat","tea","tan","ate","nat","bat"])) // [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+//Let's try with a single reduce :
+function groupAnagramsQuater(strs){
+    return strs.reduce((acc, cur) => {
+        let tempIdx = acc.findIndex(subArr => areAnagrams(subArr[0], cur))
+        if(tempIdx === -1) acc.push([cur])
+        else acc[tempIdx].push(cur)
+        return acc
+    }, [])
+
+    function areAnagrams(word1, word2){
+        if(word1.length !== word2.length) return false
+
+        let freq = {}
+        for(let char of word1){
+            freq[char] = (freq[char] || 0) + 1
+        }
+
+        for(let char of word2){
+            if(!freq.hasOwnProperty(char)) return false
+            freq[char]--
+        }
+
+        for(let char in freq){
+            if(freq[char] !== 0) return false
+        }
+
+        return true
+    }
+}
+
+// console.log(groupAnagramsQuater(["eat","tea","tan","ate","nat","bat"])) // [ [ 'eat', 'tea', 'ate' ], [ 'tan', 'nat' ], [ 'bat' ] ]
+// The findIndex makes this option bad in complexity.
