@@ -328,3 +328,51 @@ function groupAnagramsQuinquies(strs){
 // console.log(groupAnagramsQuinquies(["eat","tea","tan","ate","nat","bat"])) // [ [ 'bat' ], [ 'eat', 'tea', 'ate' ], [ 'tan', 'nat' ] ]
 
 //==========================================
+// https://leetcode.com/problems/powx-n/
+// Implement pow(x, n), which calculates x raised to the power n (i.e., xn). 
+
+// Example 1:
+// Input: x = 2.00000, n = 10
+// Output: 1024.00000
+
+// Example 2:
+// Input: x = 2.10000, n = 3
+// Output: 9.26100
+
+// Example 3:
+// Input: x = 2.00000, n = -2
+// Output: 0.25000
+// Explanation: 2-2 = 1/22 = 1/4 = 0.25
+ 
+
+// Constraints:
+// -100.0 < x < 100.0
+// -231 <= n <= 231-1
+// n is an integer.
+// Either x is not zero or n > 0.
+// -104 <= xn <= 104
+
+var myPow = function(x, n) {
+    // Reminder :
+    // x^0 = 1 with x =/= 0 
+    // x^n * x^m = x^(n+m) with(n, m) >= 0
+    // x^(-n) = 1 / x^n with n >= 0
+    // We will be using a fast exponentiation method with a time complexity of O(log n)
+    if(n===0) return 1
+    if(n===1) return x
+
+    if(n<0) return 1/myPow(x, -n)
+
+    if(n%2 === 0){
+        return myPow(x, n/2) * myPow(x, n/2)
+    }else{
+        let floor = (n-1)/2
+        return x * myPow(x, floor) * myPow(x, floor)
+    }
+}
+
+console.log(myPow(2.00000, 10)) // 1024
+console.log(myPow(2.10000, 3)) // 9.261000000000001
+console.log(myPow(2.00000, -2)) // 0.25
+
+//Takes too long for absurdly huge n (n=2147483647), changing sign of n=-2147483647 will lead to a bug too...
