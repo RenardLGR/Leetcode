@@ -265,7 +265,6 @@ function groupAnagramsTer(strs){
     let groupedAnagrams = strs.reduce((acc, cur) => {
         let sorted = cur.split('').sort()
         acc[sorted] = (acc[sorted] || []).concat(cur)
-        console.log(acc);
         return acc
     }, {})
 
@@ -311,3 +310,21 @@ function groupAnagramsQuater(strs){
 
 // console.log(groupAnagramsQuater(["eat","tea","tan","ate","nat","bat"])) // [ [ 'eat', 'tea', 'ate' ], [ 'tan', 'nat' ], [ 'bat' ] ]
 // The findIndex makes this option bad in complexity.
+
+//Going back to the signature method, instead of the sorted string, by mapping a character to a prime number, we can use the product of each character. This method works if strings are not too long, so the result of our product is not too big.
+//Lower case letters char code range from 97 to 122 included
+
+function groupAnagramsQuinquies(strs){
+    const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101] //26 primes for each characters
+    const map = {}
+    strs.forEach(s => {
+        let prod = s.split('').reduce((acc, cur) => acc * primes[cur.charCodeAt() - 97], 1)
+        map[prod] ? map[prod].push(s) : map[prod] = [s]
+    })
+
+    return Object.values(map)
+}
+
+// console.log(groupAnagramsQuinquies(["eat","tea","tan","ate","nat","bat"])) // [ [ 'bat' ], [ 'eat', 'tea', 'ate' ], [ 'tan', 'nat' ] ]
+
+//==========================================
