@@ -365,14 +365,67 @@ var myPow = function(x, n) {
 
     if(n%2 === 0){
         return myPow(x, n/2) * myPow(x, n/2)
+        // let temp = myPow(x, n/2)
+        // return temp * temp
     }else{
         let floor = (n-1)/2
         return x * myPow(x, floor) * myPow(x, floor)
+        // return x * myPow(x, n-1)
     }
 }
 
-console.log(myPow(2.00000, 10)) // 1024
-console.log(myPow(2.10000, 3)) // 9.261000000000001
-console.log(myPow(2.00000, -2)) // 0.25
+// console.log(myPow(2.00000, 10)) // 1024
+// console.log(myPow(2.10000, 3)) // 9.261000000000001
+// console.log(myPow(2.00000, -2)) // 0.25
+// console.log(myPow(0.00001, 2147483647)) // 0 ??
 
 //Takes too long for absurdly huge n (n=2147483647), changing sign of n=-2147483647 will lead to a bug too...
+
+//Same idea but typed differently (and more efficiently) :
+function myPowBis(x, n){
+    // Reminder :
+    // x^0 = 1 with x =/= 0 
+    // x^n * x^m = x^(n+m) with(n, m) >= 0
+    // x^(-n) = 1 / x^n with n >= 0
+    // We will be using a fast exponentiation method with a time complexity of O(log n)
+    if(n===0) return 1
+    if(n===1) return x
+
+    if(n<0) return 1 / myPow(x, Math.abs(n))
+
+    if(n%2 === 0){
+        return myPow(x*x, n/2)
+    }else{
+        return x * myPow(x*x, (n-1)/2)
+    }
+}
+
+// console.log(myPowBis(2.00000, 10)) // 1024
+// console.log(myPowBis(2.10000, 3)) // 9.261000000000001
+// console.log(myPowBis(2.00000, -2)) // 0.25
+// console.log(myPowBis(0.00001, 2147483647)) // 0 ??
+
+// Good
+
+// Using the properties of log and exp, we can transform a power into a multiplication
+function myPowTer(x,n){
+    // Reminder : log(x^n) = n * log(x) with x>0
+    // The Math.log() static method returns the natural logarithm (base e) of a number. That is with x>0 ; Math.log(x) = ln(x) = the unique y such that e^y = x
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
+    // e^(ln(x)) = x with x>0
+
+    if(n===0) return 1
+    if(n===1) return x
+    if(x===0) return 0
+
+    const isXNegativeAndNOdd = (x<0 && n%2===1)
+    const absoluteX = Math.abs(x)
+    return isXNegativeAndNOdd ? -1 * Math.exp(n * Math.log(absoluteX)) : Math.exp(n * Math.log(absoluteX))
+}
+
+// console.log(myPowTer(2.00000, 10)) // 1024
+// console.log(myPowTer(2.10000, 3)) // 9.261
+// console.log(myPowTer(2.00000, -2)) // 0.25
+// console.log(myPowTer(0.00001, 2147483647)) // 0 ??
+
+//=====================================
