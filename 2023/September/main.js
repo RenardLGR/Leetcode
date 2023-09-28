@@ -496,3 +496,63 @@ var solveNQueens = function(n) {
 // console.log(solveNQueens(4)); // [[ '.Q..', '...Q', 'Q...', '..Q.' ], [ '..Q.', 'Q...', '...Q', '.Q..' ]]
 // console.log(solveNQueens(1)); // [ [ 'Q' ] ]
 // console.log(solveNQueens(8), solveNQueens(8).length); // 92 elements
+
+function solveNQueensBis(n){
+    //Note : Let [r, c] be the coord of a point placed on board[r][c], let n be the size of the board
+    // 2 elements are on the same top right to bottom left diagonal if the sum r + c is identical. Example [1, 5] is on the same diagonal than [4, 2] as 1+5 === 4+2
+    // 2 elements are on the same top left to bottom right diagonal if the difference r - c is identical. Example [2, 1] is on the same diagonal than [4, 3] as 2-1 === 4-3
+    // There are 2n-1 of such diagonals in one direction ranging from 0 to 2n-2 for top right to bottom left diagonals
+    // There are 2n-1 of such diagonals in one direction ranging from -2n+1 to 2n-1 (we will work on that point) for top left to bottom right diagonals
+    // We will have 2 Arrays of size 2n-1 to keep track of diagonals with a queen present, we will have an additional Array keeping track of columns with a queen present of size n
+    let res = []
+    let board = Array.from({length:n}, (_ => Array(n).fill(".")))
+    let isQueenPresentTRBL = Array(2*n-1).fill(false) // top right to bottom left diagonals
+    let isQueenPresentTLBR = Array(2*n-1).fill(false) // top left to bottom right diagonals
+    let isQueenPresentCol = Array(n).fill(false)
+
+    solve(0)
+    return res
+
+    function solve(row){
+        if(row === n){
+            res.push(deepCpy(board))
+            return
+        }
+
+        for(let col=0 ; col<n ; col++){
+            if(isValid(row, col)){
+                add(row, col)
+                solve(row+1)
+                //Backtracking
+                backtrack(row, col)
+            }
+        }
+    }
+
+    function deepCpy(board){
+        return board.map(row => row.join(''))
+    }
+
+    function add(row, col){
+        board[row][col] = "Q"
+        isQueenPresentCol[col] = true
+        isQueenPresentTLBR[col+row] = true
+        isQueenPresentTRBL[col-row+n-1] = true
+    }
+
+    function backtrack(row, col){
+        board[row][col] = "."
+        isQueenPresentCol[col] = false
+        isQueenPresentTLBR[col+row] = false
+        isQueenPresentTRBL[col-row+n-1] = false
+    }
+
+    function isValid(row, col) {
+        return (!isQueenPresentCol[col] && !isQueenPresentTLBR[col+row] && !isQueenPresentTRBL[col-row+n-1])
+    }
+}
+
+// console.log(solveNQueensBis(4)); // [[ '.Q..', '...Q', 'Q...', '..Q.' ], [ '..Q.', 'Q...', '...Q', '.Q..' ]]
+// console.log(solveNQueensBis(1)); // [ [ 'Q' ] ]
+// console.log(solveNQueensBis(8), solveNQueensBis(8).length); // 92 elements
+
