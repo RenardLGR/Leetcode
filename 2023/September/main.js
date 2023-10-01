@@ -503,7 +503,7 @@ function solveNQueensBis(n){
     // 2 elements are on the same top left to bottom right diagonal if the difference r - c is identical. Example [2, 1] is on the same diagonal than [4, 3] as 2-1 === 4-3
     // There are 2n-1 of such diagonals in one direction ranging from 0 to 2n-2 for top right to bottom left diagonals
     // There are 2n-1 of such diagonals in one direction ranging from -2n+1 to 2n-1 (we will work on that point) for top left to bottom right diagonals
-    // We will have 2 Arrays of size 2n-1 to keep track of diagonals with a queen present, we will have an additional Array keeping track of columns with a queen present of size n
+    // We will have 2 Arrays of size 2n-1 to keep track of diagonals with a queen present, we will have an additional Array of size n keeping track of columns with a queen present
     let res = []
     let board = Array.from({length:n}, (_ => Array(n).fill(".")))
     let isQueenPresentTRBL = Array(2*n-1).fill(false) // top right to bottom left diagonals
@@ -556,3 +556,68 @@ function solveNQueensBis(n){
 // console.log(solveNQueensBis(1)); // [ [ 'Q' ] ]
 // console.log(solveNQueensBis(8), solveNQueensBis(8).length); // 92 elements
 
+//========================================================
+// https://leetcode.com/problems/n-queens-ii/
+// The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+
+// Given an integer n, return the number of distinct solutions to the n-queens puzzle.
+
+// Example 1:
+// Input: n = 4
+// Output: 2
+// Explanation: There are two distinct solutions to the 4-queens puzzle as shown.
+
+// Example 2:
+// Input: n = 1
+// Output: 1
+
+// Constraints:
+// 1 <= n <= 9
+
+var totalNQueens = function(n) {
+    // From https://leetcode.com/problems/n-queens/
+    let res = 0
+    let board = Array.from({length:n}, (_ => Array(n).fill(".")))
+    let isQueenPresentTRBL = Array(2*n-1).fill(false) // top right to bottom left diagonals
+    let isQueenPresentTLBR = Array(2*n-1).fill(false) // top left to bottom right diagonals
+    let isQueenPresentCol = Array(n).fill(false)
+
+    solve(0)
+    return res
+
+    function solve(row){
+        if(row === n){
+            res++
+            return
+        }
+
+        for(let col=0 ; col<n ; col++){
+            if(isValid(row, col)){
+                add(row, col)
+                solve(row+1)
+                //Backtracking
+                backtrack(row, col)
+            }
+        }
+    }
+
+    function add(row, col){
+        board[row][col] = "Q"
+        isQueenPresentCol[col] = true
+        isQueenPresentTLBR[col+row] = true
+        isQueenPresentTRBL[col-row+n-1] = true
+    }
+
+    function backtrack(row, col){
+        board[row][col] = "."
+        isQueenPresentCol[col] = false
+        isQueenPresentTLBR[col+row] = false
+        isQueenPresentTRBL[col-row+n-1] = false
+    }
+
+    function isValid(row, col) {
+        return (!isQueenPresentCol[col] && !isQueenPresentTLBR[col+row] && !isQueenPresentTRBL[col-row+n-1])
+    }
+}
+
+//============================================
