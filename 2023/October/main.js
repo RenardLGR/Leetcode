@@ -55,22 +55,50 @@ var maxSubArray = function(nums) {
 // console.log(maxSubArray([5,4,-1,7,8])) // 23 with [5,4,-1,7,8]
 //Time Limit Exceeded
 
-//## approach
+//Kadane's approach
 function maxSubArrayBis(nums){
-    // A subarray is a contiguous non-empty sequence of elements within an array.
-    let maximums = Array(nums.length)
-    maximums[0] = nums[0]
-    let max = maximums[0]
+    //Kadane's approach
+    //Kadane's approach tracks the maximum of the current subarray ending at current index (maxEndingHere). We are better off starting a new subarray if adding the current value still yields to a subarray sum smaller than the current value
+    let maxEndingHere = [nums[0]]
+    let res = nums[0]
 
     for(let i=1 ; i<nums.length ; i++){
-        maximums[i] = nums[i] + (maximums[i-1] > 0 ? maximums[i-1] : 0)
-        max = Math.max(max, maximums[i])
+        maxEndingHere[i] = Math.max(maxEndingHere[i-1] + nums[i], nums[i])
+        res = Math.max(maxEndingHere[i], res)
     }
-    return max
+    return res
 }
 
-console.log(maxSubArrayBis([-2,1,-3,4,-1,2,1,-5,4])) // 6 with [4,-1,2,1]
-console.log(maxSubArrayBis([1])) // 1 with [1]
-console.log(maxSubArrayBis([5,4,-1,7,8])) // 23 with [5,4,-1,7,8]
-console.log(maxSubArrayBis([1000,-1,-1,-1,1000])) // 1997 with [1000,-1,-1,-1,1000]
-console.log(maxSubArrayBis([1000,-1,-1,-1,-1000,1500])) // 1500 with [1500]
+// console.log(maxSubArrayBis([-2,1,-3,4,-1,2,1,-5,4])) // 6 with [4,-1,2,1]
+// console.log(maxSubArrayBis([1])) // 1 with [1]
+// console.log(maxSubArrayBis([5,4,-1,7,8])) // 23 with [5,4,-1,7,8]
+// console.log(maxSubArrayBis([1000,-1,-1,-1,1000])) // 1997 with [1000,-1,-1,-1,1000]
+// console.log(maxSubArrayBis([1000,-1,-1,-1,-1000,1500])) // 1500 with [1500]
+// console.log(maxSubArrayBis([-70,-100,-50])) // -50 with [-50]
+
+//Kadane's approach, other syntax
+function maxSubArrayTer(nums){
+    //Kadane's approach
+    //Kadane's approach tracks the maximum of the current subarray ending at current index (maxEndingHere). We are better off starting a new subarray if adding the current value still yields to a subarray sum smaller than the current value
+    let maxEndingHere = Array(nums.length)
+    maxEndingHere[0] = nums[0]
+    let res = nums[0]
+
+    for(let i=1 ; i<nums.length ; i++){
+        //maxEndingHere[i] = (maxEndingHere[i-1] + nums[i] > nums[i] ? maxEndingHere[i-1] + nums[i] : nums[i])
+        maxEndingHere[i] = nums[i] + (maxEndingHere[i-1] > 0 ? maxEndingHere[i-1] : 0)
+        res = Math.max(maxEndingHere[i], res)
+    }
+    return res
+}
+
+// console.log(maxSubArrayTer([-2,1,-3,4,-1,2,1,-5,4])) // 6 with [4,-1,2,1]
+// console.log(maxSubArrayTer([1])) // 1 with [1]
+// console.log(maxSubArrayTer([5,4,-1,7,8])) // 23 with [5,4,-1,7,8]
+// console.log(maxSubArrayTer([1000,-1,-1,-1,1000])) // 1997 with [1000,-1,-1,-1,1000]
+// console.log(maxSubArrayTer([1000,-1,-1,-1,-1000,1500])) // 1500 with [1500]
+// console.log(maxSubArrayTer([-70,-100,-50])) // -50 with [-50]
+
+//This syntax is way faster than the previous one, despite having the same approach
+
+//========================================
