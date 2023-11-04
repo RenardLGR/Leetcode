@@ -102,3 +102,91 @@ function maxSubArrayTer(nums){
 //This syntax is way faster than the previous one, despite having the same approach
 
 //========================================
+// https://leetcode.com/problems/spiral-matrix/
+// Given an m x n matrix, return all elements of the matrix in spiral order.
+
+// Example 1:
+// Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+// Output: [1,2,3,6,9,8,7,4,5]
+
+// Example 2:
+// Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+// Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+
+// Constraints:
+// m == matrix.length
+// n == matrix[i].length
+// 1 <= m, n <= 10
+// -100 <= matrix[i][j] <= 100
+
+var spiralOrder = function(matrix) {
+    //The order is always first row from left to right, last col from top to bottom, last row from right to left and first col from bottom to top (minus the elements already visited)
+    //We wil represent these directions with a number ranging from 0 to 3 (included)
+    let res = []
+    solve(0)
+    return res
+
+    function solve(dir){
+        if(matrix.length === 0 || matrix[0].length === 0) return
+
+        if(dir === 0){
+            res.push(...matrix.shift())
+        }
+
+        if(dir === 1){
+            for(let row=0 ; row<matrix.length ; row++){
+                res.push(matrix[row].pop())
+            }
+        }
+
+        if(dir === 2){
+            res.push(...matrix.pop().reverse())
+        }
+
+        if(dir === 3){
+            for(let row=matrix.length-1 ; row>=0 ; row--){
+                res.push(matrix[row].shift())
+            }
+        }
+
+        return solve((dir+1)%4)
+    }
+}
+
+// console.log(spiralOrder([[1,2,3],[4,5,6],[7,8,9]])) // [1,2,3,6,9,8,7,4,5]
+// console.log(spiralOrder([[1,2,3,4],[5,6,7,8],[9,10,11,12]])) // [1,2,3,4,8,12,11,10,9,5,6,7]
+
+function spiralOrderBis(matrix){
+    const nElements = matrix[0].length * matrix.length
+    let res = []
+    let dir = 0
+
+    while (res.length < nElements){
+        if(dir === 0){
+            res.push(...matrix.shift())
+        }
+
+        if(dir === 1){
+            for(let row=0 ; row<matrix.length ; row++){
+                res.push(matrix[row].pop())
+            }
+        }
+
+        if(dir === 2){
+            res.push(...matrix.pop().reverse())
+        }
+
+        if(dir === 3){
+            for(let row=matrix.length-1 ; row>=0 ; row--){
+                res.push(matrix[row].shift())
+            }
+        }
+
+        dir = (dir+1)%4
+    }
+
+    return res
+}
+
+// console.log(spiralOrderBis([[1,2,3],[4,5,6],[7,8,9]])) // [1,2,3,6,9,8,7,4,5]
+// console.log(spiralOrderBis([[1,2,3,4],[5,6,7,8],[9,10,11,12]])) // [1,2,3,4,8,12,11,10,9,5,6,7]
