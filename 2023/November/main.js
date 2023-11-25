@@ -42,4 +42,31 @@ var canJump = function(nums) {
 // console.log(canJump([2,3,1,1,4])) // true
 // console.log(canJump([3,2,1,0,4])) // false
 
-//It works but the runtime is slow.
+//It works but the runtime could be better.
+
+//Improving the previous function : when choosing the position that would allow me to go the farthest, make sure that we won't revisit some elements ; improvements in readability too
+function canJumpBis(nums){
+    let pos = 0 //actual pos
+    let maxPos = 0 //max reachable pos
+    let checkIndx = 0 //We'll start checking positions from this index
+
+    while(maxPos < nums.length-1){
+        let optimalTarget = [pos, pos] //[newPos, maxPos] ; i.e. if I go to newPos, I will be able to reach maxPos (and anything between newPos and maxPos, ofc)
+        for(let i=checkIndx ; i<=pos+nums[pos] ; i++){
+            if(i+nums[i] > optimalTarget[1]) optimalTarget = [i, i+nums[i]]
+        }
+        checkIndx = pos+nums[pos]
+        pos = optimalTarget[0]
+        maxPos = optimalTarget[1]
+        //Impossible to go any further
+        if(maxPos === pos) return false
+    }
+    return true
+}
+
+console.log(canJumpBis([0])) // true
+console.log(canJumpBis([1])) // true
+console.log(canJumpBis([2,0])) // true
+console.log(canJumpBis([1,2,0,0])) // true
+// console.log(canJumpBis([2,3,1,1,4])) // true
+// console.log(canJumpBis([3,2,1,0,4])) // false
