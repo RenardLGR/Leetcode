@@ -64,9 +64,96 @@ function canJumpBis(nums){
     return true
 }
 
-console.log(canJumpBis([0])) // true
-console.log(canJumpBis([1])) // true
-console.log(canJumpBis([2,0])) // true
-console.log(canJumpBis([1,2,0,0])) // true
+// console.log(canJumpBis([0])) // true
+// console.log(canJumpBis([1])) // true
+// console.log(canJumpBis([2,0])) // true
+// console.log(canJumpBis([1,2,0,0])) // true
 // console.log(canJumpBis([2,3,1,1,4])) // true
 // console.log(canJumpBis([3,2,1,0,4])) // false
+
+// Good efficiency
+
+
+//Focusing on clarity :
+function canJumpTer(nums){
+    let pos = 0
+    let maxPos = 0
+
+    while(maxPos < nums.length-1){
+        if(pos+nums[pos] > maxPos) maxPos = pos+nums[pos]
+
+        if(maxPos >= nums.length-1) return true
+
+        if(maxPos <= pos) return false
+
+        pos++
+    }
+
+    return true
+}
+
+// console.log(canJumpTer([0])) // true
+// console.log(canJumpTer([1])) // true
+// console.log(canJumpTer([2,0])) // true
+// console.log(canJumpTer([1,2,0,0])) // true
+// console.log(canJumpTer([2,3,1,1,4])) // true
+// console.log(canJumpTer([3,2,1,0,4])) // false
+
+
+//================================================
+// https://leetcode.com/problems/merge-intervals/
+// Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+// Example 1:
+// Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+// Output: [[1,6],[8,10],[15,18]]
+// Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+
+// Example 2:
+// Input: intervals = [[1,4],[4,5]]
+// Output: [[1,5]]
+// Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+ 
+// Constraints:
+// 1 <= intervals.length <= 104
+// intervals[i].length == 2
+// 0 <= starti <= endi <= 104
+
+var merge = function(intervals) {
+    //Build an array the size of the maximum element inside intervals, set its value to true if the index is inside a interval
+    //Loop through this newly build array and build the result
+    let arr = []
+    intervals.forEach(([start, end]) => {
+        for(let i=start ; i<=end ; i++){
+            arr[i] = true
+        }
+    })
+
+    let res = []
+    let isIntervalFlag = false
+    let interval = [] // [start, end]
+    for(let i=0 ; i<arr.length ; i++){
+        if(!isIntervalFlag && arr[i]){
+            isIntervalFlag = true
+            interval[0] = i
+        }
+        if(isIntervalFlag && !arr[i]){
+            isIntervalFlag = false
+            interval[1] = i-1
+            res.push(interval.slice())
+        }
+    }
+    //Don't forget to include the last interval
+    if(isIntervalFlag){
+        interval[1] = arr.length-1
+        res.push(interval.slice())
+    }
+
+    return res
+}
+
+// console.log(merge([[1,3],[2,6],[8,10],[15,18]])) // [[1,6],[8,10],[15,18]]
+// console.log(merge([[1,4],[4,5]])) // [[1,5]]
+console.log(merge([[1,4],[5,6]])) // [[1,4],[5,6]]
+
+//Apparently [[1,4],[5,6]] doesn't overlap making the above solution WRONG 
