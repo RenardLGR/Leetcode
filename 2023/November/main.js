@@ -154,6 +154,38 @@ var merge = function(intervals) {
 
 // console.log(merge([[1,3],[2,6],[8,10],[15,18]])) // [[1,6],[8,10],[15,18]]
 // console.log(merge([[1,4],[4,5]])) // [[1,5]]
-console.log(merge([[1,4],[5,6]])) // [[1,4],[5,6]]
+// console.log(merge([[1,4],[5,6]])) // [[1,4],[5,6]]
 
 //Apparently [[1,4],[5,6]] doesn't overlap making the above solution WRONG 
+
+function mergeV2(intervals){
+    //Sort by start
+    //If the start of the following interval is included in the current interval, update its end accordingly, else build a new interval
+    intervals.sort((a,b) => a[0]-b[0])
+
+    let res = []
+    let inProgressInterval = intervals[0].slice() // [start, end]
+    for(let i=0 ; i<intervals.length ; i++){
+        let [start, end] = intervals[i]
+        //the current interval start is inside the interval being built : update the end if necessary
+        if(start>= inProgressInterval[0] && start<=inProgressInterval[1]){
+            inProgressInterval[1] = Math.max(inProgressInterval[1], end)
+        }
+        //the current interval start is NOT inside the interval being built : push the previous one and start building a new one
+        else{
+            res.push(inProgressInterval.slice())
+            inProgressInterval = intervals[i].slice()
+        }
+    }
+    //Don't forget to include the last interval
+    res.push(inProgressInterval.slice())
+
+    return res
+}
+
+// console.log(mergeV2([[1,3],[2,6],[8,10],[15,18]])) // [[1,6],[8,10],[15,18]]
+// console.log(mergeV2([[1,4],[4,5]])) // [[1,5]]
+// console.log(mergeV2([[1,4],[5,6]])) // [[1,4],[5,6]]
+// console.log(mergeV2([[2,5],[1,4],[7,8],[1,9],[5,12]])) // [[1,12]]
+
+// Good efficiency
