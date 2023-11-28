@@ -189,3 +189,79 @@ function mergeV2(intervals){
 // console.log(mergeV2([[2,5],[1,4],[7,8],[1,9],[5,12]])) // [[1,12]]
 
 // Good efficiency
+
+// Same program with some ms and lines shaving :
+function mergeV2Bis(intervals){
+    if(!intervals.length) return []
+    intervals.sort((a,b) => a[0]-b[0])
+
+    let res = [intervals[0]]
+    for(let [start, end] of intervals){
+        if(start <= res[res.length-1][1]) res[res.length-1][1] = Math.max(res[res.length-1][1] , end)
+        else res.push([start, end])
+    }
+
+    return res
+}
+
+// console.log(mergeV2Bis([[1,3],[2,6],[8,10],[15,18]])) // [[1,6],[8,10],[15,18]]
+// console.log(mergeV2Bis([[1,4],[4,5]])) // [[1,5]]
+// console.log(mergeV2Bis([[1,4],[5,6]])) // [[1,4],[5,6]]
+// console.log(mergeV2Bis([[2,5],[1,4],[7,8],[1,9],[5,12]])) // [[1,12]]
+
+//====================================
+// https://leetcode.com/problems/insert-interval/
+// You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+
+// Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+
+// Return intervals after the insertion.
+
+
+// Example 1:
+// Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+// Output: [[1,5],[6,9]]
+
+// Example 2:
+// Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+// Output: [[1,2],[3,10],[12,16]]
+// Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
+
+// Constraints:
+// 0 <= intervals.length <= 104
+// intervals[i].length == 2
+// 0 <= starti <= endi <= 105
+// intervals is sorted by starti in ascending order.
+// newInterval.length == 2
+// 0 <= start <= end <= 105
+
+var insert = function(intervals, newInterval) {
+    let res = []
+
+    for(let i=0 ; i<intervals.length ; i++){
+        let [start, end] = intervals[i]
+        if(end < newInterval[0]) res.push(intervals[i])
+        else{
+            let toInsert = [Math.min(start, newInterval[0]) , newInterval[1]]
+            let j = i
+            while(j<intervals.length && intervals[j][0] <= toInsert[1]){
+                toInsert[1] = Math.max(toInsert[1] , intervals[j][1]) // This actually updates only for the last j
+                j++
+            }
+            res.push(toInsert)
+            res = res.concat(intervals.slice(j))
+            return res
+        }
+    }
+    //This is the case where newInterval should just be appended to the end
+    res.push(newInterval)
+    return res
+}
+
+// console.log(insert([[1,3],[6,9]] , [2,5])) // [[1,5],[6,9]]
+// console.log(insert([[1,2],[3,5],[6,7],[8,10],[12,16]] , [4,8])) // [[1,2],[3,10],[12,16]]
+// console.log(insert([[1,2],[3,5],[6,7],[8,10],[14,16]] , [12,13])) // [[1,2],[3,5],[6,7],[8,10],[12,13],[14,16]]
+// console.log(insert([[1,2],[3,5],[6,7],[8,10],[14,16]] , [15,18])) // [[1,2],[3,5],[6,7],[8,10],[14,18]]
+// console.log(insert([[3,5],[6,7],[8,10],[14,16]] , [1,2])) // [[1,2],[3,5],[6,7],[8,10],[14,16]]
+// console.log(insert([[3,5],[6,7],[8,10],[14,16]] , [18,20])) // [[3,5],[6,7],[8,10],[14,16],[18,20]]
+
