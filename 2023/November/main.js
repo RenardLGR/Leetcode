@@ -240,7 +240,9 @@ var insert = function(intervals, newInterval) {
 
     for(let i=0 ; i<intervals.length ; i++){
         let [start, end] = intervals[i]
+        //Those are the first elements
         if(end < newInterval[0]) res.push(intervals[i])
+        //This is the serious part
         else{
             let toInsert = [Math.min(start, newInterval[0]) , newInterval[1]]
             let j = i
@@ -249,7 +251,7 @@ var insert = function(intervals, newInterval) {
                 j++
             }
             res.push(toInsert)
-            res = res.concat(intervals.slice(j))
+            res = res.concat(intervals.slice(j)) //Add the remaining elements
             return res
         }
     }
@@ -265,3 +267,33 @@ var insert = function(intervals, newInterval) {
 // console.log(insert([[3,5],[6,7],[8,10],[14,16]] , [1,2])) // [[1,2],[3,5],[6,7],[8,10],[14,16]]
 // console.log(insert([[3,5],[6,7],[8,10],[14,16]] , [18,20])) // [[3,5],[6,7],[8,10],[14,16],[18,20]]
 
+// Good efficiency
+
+// Very elegant solution :
+function insertBis(intervals, newInterval){
+    let left = []
+    let right = []
+
+    for(let [start, end] of intervals){
+        // current interval is smaller than newInterval
+        if(end < newInterval[0]) left.push([start, end])
+
+        // current interval is greater than newInterval
+        else if(start > newInterval[1]) right.push([start, end])
+
+        // overlapping
+        else{
+            newInterval[0] = Math.min(newInterval[0] , start)
+            newInterval[1] = Math.max(newInterval[1] , end)
+        }
+    }
+
+    return [...left, newInterval, ...right]
+}
+
+// console.log(insertBis([[1,3],[6,9]] , [2,5])) // [[1,5],[6,9]]
+// console.log(insertBis([[1,2],[3,5],[6,7],[8,10],[12,16]] , [4,8])) // [[1,2],[3,10],[12,16]]
+// console.log(insertBis([[1,2],[3,5],[6,7],[8,10],[14,16]] , [12,13])) // [[1,2],[3,5],[6,7],[8,10],[12,13],[14,16]]
+// console.log(insertBis([[1,2],[3,5],[6,7],[8,10],[14,16]] , [15,18])) // [[1,2],[3,5],[6,7],[8,10],[14,18]]
+// console.log(insertBis([[3,5],[6,7],[8,10],[14,16]] , [1,2])) // [[1,2],[3,5],[6,7],[8,10],[14,16]]
+// console.log(insertBis([[3,5],[6,7],[8,10],[14,16]] , [18,20])) // [[3,5],[6,7],[8,10],[14,16],[18,20]]
