@@ -297,3 +297,110 @@ function insertBis(intervals, newInterval){
 // console.log(insertBis([[1,2],[3,5],[6,7],[8,10],[14,16]] , [15,18])) // [[1,2],[3,5],[6,7],[8,10],[14,18]]
 // console.log(insertBis([[3,5],[6,7],[8,10],[14,16]] , [1,2])) // [[1,2],[3,5],[6,7],[8,10],[14,16]]
 // console.log(insertBis([[3,5],[6,7],[8,10],[14,16]] , [18,20])) // [[3,5],[6,7],[8,10],[14,16],[18,20]]
+
+//==============================
+// https://leetcode.com/problems/length-of-last-word/
+// Given a string s consisting of words and spaces, return the length of the last word in the string.
+// A word is a maximal substring consisting of non-space characters only.
+
+// Example 1:
+// Input: s = "Hello World"
+// Output: 5
+// Explanation: The last word is "World" with length 5.
+
+// Example 2:
+// Input: s = "   fly me   to   the moon  "
+// Output: 4
+// Explanation: The last word is "moon" with length 4.
+
+// Example 3:
+// Input: s = "luffy is still joyboy"
+// Output: 6
+// Explanation: The last word is "joyboy" with length 6.
+
+// Constraints:
+// 1 <= s.length <= 104
+// s consists of only English letters and spaces ' '.
+// There will be at least one word in s.
+
+var lengthOfLastWord = function(s) {
+    let lastWord = ""
+
+    for(let i=s.length-1 ; i>=0 ; i--){
+        //skip the trailing spaces
+        if(s[i]===" ") continue
+        //a word has been found
+        else{
+            let j = i
+            while(j>=0 && s[j]!==" "){
+                lastWord = s[j] + lastWord
+                j--
+            }
+            return lastWord.length
+        }
+    }
+}
+
+// console.log(lengthOfLastWord("Hello World")) // 5
+// console.log(lengthOfLastWord("     Hellooo    ")) // 7
+// console.log(lengthOfLastWord("Helloo    ")) // 6
+// console.log(lengthOfLastWord("   fly me   to   the moon  ")) // 4
+// console.log(lengthOfLastWord("luffy is still joyboy")) // 6
+
+function lengthOfLastWordBis(s){
+    const words = s.trim().split(' ')
+    return words[words.length-1].length
+}
+
+// console.log(lengthOfLastWordBis("Hello World")) // 5
+// console.log(lengthOfLastWordBis("     Hellooo    ")) // 7
+// console.log(lengthOfLastWordBis("Helloo    ")) // 6
+// console.log(lengthOfLastWordBis("   fly me   to   the moon  ")) // 4
+// console.log(lengthOfLastWordBis("luffy is still joyboy")) // 6
+
+function lengthOfLastWordTer(s){
+    return s.trim().split(' ').pop().length
+}
+
+// console.log(lengthOfLastWordTer("Hello World")) // 5
+// console.log(lengthOfLastWordTer("     Hellooo    ")) // 7
+// console.log(lengthOfLastWordTer("Helloo    ")) // 6
+// console.log(lengthOfLastWordTer("   fly me   to   the moon  ")) // 4
+// console.log(lengthOfLastWordTer("luffy is still joyboy")) // 6
+
+//Beats 98% :O - built in methods are lightning fast
+
+function lengthOfLastWordQuater(s){
+    const trimmed = s.trim()
+    return trimmed.length - trimmed.lastIndexOf(' ') - 1
+}
+
+// console.log(lengthOfLastWordQuater("Hello World")) // 5
+// console.log(lengthOfLastWordQuater("     Hellooo    ")) // 7
+// console.log(lengthOfLastWordQuater("Helloo    ")) // 6
+// console.log(lengthOfLastWordQuater("   fly me   to   the moon  ")) // 4
+// console.log(lengthOfLastWordQuater("luffy is still joyboy")) // 6
+
+//Another take on firs solution, but we need only the length
+function lengthOfLastWordQuinqies(s){
+    for(let i=s.length-1 ; i>=0 ; i--){
+        //skip the trailing spaces
+        if(s[i]===" ") continue
+        //a word has been found
+        else{
+            let j = i
+            while(j>=0 && s[j]!==" "){
+                j--
+            }
+            return i-j
+        }
+    }
+}
+
+// console.log(lengthOfLastWordQuinqies("Hello World")) // 5
+// console.log(lengthOfLastWordQuinqies("     Hellooo    ")) // 7
+// console.log(lengthOfLastWordQuinqies("Helloo    ")) // 6
+// console.log(lengthOfLastWordQuinqies("   fly me   to   the moon  ")) // 4
+// console.log(lengthOfLastWordQuinqies("luffy is still joyboy")) // 6
+
+//==========================================
