@@ -404,3 +404,81 @@ function lengthOfLastWordQuinqies(s){
 // console.log(lengthOfLastWordQuinqies("luffy is still joyboy")) // 6
 
 //==========================================
+// https://leetcode.com/problems/spiral-matrix-ii/
+// Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
+
+// Example 1:
+// Input: n = 3
+// Output: [[1,2,3],[8,9,4],[7,6,5]]
+
+// Example 2:
+// Input: n = 1
+// Output: [[1]]
+
+// Constraints:
+// 1 <= n <= 20
+
+var generateMatrix = function(n) {
+    if(n === 1) return [[1]]
+    const directions = {
+        'right' : 'down',
+        'down' : 'left',
+        'left' : 'up',
+        'up' : 'right'
+    }
+
+    let spiral = Array.from({ length: n }, () => Array(n))
+    spiral[0][0] = 1
+    let dir = 'right'
+    let ct = 2
+    let coord = [0, 0] // [row, col]
+
+    while(ct <= n*n){
+        //Fill a row (or a col), check if the following cell is available, i.e. in bounds and not already assigned, if so assign it, else change direction
+        if(dir === 'right'){
+            if(isAvailable([coord[0] , coord[1]+1])) {
+                coord = [coord[0] , coord[1]+1]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'down'){
+            if(isAvailable([coord[0]+1 , coord[1]])) {
+                coord = [coord[0]+1 , coord[1]]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'left'){
+            if(isAvailable([coord[0] , coord[1]-1])) {
+                coord = [coord[0] , coord[1]-1]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+        else if(dir === 'up'){
+            if(isAvailable([coord[0]-1 , coord[1]])) {
+                coord = [coord[0]-1 , coord[1]]
+                spiral[coord[0]][coord[1]] = ct
+                ct ++
+            }
+            else dir = directions[dir]
+        }
+    }
+
+    return spiral
+
+    function isAvailable(coord){
+        return coord[0]>=0 && coord[0]<n && coord[1]>=0 && coord[1]<n && !spiral[coord[0]][coord[1]]
+    }
+}
+
+// console.log(generateMatrix(1)) // [[1]]
+// console.log(generateMatrix(2)) // [ [ 1, 2 ], [ 4, 3 ] ]
+// console.log(generateMatrix(3)) // [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]
+// console.log(generateMatrix(4)) // [ [ 1, 2, 3, 4 ], [ 12, 13, 14, 5 ], [ 11, 16, 15, 6 ], [ 10, 9, 8, 7 ] ]
+
+//Excellent runtime
