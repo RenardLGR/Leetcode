@@ -482,3 +482,25 @@ var generateMatrix = function(n) {
 // console.log(generateMatrix(4)) // [ [ 1, 2, 3, 4 ], [ 12, 13, 14, 5 ], [ 11, 16, 15, 6 ], [ 10, 9, 8, 7 ] ]
 
 //Excellent runtime
+
+function generateMatrixBis(n){
+    if(n === 1) return [[1]]
+
+    let spiral = Array.from( {length: n}, () => Array(n))
+    spiral[0][0] = 1
+    let coord = [0, 0] // [row, col]
+
+    for(let ct = 2 ; ct <= n*n ;){
+        while(coord[1]+1<n && !spiral[coord[0]][coord[1]+1]) spiral[coord[0]][++coord[1]] = ct++
+        while(coord[0]+1<n && !spiral[coord[0]+1][coord[1]]) spiral[++coord[0]][coord[1]] = ct++
+        while(coord[1]-1>=0 && !spiral[coord[0]][coord[1]-1]) spiral[coord[0]][--coord[1]] = ct++
+        while(coord[0]-1>=0 && !spiral[coord[0]-1][coord[1]]) spiral[--coord[0]][coord[1]] = ct++
+    }
+
+    return spiral
+}
+
+// console.log(generateMatrixBis(1)) // [[1]]
+// console.log(generateMatrixBis(2)) // [ [ 1, 2 ], [ 4, 3 ] ]
+// console.log(generateMatrixBis(3)) // [ [ 1, 2, 3 ], [ 8, 9, 4 ], [ 7, 6, 5 ] ]
+// console.log(generateMatrixBis(4)) // [ [ 1, 2, 3, 4 ], [ 12, 13, 14, 5 ], [ 11, 16, 15, 6 ], [ 10, 9, 8, 7 ] ]
