@@ -73,8 +73,8 @@ var getPermutation = function(n, k) {
 
 // There are n! permutations, the first (n-1)! permutations will start with 1, the second (n-1)! permutations will start with 2, etc.
 // Furthermore, inside the first (n-1)! permutations, (n-2)! permutations will start with [1,2,...] and (n-2)! permutations will start with [1,3,...]
-// Understanding that, considering the set [1, 2, 3, ..., n] , Math.floor(k / (n-1)!) gives the index of the first element
-// We can repeat this process with the set being the previous set minus the element previously found and k' = k - Math.floor(k / (n-1)!) and Math.floor(k' / (n-2)!)
+// Understanding that, considering the set [1, 2, 3, ..., n] , idx = Math.floor(k / (n-1)!) gives the index of the first number
+// We can repeat this process with the set being the previous set minus the number previously found and k' = k - idx*Math.floor(k / (n-1)!) and idx' = Math.floor(k' / (n-2)!)
 
 function getPermutationBis(n, k){
     k--
@@ -85,8 +85,7 @@ function getPermutationBis(n, k){
         let idx = Math.floor(k / factorial(set.length-1))
         let curr = set.splice(Math.floor(k / factorial(set.length-1)) , 1)
         res += curr
-        k -= idx*factorial(set.length)
-        // console.log(k, idx, set);
+        k -= idx*factorial(set.length) //the length was reduced by one two lines above
     }
 
     return res + set.reduce((acc, cur) => acc+cur, '')
@@ -98,13 +97,13 @@ function getPermutationBis(n, k){
     }
 }
 
-console.log(getPermutationBis(4, 9)) // "2314"
-console.log(getPermutationBis(4, 6)) // "1432"
-console.log(getPermutationBis(8, 77)) // "12374856"
-console.log(getPermutationBis(8, 1)) // "12345678"
+// console.log(getPermutationBis(4, 9)) // "2314"
+// console.log(getPermutationBis(4, 6)) // "1432"
+// console.log(getPermutationBis(8, 77)) // "12374856"
+// console.log(getPermutationBis(8, 1)) // "12345678"
 
 
-//Same than above
+//Same than above, clearer
 function getPermutationTer(n, k){
     k--
 
@@ -112,9 +111,8 @@ function getPermutationTer(n, k){
     let res = ""
     while(k > 0){
         const idx = Math.floor(k / factorial(set.length-1))
+        k -= idx*factorial(set.length-1)
         res += set.splice(idx , 1)
-        k -= idx*factorial(set.length)
-        // console.log(k, idx, set);
     }
 
     return res + set.reduce((acc, cur) => acc+cur, '')
@@ -125,3 +123,34 @@ function getPermutationTer(n, k){
         return n * factorial(n-1)
     }
 }
+
+// console.log(getPermutationTer(4, 9)) // "2314"
+// console.log(getPermutationTer(4, 6)) // "1432"
+// console.log(getPermutationTer(8, 77)) // "12374856"
+// console.log(getPermutationTer(8, 1)) // "12345678"
+
+//Same than above, shaving seconds with factorial (and set) implementation
+function getPermutationQuater(n, k){
+    let set = []
+    let factorials = {0:1}
+
+    for(let i=1 ; i<=n ; i++){
+        factorials[i] = i * factorials[i-1]
+        set.push(i)
+    }
+
+    k--
+    let res = ""
+    while(k > 0){
+        const idx = Math.floor(k / factorials[set.length-1])
+        k -= idx*factorials[set.length-1]
+        res += set.splice(idx , 1)
+    }
+
+    return res + set.reduce((acc, cur) => acc+cur, '')
+}
+
+// console.log(getPermutationQuater(4, 9)) // "2314"
+// console.log(getPermutationQuater(4, 6)) // "1432"
+// console.log(getPermutationQuater(8, 77)) // "12374856"
+// console.log(getPermutationQuater(8, 1)) // "12345678"
