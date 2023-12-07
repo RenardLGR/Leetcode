@@ -154,3 +154,67 @@ function getPermutationQuater(n, k){
 // console.log(getPermutationQuater(4, 6)) // "1432"
 // console.log(getPermutationQuater(8, 77)) // "12374856"
 // console.log(getPermutationQuater(8, 1)) // "12345678"
+
+//===============================================
+// https://leetcode.com/problems/rotate-list/
+// Given the head of a linked list, rotate the list to the right by k places.
+
+// Example 1:
+// Input: head = [1,2,3,4,5], k = 2
+// Output: [4,5,1,2,3]
+
+// Example 2:
+// Input: head = [0,1,2], k = 4
+// Output: [2,0,1]
+
+// Constraints:
+// The number of nodes in the list is in the range [0, 500].
+// -100 <= Node.val <= 100
+// 0 <= k <= 2 * 109
+
+// Considering k can be up to 2x10^6 times bigger than the length of the list, it is interesting to find the length of the list first to avoid repetition
+// Naive approach, rotate the list by one, repeat as much as needed
+var rotateRight = function(head, k) {
+    if(!head) return head // empty list case
+    if(!head.next) return head // one node case
+
+    let listLen = 1
+    let pointer = head
+    while(pointer.next){
+        listLen++
+        pointer = pointer.next
+    }
+
+    k = k%listLen
+    for(let i=0 ; i<k ; i++){
+        head = rotateOne(head)
+    }
+
+    return head
+
+    function rotateOne(head){
+        if(!head) return head // empty list case
+        if(!head.next) return head // one node case
+
+        let prev = head
+        let cur = head
+        cur = head.next
+
+        while(cur.next){
+            prev = prev.next
+            cur = cur.next
+        }
+        //At this point cur is the last node and prev is the penultimate node
+        prev.next = null
+        cur.next = head
+        return cur
+    }
+    const list1 = {val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}}
+    // console.log(JSON.stringify(rotateOne(list1))) // 5,1,2,3,4
+}
+
+// console.log(JSON.stringify(rotateRight({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 2))) // 4,5,1,2,3
+// console.log(JSON.stringify(rotateRight({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 4))) // 2,3,4,5,1
+// console.log(JSON.stringify(rotateRight({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 5))) // 1,2,3,4,5
+
+// good runtime
