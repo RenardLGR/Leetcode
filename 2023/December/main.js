@@ -217,4 +217,87 @@ var rotateRight = function(head, k) {
 // console.log(JSON.stringify(rotateRight({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 4))) // 2,3,4,5,1
 // console.log(JSON.stringify(rotateRight({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 5))) // 1,2,3,4,5
 
-// good runtime
+// Good runtime
+
+// Having a list of length n, we want the k-last nodes to be put in front (k modulus n, ofc)
+// Example : list [1,2,3,4,5,6], k = 4
+// The k-last elements are [3,4,5,6] and the result should be [3,4,5,6,1,2]
+// We will have two pointers, one current and one k steps ahead, once the latter reaches the end, we will know the current one contains the k-last elements 
+function rotateRightBis(head, k){
+    if(!head) return head // empty list case
+    if(!head.next) return head // one node case
+
+    let listLen = 1
+    let pointer = head
+    while(pointer.next){
+        listLen++
+        pointer = pointer.next
+    }
+
+    k = k%listLen
+    if(k===0) return head // rotating as much as number of elements gives the same result
+
+    let cur = head
+    let kAhead = head
+    for(let i=0 ; i<k ; i++){
+        kAhead = kAhead.next
+    }
+
+    while(kAhead.next){
+        cur = cur.next
+        kAhead = kAhead.next
+    }
+    // At this point we have [head, cur][cur.next, kAhead]
+    // And we want [cur.next, kAhead][head, cur]
+    let res = cur.next
+    cur.next = null
+    kAhead.next = head
+    return res
+}
+
+// console.log(JSON.stringify(rotateRightBis({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 2))) // 4,5,1,2,3
+// console.log(JSON.stringify(rotateRightBis({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 4))) // 2,3,4,5,1
+// console.log(JSON.stringify(rotateRightBis({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 5))) // 1,2,3,4,5
+// console.log(JSON.stringify(rotateRightBis({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:{val:6, next:null}}}}}} , 4))) // 3,4,5,6,1,2
+
+// Shaving one variable at the end
+function rotateRightTer(head, k){
+    if(!head) return head // empty list case
+    if(!head.next) return head // one node case
+
+    let listLen = 1
+    let pointer = head
+    while(pointer.next){
+        listLen++
+        pointer = pointer.next
+    }
+
+    k = k%listLen
+    if(k===0) return head // rotating as much as number of elements gives the same result
+
+    let cur = head
+    let kAhead = head
+    for(let i=0 ; i<k ; i++){
+        kAhead = kAhead.next
+    }
+
+    while(kAhead.next){
+        cur = cur.next
+        kAhead = kAhead.next
+    }
+    // At this point we have [head, cur][cur.next, kAhead]
+    // And we want [cur.next, kAhead][head, cur]
+    kAhead.next = head
+    head = cur.next
+    cur.next = null
+    return head
+}
+
+// console.log(JSON.stringify(rotateRightTer({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 2))) // 4,5,1,2,3
+// console.log(JSON.stringify(rotateRightTer({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 4))) // 2,3,4,5,1
+// console.log(JSON.stringify(rotateRightTer({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:null}}}}} , 5))) // 1,2,3,4,5
+// console.log(JSON.stringify(rotateRightTer({val:1, next:{val:2, next:{val:3, next:{val:4, next:{val:5, next:{val:6, next:null}}}}}} , 4))) // 3,4,5,6,1,2
+
+// Good runtime
+
+//=============================================
