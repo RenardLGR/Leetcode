@@ -351,9 +351,40 @@ var uniquePaths = function(m, n) {
 // console.log(uniquePaths(2, 2)) // 2
 // console.log(uniquePaths(1, 2)) // 1
 // console.log(uniquePaths(1, 1)) // 1
+// console.log(uniquePaths(3, 5)) // 1
 
 // Too long
 
+// The idea is to build a 2D array to store the number of unique paths to reach each cell. The number of unique paths to reach the cell (i, j) is the sum of the paths to the cell above (i-1, j) and the cell to the left (i, j-1).
+// Example with m=3 and n=7 :
+// [s, 1, 1, 1, 1, 1, 1]
+// [1, 2, 3, 4, 5, 6, 7]
+// [1, 3, 6, 10, 15, 21, 28]
 function uniquePathsBis(m, n){
+    let grid = Array.from({length:m}, ()=>Array(n))
 
+    // Initialize the top row and left column to 1 since there is only one way to reach each cell in the first row and column
+    for (let i=0 ; i<m ; i++) {
+        grid[i][0] = 1
+    }
+    for (let j=0 ; j<n ; j++) {
+        grid[0][j] = 1
+    }
+
+    // Summ the paths from cell above and to the left
+    for(let i=1 ; i<m ; i++){
+        for(let j=1 ; j<n ; j++){
+            grid[i][j] = grid[i-1][j] + grid[i][j-1]
+        }
+    }
+
+    // The result is stored in the bottom-right cell
+    return grid[m - 1][n - 1]
 }
+
+// console.log(uniquePathsBis(3, 7)) // 28
+// console.log(uniquePathsBis(3, 2)) // 3
+// console.log(uniquePathsBis(2, 2)) // 2
+// console.log(uniquePathsBis(1, 2)) // 1
+// console.log(uniquePathsBis(1, 1)) // 1
+// console.log(uniquePathsBis(3, 5)) // 15
