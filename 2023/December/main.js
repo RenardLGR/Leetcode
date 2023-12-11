@@ -388,3 +388,27 @@ function uniquePathsBis(m, n){
 // console.log(uniquePathsBis(1, 2)) // 1
 // console.log(uniquePathsBis(1, 1)) // 1
 // console.log(uniquePathsBis(3, 5)) // 15
+
+// From : https://leetcode.com/problems/unique-paths/solutions/3994523/98-83-easy-dp-math/
+// The number of unique paths can be seen as the number of ways to choose m−1 downs and n−1 rights, regardless of the order. In combinatorial terms, this is equivalent to m-1 choose m+n-2
+
+function uniquePathsTer(m, n){
+    return binom(m+n-2, m-1)
+
+    function binom(n, k){
+        return factorial(n) / (factorial(k) * factorial(n-k))
+    }
+
+    function factorial(n){
+        if(n <= 1) return 1
+
+        return n * factorial(n-1)
+    }
+}
+
+// console.log(uniquePathsTer(3, 7)) // 28
+// console.log(uniquePathsTer(3, 2)) // 3
+// console.log(uniquePathsTer(2, 2)) // 2
+// console.log(uniquePathsTer(1, 2)) // 1
+// console.log(uniquePathsTer(1, 1)) // 1
+// console.log(uniquePathsTer(3, 5)) // 15
