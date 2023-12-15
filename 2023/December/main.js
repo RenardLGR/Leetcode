@@ -456,17 +456,18 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
         }
     }
 
-    //Initialize first row and first col with 1 if possible
+    // Initialize first row and first col with 1 if possible
     for(let i=0 ; i<n ; i++){
         if(obstacleGrid[0][i] === '*') break
-        obstacleGrid[0][i]=1
+        obstacleGrid[0][i] = 1
     }
 
     for(let i=0 ; i<m ; i++){
         if(obstacleGrid[i][0] === '*') break
-        obstacleGrid[i][0]=1
+        obstacleGrid[i][0] = 1
     }
 
+    // Summ the paths from cell above and to the left
     for(let i=1 ; i<m ; i++){
         for(let j=1 ; j<n ; j++){
             if(obstacleGrid[i][j] === '*') continue
@@ -485,3 +486,37 @@ var uniquePathsWithObstacles = function(obstacleGrid) {
 // console.log(uniquePathsWithObstacles([[0,0],[0,1]])) // 0
 
 // Could better on runtime
+
+// We can skip the first run through the matrix converting 1s to *s by using negative numbers
+function uniquePathsWithObstaclesBis(obstacleGrid){
+    const m = obstacleGrid.length // number of rows
+    const n = obstacleGrid[0].length // number of cols
+
+    if(obstacleGrid[m-1][n-1] === 1) return 0 // edge case obstacle on bottom-right corner
+
+    // Initialize first row and first col with -1 if possible
+    for(let i=0 ; i<n ; i++){
+        if(obstacleGrid[0][i] === 1) break
+        obstacleGrid[0][i] = -1
+    }
+
+    for(let i=0 ; i<m ; i++){
+        if(obstacleGrid[i][0] === 1) break
+        obstacleGrid[i][0] = -1
+    }
+
+    // Summ the paths from cell above and to the left
+    for(let i=1 ; i<m ; i++){
+        for(let j=1 ; j<n ; j++){
+            if(obstacleGrid[i][j] === 1) continue
+
+            let top = obstacleGrid[i-1][j] === 1 ? 0 : obstacleGrid[i-1][j]
+            let left = obstacleGrid[i][j-1] === 1 ? 0 : obstacleGrid[i][j-1]
+            obstacleGrid[i][j] = top+left
+        }
+    }
+
+    return -obstacleGrid[m-1][n-1]
+}
+
+//========================================
