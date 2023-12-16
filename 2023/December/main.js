@@ -520,3 +520,53 @@ function uniquePathsWithObstaclesBis(obstacleGrid){
 }
 
 //========================================
+// https://leetcode.com/problems/minimum-path-sum/
+// Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.
+
+// Note: You can only move either down or right at any point in time.
+
+// Example 1:
+// Input: grid = [[1,3,1],[1,5,1],[4,2,1]]
+// Output: 7
+// Explanation: Because the path 1 → 3 → 1 → 1 → 1 minimizes the sum.
+
+// Example 2:
+// Input: grid = [[1,2,3],[4,5,6]]
+// Output: 12
+
+// Constraints:
+// m == grid.length
+// n == grid[i].length
+// 1 <= m, n <= 200
+// 0 <= grid[i][j] <= 200
+
+
+// In the matrix dp, we will keep track of the minimum sum possible to access this cell dp[i][j] which is equal to Math.min(cellAbove, cellLeft) + grid[i][j]
+var minPathSum = function(grid) {
+    const m = grid.length // number of rows
+    const n = grid[0].length // number of cols
+    let dp = Array.from({length:m}, ()=>Array(n))
+    dp[0][0] = grid[0][0]
+
+    // Initialize the first row, it is grid[0][i] + the cell on the left
+    for(let i=1 ; i<n ; i++){
+        dp[0][i] = dp[0][i-1] + grid[0][i]
+    }
+
+    // Initialize the first col, it is grid[i][0] + the cell above
+    for(let i=1 ; i<m ; i++){
+        dp[i][0] = dp[i-1][0] + grid[i][0]
+    }
+
+    // Keep the minimum between the cell above and the cell on the left
+    for(let i=1 ; i<m ; i++){
+        for(let j=1 ; j<n ; j++){
+            dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+        }
+    }
+
+    return dp[m-1][n-1]
+}
+
+// console.log(minPathSum([[1,3,1],[1,5,1],[4,2,1]])) // 7
+// console.log(minPathSum([[1,2,3],[4,5,6]])) // 12
