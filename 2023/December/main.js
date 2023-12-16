@@ -570,3 +570,156 @@ var minPathSum = function(grid) {
 
 // console.log(minPathSum([[1,3,1],[1,5,1],[4,2,1]])) // 7
 // console.log(minPathSum([[1,2,3],[4,5,6]])) // 12
+
+// No need for an extra matrix
+var minPathSumBis = function(grid) {
+    const m = grid.length // number of rows
+    const n = grid[0].length // number of cols
+
+    // Initialize the first row, it is grid[0][i] + the cell on the left
+    for(let i=1 ; i<n ; i++){
+        grid[0][i] += grid[0][i-1]
+    }
+
+    // Initialize the first col, it is grid[i][0] + the cell above
+    for(let i=1 ; i<m ; i++){
+        grid[i][0] += grid[i-1][0]
+    }
+
+    // Keep the minimum between the cell above and the cell on the left
+    for(let i=1 ; i<m ; i++){
+        for(let j=1 ; j<n ; j++){
+            grid[i][j] += Math.min(grid[i-1][j], grid[i][j-1])
+        }
+    }
+
+    return grid[m-1][n-1]
+}
+
+// console.log(minPathSumBis([[1,3,1],[1,5,1],[4,2,1]])) // 7
+// console.log(minPathSumBis([[1,2,3],[4,5,6]])) // 12
+
+//=======================================
+// https://leetcode.com/problems/valid-number/
+// A valid number can be split up into these components (in order):
+
+// A decimal number or an integer.
+// (Optional) An 'e' or 'E', followed by an integer.
+// A decimal number can be split up into these components (in order):
+
+// (Optional) A sign character (either '+' or '-').
+// One of the following formats:
+// One or more digits, followed by a dot '.'.
+// One or more digits, followed by a dot '.', followed by one or more digits.
+// A dot '.', followed by one or more digits.
+// An integer can be split up into these components (in order):
+
+// (Optional) A sign character (either '+' or '-').
+// One or more digits.
+// For example, all the following are valid numbers: ["2", "0089", "-0.1", "+3.14", "4.", "-.9", "2e10", "-90E3", "3e+7", "+6e-1", "53.5e93", "-123.456e789"], while the following are not valid numbers: ["abc", "1a", "1e", "e3", "99e2.5", "--6", "-+3", "95a54e53"].
+
+// Given a string s, return true if s is a valid number.
+
+
+// Example 1:
+// Input: s = "0"
+// Output: true
+
+// Example 2:
+// Input: s = "e"
+// Output: false
+
+// Example 3:
+// Input: s = "."
+// Output: false
+
+// Constraints:
+// 1 <= s.length <= 20
+// s consists of only English letters (both uppercase and lowercase), digits (0-9), plus '+', minus '-', or dot '.'.
+
+
+// Got bored trying to solve every debatable edge cases.
+// From : https://leetcode.com/problems/valid-number/solutions/1209315/js-python-java-c-easy-character-conditional-solution-w-explanation/
+
+// To solve this problem, we should should just make a list of the possible error conditions and then check for each one.
+
+// The error conditions are:
+
+// More than one exponent character ('e'/'E'), or seeing an 'e'/'E' when a number has not yet been seen.
+// More than one sign, or a sign appearing after a decimal or number have been seen. This gets reset when passing an 'e'/'E'.
+// More than one decimal, or a decimal appearing after an 'e'/'E' has been seen.
+// Any other non-number character appearing.
+// Reaching the end of S without an active number.
+// To help with this process, we can set up some boolean flags for the different things of which we're keeping track (num, exp, sign, dec). We'll also need to remember to reset all flags except exp when we find an 'e'/'E', as we're starting a new integer expression
+
+var isNumber = function(S) {
+    let exp = false, sign = false, num = false, dec = false
+    for (let c of S)
+        if (c >= '0' && c <= '9') num = true     
+        else if (c === 'e' || c === 'E')
+            if (exp || !num) return false
+            else exp = true, sign = false, num = false, dec = false
+        else if (c === '+' || c === '-')
+            if (sign || num || dec) return false
+            else sign = true
+        else if (c === '.')
+            if (dec || exp) return false
+            else dec = true
+        else return false
+    return num
+}
+
+//========================================
+// https://leetcode.com/problems/plus-one/
+// You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
+
+// Increment the large integer by one and return the resulting array of digits.
+
+
+// Example 1:
+// Input: digits = [1,2,3]
+// Output: [1,2,4]
+// Explanation: The array represents the integer 123.
+// Incrementing by one gives 123 + 1 = 124.
+// Thus, the result should be [1,2,4].
+
+// Example 2:
+// Input: digits = [4,3,2,1]
+// Output: [4,3,2,2]
+// Explanation: The array represents the integer 4321.
+// Incrementing by one gives 4321 + 1 = 4322.
+// Thus, the result should be [4,3,2,2].
+
+// Example 3:
+// Input: digits = [9]
+// Output: [1,0]
+// Explanation: The array represents the integer 9.
+// Incrementing by one gives 9 + 1 = 10.
+// Thus, the result should be [1,0].
+
+// Constraints:
+// 1 <= digits.length <= 100
+// 0 <= digits[i] <= 9
+// digits does not contain any leading 0's.
+
+var plusOne = function(digits) {
+    let carry = false
+    let i = digits.length - 1
+
+    do {
+        digits[i] = (digits[i] + 1) % 10
+        carry = (digits[i] === 0)
+        i--
+    } while(carry && i>=0)
+
+    if(carry) digits.unshift(1)
+
+    return digits
+}
+
+// console.log(plusOne([0])) // [1]
+// console.log(plusOne([9])) // [1,0]
+// console.log(plusOne([4,3,2,1])) // [4,3,2,2]
+// console.log(plusOne([9,9,9,9])) // [1,0,0,0,0]
+
+// Excellent runtime
