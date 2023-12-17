@@ -723,3 +723,83 @@ var plusOne = function(digits) {
 // console.log(plusOne([9,9,9,9])) // [1,0,0,0,0]
 
 // Excellent runtime
+
+//========================================
+// https://leetcode.com/problems/add-binary/
+// Given two binary strings a and b, return their sum as a binary string.
+
+// Example 1:
+// Input: a = "11", b = "1"
+// Output: "100"
+
+// Example 2:
+// Input: a = "1010", b = "1011"
+// Output: "10101"
+
+// Constraints:
+// 1 <= a.length, b.length <= 104
+// a and b consist only of '0' or '1' characters.
+// Each string does not contain leading zeros except for the zero itself.
+
+
+var addBinary = function(a, b) {
+    let res = ""
+    let i = 0
+    let carry = 0
+
+    while(a[a.length-1-i]!==undefined || b[b.length-1-i]!==undefined){
+        let sum = +(a[a.length-1-i] || 0) + +(b[b.length-1-i] || 0) + carry
+        carry = (sum >= 2) ? 1 : 0
+        res = (sum%2) + res
+        i++
+    }
+
+    if(carry) res = 1 + res
+    return "" + res
+}
+
+// console.log(addBinary("11", "1")) // "100"
+// console.log(addBinary("1010", "1011")) // "10101"
+// console.log(addBinary("1111", "1111")) // "11110"
+
+
+// Skip last check
+var addBinaryBis = function(a, b) {
+    let res = ""
+    let i = 0
+    let carry = 0
+
+    while(a[a.length-1-i]!==undefined || b[b.length-1-i]!==undefined || carry){
+        let sum = +(a[a.length-1-i] || 0) + +(b[b.length-1-i] || 0) + carry
+        carry = (sum >= 2) ? 1 : 0
+        res = (sum%2) + res
+        i++
+    }
+
+    return "" + res
+}
+
+// console.log(addBinaryBis("11", "1")) // "100"
+// console.log(addBinaryBis("1010", "1011")) // "10101"
+// console.log(addBinaryBis("1111", "1111")) // "11110"
+
+// Full adder inspiration : 
+// There are 3 inputs, a, b and carry (order doesn't matter), 110 leads to 0 and carry=1 ; 111 leads to 1 and carry=1 ; 100 and 000 are easy 
+function addBinaryTer(a, b){
+    let res = ""
+    let i = 0
+    let carry = 0
+
+    while(a[a.length-1-i]!==undefined || b[b.length-1-i]!==undefined || carry){
+        res = (a[a.length-1-i] ^ b[b.length-1-i] ^ carry) + res
+        carry = (a[a.length-1-i] & b[b.length-1-i]) | ( (a[a.length-1-i] ^ b[b.length-1-i])  & carry)
+        // carry = (a[a.length-1-i] & b[b.length-1-i]) | (a[a.length-1-i] & carry) | (b[b.length-1-i] & carry)
+        i++
+    }
+
+    return res
+}
+
+// console.log(addBinaryTer("11", "1")) // "100"
+// console.log(addBinaryTer("1010", "1011")) // "10101"
+// console.log(addBinaryTer("1111", "1111")) // "11110"
