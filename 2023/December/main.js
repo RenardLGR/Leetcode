@@ -803,3 +803,129 @@ function addBinaryTer(a, b){
 // console.log(addBinaryTer("11", "1")) // "100"
 // console.log(addBinaryTer("1010", "1011")) // "10101"
 // console.log(addBinaryTer("1111", "1111")) // "11110"
+
+//=============================
+// https://leetcode.com/problems/text-justification/
+// Given an array of strings words and a width maxWidth, format the text such that each line has exactly maxWidth characters and is fully (left and right) justified.
+
+// You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly maxWidth characters.
+
+// Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line does not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+
+// For the last line of text, it should be left-justified, and no extra space is inserted between words.
+
+// Note:
+// A word is defined as a character sequence consisting of non-space characters only.
+// Each word's length is guaranteed to be greater than 0 and not exceed maxWidth.
+// The input array words contains at least one word.
+
+
+// Example 1:
+// Input: words = ["This", "is", "an", "example", "of", "text", "justification."], maxWidth = 16
+// Output:
+// [
+//    "This    is    an",
+//    "example  of text",
+//    "justification.  "
+// ]
+
+// Example 2:
+// Input: words = ["What","must","be","acknowledgment","shall","be"], maxWidth = 16
+// Output:
+// [
+//   "What   must   be",
+//   "acknowledgment  ",
+//   "shall be        "
+// ]
+// Explanation: Note that the last line is "shall be    " instead of "shall     be", because the last line must be left-justified instead of fully-justified.
+// Note that the second line is also left-justified because it contains only one word.
+
+// Example 3:
+// Input: words = ["Science","is","what","we","understand","well","enough","to","explain","to","a","computer.","Art","is","everything","else","we","do"], maxWidth = 20
+// Output:
+// [
+//   "Science  is  what we",
+//   "understand      well",
+//   "enough to explain to",
+//   "a  computer.  Art is",
+//   "everything  else  we",
+//   "do                  "
+// ]
+
+// Constraints:
+// 1 <= words.length <= 300
+// 1 <= words[i].length <= 20
+// words[i] consists of only English letters and symbols.
+// 1 <= maxWidth <= 100
+// words[i].length <= maxWidth
+
+var fullJustify = function(words, maxWidth) {
+    let res = []
+    let currLine = []
+    let currLineLen = 0 // (spaces ignored here)
+
+    while(words.length){
+        // If adding a word, and considering the single space between each word, would make the line too long, then the line is complete
+        if(words[0].length + currLineLen + currLine.length > maxWidth){
+            let line = ""
+            //One word line is just the word and spaces until the line is complete, more tha one word line is trickier
+            if(currLine.length !== 1){
+                // Let's say I have 7 spaces and 6 word (so 5 spots in between word to put spaces in), my distribution should be : 2,2,1,1,1
+                // To do so, we will take the ceil of the division availableSpaces / (number of spots still available to put spaces in)
+                let availableSpaces = maxWidth - currLineLen
+                for(let i=0 ; i<currLine.length-1 ; i++){
+                    let spacesToAdd = Math.ceil(availableSpaces / (currLine.length-1-i) )
+                    currLine[i] += ' '.repeat(spacesToAdd)
+                    availableSpaces -= spacesToAdd
+                }
+                line = currLine.join('')
+            }else{
+                line = currLine[0]
+                // Complete the line with spaces 
+                while(line.length < maxWidth) line += ' '
+            }
+            res.push(line)
+            currLine = []
+            currLineLen = 0
+        }
+        // Add word to the line
+        else{
+            currLine.push(words[0])
+            currLineLen += words[0].length
+            words.shift()
+        }
+    }
+
+    //Last line :
+    let line = currLine.join(' ')
+    while(line.length < maxWidth) line += ' '
+    res.push(line)
+
+    return res
+}
+
+// console.log(fullJustify(["This", "is", "an", "example", "of", "text", "justification."], 16))
+// [
+//     "This    is    an",
+//     "example  of text",
+//     "justification.  "
+// ]
+
+// console.log(fullJustify(["What","must","be","acknowledgment","shall","be"], 16))
+// [
+//     "What   must   be",
+//     "acknowledgment  ",
+//     "shall be        "
+// ]
+
+// console.log(fullJustify(["Science","is","what","we","understand","well","enough","to","explain","to","a","computer.","Art","is","everything","else","we","do"], 20))
+// [
+//     "Science  is  what we",
+//     "understand      well",
+//     "enough to explain to",
+//     "a  computer.  Art is",
+//     "everything  else  we",
+//     "do                  "
+// ]
+
+//===========================================
