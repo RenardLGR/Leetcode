@@ -929,3 +929,73 @@ var fullJustify = function(words, maxWidth) {
 // ]
 
 //===========================================
+// https://leetcode.com/problems/sqrtx/
+// Given a non-negative integer x, return the square root of x rounded down to the nearest integer. The returned integer should be non-negative as well.
+
+// You must not use any built-in exponent function or operator.
+
+// For example, do not use pow(x, 0.5) in c++ or x ** 0.5 in python. 
+
+// Example 1:
+// Input: x = 4
+// Output: 2
+// Explanation: The square root of 4 is 2, so we return 2.
+
+// Example 2:
+// Input: x = 8
+// Output: 2
+// Explanation: The square root of 8 is 2.82842..., and since we round it down to the nearest integer, 2 is returned.
+
+// Constraints:
+// 0 <= x <= 231 - 1
+
+
+//Naive : square very number until n**2 >= x
+var mySqrt = function(x) {
+    let res = 0
+    while(res * res < x){
+        res++
+    }
+    if(res * res === x) return res
+    return res - 1
+}
+
+// console.log(mySqrt(0)) // 0
+// console.log(mySqrt(1)) // 1
+// console.log(mySqrt(2)) // 1
+// console.log(mySqrt(8)) // 2
+// console.log(mySqrt(16)) // 4
+
+// Obviously the runtime can be better
+
+
+// Knowing how many digits n there is in x, we cn conclude sqrt(x) has ceil(n/2) digits
+// Example : sqrt(10000) = 100 and sqrt(99999) ~= 316 so for a 5 digits x, sqrt(x) has ceil(n/2) digits
+// Having a good idea where sqrt(x) is, we will then do a dichotomy
+function mySqrtBis(x){
+    if(x === 0) return 0
+    const lenX = (''+x).length
+    let left = Math.pow(10, Math.ceil(lenX/2)-1)
+    let right = Math.pow(10, Math.ceil(lenX/2)+1)
+
+    while(right-left > 1){
+        let middle = Math.ceil((right+left)/2)
+        if(middle*middle > x){
+            right = middle
+        }else{
+            left = middle
+        }
+    }
+
+    return left
+}
+
+// console.log(mySqrtBis(0)) // 0
+// console.log(mySqrtBis(1)) // 1
+// console.log(mySqrtBis(2)) // 1
+// console.log(mySqrtBis(8)) // 2
+// console.log(mySqrtBis(16)) // 4
+// console.log(mySqrtBis(200)) // 14
+// console.log(mySqrtBis(255025)) // 505
+
+// Good runtime
