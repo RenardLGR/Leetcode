@@ -969,7 +969,7 @@ var mySqrt = function(x) {
 // Obviously the runtime can be better
 
 
-// Knowing how many digits n there is in x, we cn conclude sqrt(x) has ceil(n/2) digits
+// Knowing how many digits n there is in x, we can conclude sqrt(x) has ceil(n/2) digits
 // Example : sqrt(10000) = 100 and sqrt(99999) ~= 316 so for a 5 digits x, sqrt(x) has ceil(n/2) digits
 // Having a good idea where sqrt(x) is, we will then do a dichotomy
 function mySqrtBis(x){
@@ -999,3 +999,108 @@ function mySqrtBis(x){
 // console.log(mySqrtBis(255025)) // 505
 
 // Good runtime
+
+//=====================================
+// https://leetcode.com/problems/climbing-stairs/
+// You are climbing a staircase. It takes n steps to reach the top.
+
+// Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+
+// Example 1:
+// Input: n = 2
+// Output: 2
+// Explanation: There are two ways to climb to the top.
+// 1. 1 step + 1 step
+// 2. 2 steps
+
+// Example 2:
+// Input: n = 3
+// Output: 3
+// Explanation: There are three ways to climb to the top.
+// 1. 1 step + 1 step + 1 step
+// 2. 1 step + 2 steps
+// 3. 2 steps + 1 step
+
+// Constraints:
+// 1 <= n <= 45
+
+// Naive : Find all solutions
+var climbStairs = function(n) {
+    let res = 0
+    solve(n)
+    return res
+    
+    function solve(n){
+        if(n <= 0){
+            if (n === 0) res++
+            return
+        }
+        solve(n-1)
+        solve(n-2)
+    }
+}
+
+// console.log(climbStairs(2)) // 2
+// console.log(climbStairs(3)) // 3
+// console.log(climbStairs(45)) // 1836311903
+
+// Time limit exceeded
+
+// n steps can only be accessible either by n-1 steps or n-2 steps.
+// Let a how many ways to reach n-1 steps and b how many ways to reach n-2 steps. There are a+b ways to reach n steps
+function climbStairsBis(n){
+    let dp = Array(n+1)
+    dp[1] = 1
+    dp[2] = 2
+
+    for(let i=3 ; i<dp.length ; i++){
+        dp[i] = dp[i-1] + dp[i-2]
+    }
+
+    return dp[n]
+}
+
+// console.log(climbStairsBis(2)) // 2
+// console.log(climbStairsBis(3)) // 3
+// console.log(climbStairsBis(10)) // 89
+// console.log(climbStairsBis(45)) // 1836311903
+
+// Same approach with recursion
+function climbStairsTer(n, memo=Array()){
+    if(n === 1) return 1
+    if(n === 2) return 2
+
+    if(memo[n] !== undefined) return memo[n]
+
+    let res = climbStairsTer(n-1, memo) + climbStairsTer(n-2, memo)
+    memo[n] = res
+    return res
+}
+
+// console.log(climbStairsTer(2)) // 2
+// console.log(climbStairsTer(3)) // 3
+// console.log(climbStairsTer(10)) // 89
+// console.log(climbStairsTer(45)) // 1836311903
+
+// Keeping the space complexity small :
+function climbStairsQuater(n){
+    if(n < 2) return n
+
+    let before = 2
+    let beforeBefore = 1
+
+    for(let i=0 ; i<n-2 ; i++){
+        let temp = before + beforeBefore
+        beforeBefore = before
+        before = temp
+    }
+
+    return before
+}
+
+// console.log(climbStairsQuater(2)) // 2
+// console.log(climbStairsQuater(3)) // 3
+// console.log(climbStairsQuater(10)) // 89
+// console.log(climbStairsQuater(45)) // 1836311903
+
