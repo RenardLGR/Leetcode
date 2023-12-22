@@ -1104,3 +1104,43 @@ function climbStairsQuater(n){
 // console.log(climbStairsQuater(10)) // 89
 // console.log(climbStairsQuater(45)) // 1836311903
 
+// From : https://www.codewars.com/kata/53d40c1e2f13e331fc000c26/train/javascript
+// According to Wikipedia https://fr.wikipedia.org/wiki/Suite_de_Fibonacci#Expression_matricielle
+// |1 1| ^n       |F(n+1)  F(n)   |
+// |1 0|      =   |F(n)    F(n-1) |
+
+// Using fast exponentiation (successive squaring) instead of iterated exponentiation :
+// a^2 = a * a
+// a^4 = a^2 * a^2
+// a^8 = a^4 * a^4 = (a^2)^4 = (a^4)^2
+// ...
+
+function climbStairsQuinqies(n){
+    let base = [[1,1] , [1,0]]
+
+    //We want fib(n+1)
+    return matrixExp(base, n)[0][0]
+
+    function matrixExp(mat, pow){
+        if(pow === 1) return mat
+
+        // mat^n = (mat*mat)^(n/2) if n is even
+        if(pow%2 === 0) return matrixExp(matrixMult(mat, mat), pow/2)
+        // mat^n = (mat*mat)^((n-1)/2)*mat if n is odd
+        if(pow%2 === 1) return matrixMult(mat, matrixExp(matrixMult(mat, mat), (pow-1)/2))
+    }
+
+
+    function matrixMult(matA, matB){
+        const [[a,b], [c,d]] = matA
+        const [[e,f], [g,h]] = matB
+
+        return [ [a*e+b*g , a*f+b*h] , [c*e+d*g , c*f+d*h]]
+    }
+}
+
+// console.log(climbStairsQuinqies(2)) // 2
+// console.log(climbStairsQuinqies(3)) // 3
+// console.log(climbStairsQuinqies(10)) // 89
+// console.log(climbStairsQuinqies(45)) // 1836311903
+
