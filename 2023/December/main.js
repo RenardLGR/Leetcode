@@ -1115,7 +1115,7 @@ function climbStairsQuater(n){
 // a^8 = a^4 * a^4 = (a^2)^4 = (a^4)^2
 // ...
 
-function climbStairsQuinqies(n){
+function climbStairsQuinquies(n){
     let base = [[1,1] , [1,0]]
 
     //We want fib(n+1)
@@ -1139,8 +1139,70 @@ function climbStairsQuinqies(n){
     }
 }
 
-// console.log(climbStairsQuinqies(2)) // 2
-// console.log(climbStairsQuinqies(3)) // 3
-// console.log(climbStairsQuinqies(10)) // 89
-// console.log(climbStairsQuinqies(45)) // 1836311903
+// console.log(climbStairsQuinquies(2)) // 2
+// console.log(climbStairsQuinquies(3)) // 3
+// console.log(climbStairsQuinquies(10)) // 89
+// console.log(climbStairsQuinquies(45)) // 1836311903
 
+
+// Very similar approach :
+// Using matrices, we have :
+// |Fn-1|  =  |0  1|   |Fn-2|  =  |0  1|^(n-1)  |F0|
+// |Fn  |     |1  1|   |Fn-1|     |1  1|        |F1|
+// With F0 = 0 and F1 = 1
+
+function climbStairsSexies(n){
+    //We want fib(n+1)
+    return fibonacci(n+1)
+
+    function fibonacci(n){
+        let base = [[0, 1] , [1, 1]]
+
+        return matrixMult(matrixExp(base, n), [[0], [1]])[0][0]
+    }
+
+    // Fast exponentiation
+    function matrixExp(mat, pow){
+        if(pow === 1) return mat
+
+        // mat^n = (mat*mat)^(n/2) if n is even
+        if(pow%2 === 0) return matrixExp(matrixMult(mat, mat), pow/2)
+        // mat^n = (mat*mat)^((n-1)/2)*mat if n is odd
+        if(pow%2 === 1) return matrixMult(mat, matrixExp(matrixMult(mat, mat), (pow-1)/2))
+    }
+
+
+    function matrixMult(matrixA, matrixB) {
+        const numRowsA = matrixA.length;
+        const numColsA = matrixA[0].length;
+        const numRowsB = matrixB.length;
+        const numColsB = matrixB[0].length;
+    
+        // Check if matrices can be multiplied
+        if (numColsA !== numRowsB) {
+            console.error("Invalid matrix dimensions for multiplication");
+            return null;
+        }
+    
+        // Initialize the result matrix with zeros
+        const result = Array.from({ length: numRowsA }, () => Array(numColsB).fill(0));
+    
+        // Perform matrix multiplication
+        for (let i = 0; i < numRowsA; i++) {
+            for (let j = 0; j < numColsB; j++) {
+                for (let k = 0; k < numColsA; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+    
+        return result;
+    }
+}
+
+// console.log(climbStairsSexies(2)) // 2
+// console.log(climbStairsSexies(3)) // 3
+// console.log(climbStairsSexies(10)) // 89
+// console.log(climbStairsSexies(45)) // 1836311903
+
+//====================================
