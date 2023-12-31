@@ -1257,3 +1257,73 @@ var simplifyPath = function(path) {
 }
 
 // Mediocre runtime but it gets the job done
+
+// console.log(simplifyPath('/home/')) // '/home'
+// console.log(simplifyPath('/../')) // '/'
+// console.log(simplifyPath('/home//foo/')) // '/home/foo'
+
+// Working with strings only
+function simplifyPathBis(path){
+    let canon = ''
+    let dir = ''
+    for(let i=0 ; i<path.length ; i++){
+        if(path[i] === '/' && dir === '') continue
+        else if(path[i] === '/'){
+            // we have a folder !
+            if(dir === '.'){
+                dir = ''
+                continue
+            }
+            else if(dir === '..'){
+                let j=canon.length-1
+                while(canon[j] !== '/' && j >= 0){
+                    j--
+                }
+                //removes the slash '/' at the start of a directory too
+                let newCanon = ''
+                for(let m=0 ; m<j ; m++){
+                    newCanon += canon[m]
+                }
+                canon = newCanon
+                dir = ''
+            }
+            else{
+                // Add a slash '/' before the folder name
+                canon = canon + '/' + dir
+                dir = ''
+            }
+        }else{
+            dir += path[i]
+        }
+    }
+
+
+    //One last turn to purge the dir in memory
+    if(dir === '.' || dir === ''){}
+    else if(dir === '..'){
+        let j=canon.length-1
+        while(canon[j] !== '/' && j >= 0){
+            j--
+        }
+        //removes the slash '/' at the start of a directory too
+        let newCanon = ''
+        for(let m=0 ; m<j ; m++){
+            newCanon += canon[m]
+        }
+        canon = newCanon
+        dir = ''
+    }
+    else{
+        // Add a slash '/' before the folder name
+        canon = canon + '/' + dir
+        dir = ''
+    }
+
+    return canon.length === 0 ? '/' : canon
+}
+
+console.log(simplifyPathBis('/home/')) // '/home'
+console.log(simplifyPathBis('/../')) // '/'
+console.log(simplifyPathBis('/home//foo/')) // '/home/foo'
+console.log(simplifyPathBis('/a/../../b/../c//.//')) // '/c'
+console.log(simplifyPathBis("/a//b////c/d//././/..")) // '/a/b/c'
