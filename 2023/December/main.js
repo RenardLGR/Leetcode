@@ -1322,8 +1322,62 @@ function simplifyPathBis(path){
     return canon.length === 0 ? '/' : canon
 }
 
-console.log(simplifyPathBis('/home/')) // '/home'
-console.log(simplifyPathBis('/../')) // '/'
-console.log(simplifyPathBis('/home//foo/')) // '/home/foo'
-console.log(simplifyPathBis('/a/../../b/../c//.//')) // '/c'
-console.log(simplifyPathBis("/a//b////c/d//././/..")) // '/a/b/c'
+// console.log(simplifyPathBis('/home/')) // '/home'
+// console.log(simplifyPathBis('/../')) // '/'
+// console.log(simplifyPathBis('/home//foo/')) // '/home/foo'
+// console.log(simplifyPathBis('/a/../../b/../c//.//')) // '/c'
+// console.log(simplifyPathBis("/a//b////c/d//././/..")) // '/a/b/c'
+
+// Not bad not great runtime
+
+// With a mix of strings and arrays
+function simplifyPathTer(path){
+    let canon = []
+    let dir = ''
+
+    for(let i=0 ; i<path.length ; i++){
+        if(path[i] === '/' && dir === '') continue
+        else if(path[i] === '/'){
+            // we have a folder !
+            if(dir === '.'){
+                dir = ''
+                continue
+            }
+            else if(dir === '..'){
+                canon.pop()
+                dir = ''
+            }
+            else{
+                canon.push(dir)
+                dir = ''
+            }
+        }else{
+            dir += path[i]
+        }
+    }
+
+    //One last turn to purge the dir in memory
+    if(dir === '.' || dir === ''){}
+    else if(dir === '..'){
+        canon.pop()
+        dir = ''
+    }
+    else{
+        canon.push(dir)
+        dir = ''
+    }
+
+    return '/' + canon.join('/')
+}
+
+// console.log(simplifyPathTer('/home/')) // '/home'
+// console.log(simplifyPathTer('/../')) // '/'
+// console.log(simplifyPathTer('/home//foo/')) // '/home/foo'
+// console.log(simplifyPathTer('/a/../../b/../c//.//')) // '/c'
+// console.log(simplifyPathTer("/a//b////c/d//././/..")) // '/a/b/c'
+
+// Mediocre runtime
+
+// Upon inspection, all versions were similar to the first approach, even when tagged top 99%-95% runtime so I guess the test cases got longer over time
+
+//===================================
