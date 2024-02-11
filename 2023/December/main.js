@@ -1379,5 +1379,3 @@ function simplifyPathTer(path){
 // Mediocre runtime
 
 // Upon inspection, all versions were similar to the first approach, even when tagged top 99%-95% runtime so I guess the test cases got longer over time
-
-//===================================
