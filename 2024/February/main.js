@@ -78,10 +78,55 @@ function productExceptSelf(nums){
 // console.log(productExceptSelf([1, 2, 3, 4])) // [24,12,8,6]
 // console.log(productExceptSelf([-1,1,0,-3,3])) // [0,0,9,0,0]
 
-// O(2n) complexity
+// Logic wise O(2n) complexity, but the Array(n).fill(0) takes O(n) + O(n) complexity, we will remove them for next attempt
+
+function productExceptSelfBis(nums){
+    let res0 = 1
+    let zeroes = nums[0] === 0 ? 1 : 0 // number of zeroes
+    for(let i=1 ; i<nums.length ; i++){
+        if(nums[i] === 0) zeroes++
+        res0 *= nums[i]
+    }
+
+    //first case
+    if(zeroes > 1){
+        let res = []
+        for(let i=0 ; i<nums.length ; i++){
+            res[i] = 0
+        }
+        return res
+    }
+    //second case
+    else if(zeroes === 1){
+        let res = []
+        let prod = 1
+        let zeroIdx = null
+        for(let i=0 ; i<nums.length ; i++){
+            if(nums[i] !== 0){
+                res[i] = 0
+                prod *= nums[i]
+            }else{
+                zeroIdx = i
+            }
+        }
+        res[zeroIdx] = prod
+        return res
+    }
+    //third case
+    else{
+        let res = []
+        res[0] = res0
+        for(let i=1 ; i<nums.length ; i++){
+            res[i] = (res[i-1] * nums[i-1] / nums[i])
+        }
+        return res
+    }
+}
+
+//Definitely faster
 
 //Less lines : we just recalculate for nums[n] === 0
-var productExceptSelfBis = function(nums) {
+var productExceptSelfTer = function(nums) {
     //Calculate res[0] normally : res[0] is equal to the product of nums.slice(1)
     //Then knowing res[0], we can conclude that res[1] = res[0] * nums[0] / nums[1]
     //In fact, for every element of res of index n, knowing its predecessor, res[n] = res[n-1] * nums[n-1] / nums[n]
@@ -109,5 +154,36 @@ var productExceptSelfBis = function(nums) {
     }
 };
 
-console.log(productExceptSelfBis([1, 2, 3, 4])) // [24,12,8,6]
-console.log(productExceptSelfBis([-1,1,0,-3,3])) // [0,0,9,0,0]
+// console.log(productExceptSelfTer([1, 2, 3, 4])) // [24,12,8,6]
+// console.log(productExceptSelfTer([-1,1,0,-3,3])) // [0,0,9,0,0]
+
+function productExceptSelfQuater(nums){
+    // res[i] is the product of (the product of elements from nums[0] to nums[i-1] (the elements on its left)) and (the product of elements from nums[n-1] to nums[i+1] (the elements on its right))
+    // we will have two Arrays containing the product of (from nums[0] to nums[n-1]) and (from nums[n-1] to nums[0])
+    const n = nums.length
+
+    let leftToRight = [nums[0]]
+    for(let i=1 ; i<n ; i++){
+        leftToRight[i] = leftToRight[i-1] * nums[i]
+    }
+
+    let rightToLeft = []
+    rightToLeft[n-1] = nums[n-1]
+    for(let i=n-2 ; i>=0 ; i--){
+        rightToLeft[i] = rightToLeft[i+1] * nums[i]
+    }
+
+    let res = []
+    res[0] = rightToLeft[1]
+    res[n-1] = leftToRight[n-2]
+    for(let i=1 ; i<n-1 ; i++){
+        res[i] = leftToRight[i-1] * rightToLeft[i+1]
+    }
+
+    return res
+}
+
+// console.log(productExceptSelfQuater([1, 2, 3, 4])) // [24,12,8,6]
+// console.log(productExceptSelfQuater([-1,1,0,-3,3])) // [0,0,9,0,0]
+
+// Meh speed
