@@ -187,3 +187,56 @@ function productExceptSelfQuater(nums){
 // console.log(productExceptSelfQuater([-1,1,0,-3,3])) // [0,0,9,0,0]
 
 // Meh speed
+// We can have cleaner indices, logic remains the same
+function productExceptSelfQuinqies(nums){
+    const n = nums.length
+
+    let leftToRight = [1]
+    for(let i=1 ; i<n ; i++){
+        leftToRight[i] = leftToRight[i-1] * nums[i-1]
+    }
+
+    let rightToLeft = []
+    rightToLeft[n-1] = 1
+    for(let i=n-2 ; i>=0 ; i--){
+        rightToLeft[i] = rightToLeft[i+1] * nums[i+1]
+    }
+
+    let res = []
+    for(let i=0 ; i<n ; i++){
+        res[i] = leftToRight[i] * rightToLeft[i]
+    }
+
+    return res
+}
+
+// console.log(productExceptSelfQuinqies([1, 2, 3, 4])) // [24,12,8,6]
+// console.log(productExceptSelfQuinqies([-1,1,0,-3,3])) // [0,0,9,0,0]
+
+function productExceptSelfSexies(nums){
+    // Cleaner version of three cases algo, early return if more than two zeroes are found
+
+    let prod = 1
+    let zeroIdx = null
+    for(let i=0 ; i<nums.length ; i++){
+        if(nums[i] === 0 && zeroIdx === null){
+            zeroIdx = i
+        }else if(nums[i] === 0){
+            // case more than 2 zeroes
+            return Array.from({length : nums.length}, (_) => 0)
+        }else{
+            prod *= nums[i]
+        }
+    }
+    if(zeroIdx !== null){
+        //case 1 zero
+        let res = Array.from({length : nums.length}, (_) => 0)
+        res[zeroIdx] = prod
+        return res
+    }
+    //case no zero
+    return nums.map(e => prod / e)
+}
+
+// console.log(productExceptSelfSexies([1, 2, 3, 4])) // [24,12,8,6]
+// console.log(productExceptSelfSexies([-1,1,0,-3,3])) // [0,0,9,0,0]
