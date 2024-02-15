@@ -240,3 +240,37 @@ function productExceptSelfSexies(nums){
 
 // console.log(productExceptSelfSexies([1, 2, 3, 4])) // [24,12,8,6]
 // console.log(productExceptSelfSexies([-1,1,0,-3,3])) // [0,0,9,0,0]
+// console.log(productExceptSelfSexies([4, 7, 3, 6, 2, 11, 14, 4, 7, 5])) // [5433120, 3104640, 7244160, 3622080, 10866240, 1975680, 1552320, 5433120, 3104640, 4346496]
+
+function productExceptSelfSepties(nums){
+    //Yet another syntax for the three cases algo
+    let zeroes = 0
+    let prod = 1
+    for(let el of nums){
+        if(el === 0){
+            if(++zeroes === 2){
+                break
+            }
+        }else{
+            prod *= el
+        }
+    }
+
+    if(zeroes === 0){
+        return nums.map(e => prod / e)
+    }else{
+        if(zeroes === 1){
+            let res = Array.from({length : nums.length}, (_) => 0)
+            res[nums.indexOf(0)] = prod
+            return res
+        }else{
+            return Array.from({length : nums.length}, (_) => 0)
+        }
+    }
+}
+
+// console.log(productExceptSelfSepties([1, 2, 3, 4])) // [24,12,8,6]
+// console.log(productExceptSelfSepties([-1,1,0,-3,3])) // [0,0,9,0,0]
+// console.log(productExceptSelfSepties([4, 7, 3, 6, 2, 11, 14, 4, 7, 5])) // [5433120, 3104640, 7244160, 3622080, 10866240, 1975680, 1552320, 5433120, 3104640, 4346496]
+
+//Fastest version
